@@ -201,7 +201,15 @@ export function ReviewSession({
 
       <Help mode="review" />
 
-      <div className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col justify-center gap-9 overflow-y-auto px-6 pt-20 pb-6 lg:max-w-[680px]">
+      {/*
+        Anchored a seventh of the way down rather than centred. Centring
+        counted the reserved feedback box as part of the stack, so the
+        part you actually look at floated above the middle with a screen
+        of nothing under it. Starting from a fixed fraction of the
+        viewport puts the prompt in the same place on every card, which
+        matters more here than balance does.
+      */}
+      <div className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col justify-start gap-9 overflow-y-auto px-6 pt-[14dvh] pb-8 lg:max-w-[680px]">
         <Prompt question={question} />
 
         {question.mode === "choice" ? (
@@ -397,27 +405,39 @@ function Feedback({
   question: Question;
   result: Result | null;
 }) {
-  if (!result) return <div className="h-[112px]" aria-hidden />;
+  if (!result) return <div className="h-[132px]" aria-hidden />;
+
+  const tone = result.correct ? "var(--verdigris)" : "var(--clay)";
 
   return (
-    <div className="flex h-[112px] flex-col items-center justify-start gap-2">
+    <div className="flex h-[132px] flex-col items-center justify-start gap-3">
+      {/*
+        The verdict is the point of this screen, so it is a badge in its
+        own colour rather than a line of small text that has to compete
+        with four answer buttons for your eye.
+      */}
       <p
-        className="text-[16px]"
-        style={{ color: result.correct ? "var(--verdigris)" : "var(--clay)" }}
+        className="inline-flex items-center rounded-[999px] border px-4 py-1.5 text-[19px] font-medium"
+        style={{ color: tone, borderColor: tone }}
       >
         {result.message}
       </p>
 
+      {/* The meaning only needs restating when it was not the one given. */}
       {result.correct ? null : (
-        <>
-          <p className="text-ink text-[22px]">{question.english}</p>
-          {question.transliteration ? (
-            <p className="text-ink-faint text-[15px] italic">
-              {question.transliteration}
-            </p>
-          ) : null}
-        </>
+        <p className="text-ink text-[22px]">{question.english}</p>
       )}
+
+      {/*
+        The transliteration shows either way. Being right about the
+        meaning says nothing about whether you were reading it
+        correctly, which is the whole reason it is on the card.
+      */}
+      {question.transliteration ? (
+        <p className="text-ink-faint text-[15px] italic">
+          {question.transliteration}
+        </p>
+      ) : null}
 
       {result.correct && (question.gender || question.plural) ? (
         <div className="flex flex-wrap justify-center gap-2">
