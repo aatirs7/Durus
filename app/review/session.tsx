@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { Button, ButtonLink, Numeral, Pill } from "@/components/ui";
 import type { QueueItem } from "@/lib/queue";
+import { enqueue } from "@/lib/outbox";
 import { formatInterval, schedule, type Grade } from "@/lib/srs";
 import { submitGrade, undoGrade } from "./actions";
 
@@ -86,13 +87,30 @@ export function ReviewSession({
     (g: Grade) => {
       if (!item || !revealed) return;
       const ms = msToAnswer.current;
+      const reviewedAt = new Date().toISOString();
 
+      /*
+        The session does not block on this. If the request fails the
+        grade goes to the outbox and flushes on the next online event,
+        keyed by card and timestamp so a double flush cannot double
+        count.
+      */
       void submitGrade({
         cardId: item.cardId,
         direction: item.direction,
         grade: g,
         msToAnswer: ms,
-      });
+      }).catch(() =>
+        enqueue({
+          cardId: item.cardId,
+          direction: item.direction,
+          grade: g,
+          msToAnswer: ms,
+          reviewedAt,
+        }).catch(() => {
+          // IndexedDB is unavailable. Nothing further to try.
+        }),
+      );
 
       setAnswered((prev) => [...prev, { item, grade: g, msToAnswer: ms }]);
 

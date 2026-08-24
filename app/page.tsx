@@ -1,10 +1,11 @@
 import { InstallHint } from "@/components/install-hint";
-import { ButtonLink, DeadLink, Eyebrow, Numeral, Screen } from "@/components/ui";
+import { OfflinePill } from "@/components/offline-pill";
+import { PwaRuntime } from "@/components/pwa-runtime";
+import { ButtonLink, Eyebrow, Numeral, Screen } from "@/components/ui";
+import { TOTAL_LESSONS } from "@/lib/lessons";
 import { countDue, countNewAvailable, getSettings } from "@/lib/queue";
 
 export const dynamic = "force-dynamic";
-
-const TOTAL_LESSONS = 23;
 
 /*
   The home screen and the PWA entry point. It answers one question:
@@ -21,6 +22,8 @@ export default async function TodayPage() {
 
   return (
     <Screen className="justify-between gap-10 py-10">
+      <PwaRuntime dueCount={due} />
+
       <div className="flex flex-col items-center gap-8">
         <Eyebrow>{dateLine(now, config.timezone)}</Eyebrow>
 
@@ -41,26 +44,51 @@ export default async function TodayPage() {
         </div>
 
         <div className="flex w-full flex-col gap-3">
+          {/*
+            When nothing is due the speed drill becomes the primary
+            action. Do not congratulate, do not use an emoji.
+          */}
           {clear ? (
-            <DeadLink>Speed drill</DeadLink>
+            <ButtonLink href="/speed" className="w-full">
+              Speed drill
+            </ButtonLink>
           ) : (
             <ButtonLink href="/review" className="w-full">
               Start review
             </ButtonLink>
           )}
 
-          <div className="flex justify-center gap-6">
-            <DeadLink>Speed drill</DeadLink>
-            <ButtonLink href="/add" variant="text">
-              Add words
+          <div className="flex flex-wrap justify-center gap-x-6">
+            {clear ? null : (
+              <ButtonLink href="/speed" variant="text">
+                Speed drill
+              </ButtonLink>
+            )}
+            <ButtonLink href="/cases" variant="text">
+              Case drill
+            </ButtonLink>
+            <ButtonLink
+              href={`/lessons/${config.currentLesson}`}
+              variant="text"
+            >
+              Browse lesson {config.currentLesson}
             </ButtonLink>
           </div>
         </div>
       </div>
 
       <div className="flex flex-col gap-6">
+        <OfflinePill />
         <InstallHint />
         <LessonTicks current={config.currentLesson} />
+        <div className="flex justify-center gap-6">
+          <ButtonLink href="/stats" variant="text">
+            Stats
+          </ButtonLink>
+          <ButtonLink href="/settings" variant="text">
+            Settings
+          </ButtonLink>
+        </div>
       </div>
     </Screen>
   );
