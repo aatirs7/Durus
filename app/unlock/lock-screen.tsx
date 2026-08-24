@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { PinPad } from "@/components/pin-pad";
 import { Screen } from "@/components/ui";
@@ -13,20 +13,6 @@ export function LockScreen({ name }: { name: string }) {
   const [error, setError] = useState<string | null>(null);
   const [shake, setShake] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [lockedFor, setLockedFor] = useState(0);
-
-  // Count the lockout down in place, so the message stays honest
-  // instead of going stale the moment it is shown.
-  useEffect(() => {
-    if (lockedFor <= 0) return;
-    const t = setTimeout(() => {
-      const next = lockedFor - 1;
-      setLockedFor(next);
-      if (next === 0) setError(null);
-      else setError(`Too many tries. Wait ${next}s.`);
-    }, 1000);
-    return () => clearTimeout(t);
-  }, [lockedFor]);
 
   async function submit(value: string) {
     setBusy(true);
@@ -39,7 +25,6 @@ export function LockScreen({ name }: { name: string }) {
     }
 
     setError(res.error);
-    setLockedFor(res.lockedFor ?? 0);
     setShake(true);
     setTimeout(() => {
       setShake(false);
@@ -61,10 +46,10 @@ export function LockScreen({ name }: { name: string }) {
         value={pin}
         onChange={(next) => {
           setPin(next);
-          if (error && lockedFor === 0) setError(null);
+          if (error) setError(null);
         }}
         onComplete={submit}
-        disabled={busy || lockedFor > 0}
+        disabled={busy}
         shake={shake}
       />
 

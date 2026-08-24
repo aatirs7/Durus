@@ -16,8 +16,6 @@ export const SESSION_COOKIE = "durus_session";
 export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
 
 export const PIN_LENGTH = 4;
-export const MAX_ATTEMPTS = 5;
-export const LOCKOUT_SECONDS = 60;
 
 function secret(): string {
   const s = process.env.AUTH_SECRET;
