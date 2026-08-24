@@ -1,6 +1,7 @@
-import { and, asc, eq, isNull, lte, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, lte, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cardStates, cards, lessons } from "@/db/schema";
+import { modeFor, type Mode } from "./modes";
 import { getSettingsFor, requireProfileId } from "./session";
 
 export type QueueItem = {
@@ -19,6 +20,19 @@ export type QueueItem = {
   repetitions: number;
   lapses: number;
   isNew: boolean;
+};
+
+/*
+  Everything the session needs to ask one question, assembled on the
+  server so the client never has to fetch mid drill. Distractors come
+  from the same lessons, so a wrong option is always a word that could
+  plausibly have been the answer.
+*/
+export type Question = QueueItem & {
+  mode: Mode;
+  /* Four options for choice mode, already shuffled, one of them right.
+     Empty for written mode. */
+  options: { arabic: string; english: string }[];
 };
 
 /* Settings for whoever is signed in. */
@@ -185,4 +199,54 @@ export async function buildQueue(
   }));
 
   return [...shuffle(due), ...shuffle(fresh)];
+}
+
+/*
+  Turns a queue into questions. One extra read for the distractor pool,
+  rather than one per card.
+*/
+export async function buildQuestions(
+  queue: QueueItem[],
+  lessonNumbers: number[],
+): Promise<Question[]> {
+  if (queue.length === 0) return [];
+
+  const pool = await db
+    .select({ arabic: cards.arabic, english: cards.english, type: cards.type })
+    .from(cards)
+    .innerJoin(lessons, eq(cards.lessonId, lessons.id))
+    .where(inArray(lessons.number, lessonNumbers));
+
+  return queue.map((item) => {
+    const mode = modeFor(
+      { type: item.type, repetitions: item.repetitions },
+      item.direction,
+    );
+
+    if (mode !== "choice") return { ...item, mode, options: [] };
+
+    /*
+      Distractors match the card's own type. Offering a single word
+      against three full sentences gives the answer away by shape alone.
+    */
+    const candidates = pool.filter(
+      (c) => c.type === item.type && c.english !== item.english,
+    );
+
+    const picked: typeof candidates = [];
+    const seen = new Set<string>();
+    for (const c of shuffle(candidates)) {
+      if (seen.has(c.english)) continue;
+      seen.add(c.english);
+      picked.push(c);
+      if (picked.length === 3) break;
+    }
+
+    const options = shuffle([
+      { arabic: item.arabic, english: item.english },
+      ...picked.map((c) => ({ arabic: c.arabic, english: c.english })),
+    ]);
+
+    return { ...item, mode, options };
+  });
 }

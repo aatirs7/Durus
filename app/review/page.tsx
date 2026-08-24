@@ -1,6 +1,5 @@
 import { ButtonLink, Screen } from "@/components/ui";
-import { buildQueue, getSettings } from "@/lib/queue";
-import { isCurrentLessonCapped } from "@/lib/srs";
+import { buildQueue, buildQuestions, getSettings } from "@/lib/queue";
 import { getWeekMedianMs } from "./actions";
 import { ReviewSession } from "./session";
 
@@ -35,24 +34,16 @@ export default async function ReviewPage({
   }
 
   /*
-    Which lesson numbers are currently under the three day cap. Computed
-    once here so the grade button labels do not have to hit the database.
+    Distractors are drawn from the lessons already open, so a wrong
+    option is always a word that could plausibly have been the answer.
   */
-  const capturedLessons: Record<number, boolean> = {};
-  for (const item of queue) {
-    capturedLessons[item.lessonNumber] = isCurrentLessonCapped(
-      item.lessonNumber,
-      config.currentLesson,
-      config.currentLessonSince,
-      now,
-    );
-  }
+  const lessonNumbers = Array.from(
+    { length: config.currentLesson },
+    (_, i) => i + 1,
+  );
+  const questions = await buildQuestions(queue, lessonNumbers);
 
   return (
-    <ReviewSession
-      initialQueue={queue}
-      capturedLessons={capturedLessons}
-      weekMedianMs={weekMedianMs}
-    />
+    <ReviewSession initialQueue={questions} weekMedianMs={weekMedianMs} />
   );
 }

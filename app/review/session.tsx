@@ -1,121 +1,100 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { Help } from "@/components/help";
 import { Button, ButtonLink, Numeral, Pill } from "@/components/ui";
-import type { QueueItem } from "@/lib/queue";
+import { checkAnswer } from "@/lib/answer";
 import { isPlainKey, isTyping, markReviewed, overlayOpen } from "@/lib/keys";
+import { feedbackFor, gradeFor } from "@/lib/modes";
 import { enqueue } from "@/lib/outbox";
-import { formatInterval, schedule, type Grade } from "@/lib/srs";
+import type { Question } from "@/lib/queue";
+import type { Grade } from "@/lib/srs";
 import { submitGrade, undoGrade } from "./actions";
 
-const GRADES: { grade: Grade; label: string; color: string }[] = [
-  { grade: "again", label: "Again", color: "var(--clay)" },
-  { grade: "hard", label: "Hard", color: "var(--saffron)" },
-  { grade: "good", label: "Good", color: "var(--verdigris)" },
-  { grade: "easy", label: "Easy", color: "var(--lapis)" },
-];
+/*
+  The session grades itself.
+
+  There is no Again / Hard / Good / Easy row any more. Whether an answer
+  was right is decided by the answer, and how well it was known is
+  decided by how long it took, which is the thing this app set out to
+  train. Rating yourself was the one place the drill asked you to be
+  honest about something you had just got wrong.
+*/
 
 type Answered = {
-  item: QueueItem;
+  question: Question;
   grade: Grade;
+  correct: boolean;
   msToAnswer: number;
 };
 
+type Result = { grade: Grade; correct: boolean; message: string };
+
+/* How long the result stays up before the deck advances. A wrong
+   answer holds longer, because that is when the card is worth reading. */
+const FEEDBACK_MS = 900;
+const FEEDBACK_WRONG_MS = 2200;
+
 export function ReviewSession({
   initialQueue,
-  capturedLessons,
   weekMedianMs,
 }: {
-  initialQueue: QueueItem[];
-  capturedLessons: Record<number, boolean>;
+  initialQueue: Question[];
   weekMedianMs: number | null;
 }) {
-  const [queue, setQueue] = useState<QueueItem[]>(initialQueue);
-  const [index, setIndex] = useState(0);
-  const [revealed, setRevealed] = useState(false);
-  const [answered, setAnswered] = useState<Answered[]>([]);
-  const [totalPlanned] = useState(initialQueue.length);
-  /*
-    Harakat are on unless the h key turns them off, for the length of
-    this session only. Reading unvowelled is the eventual goal, so it
-    has to be one key away, but it is not a setting you should leave
-    behind you by accident.
-  */
-  const [showHarakat, setShowHarakat] = useState(true);
   const router = useRouter();
+  const [queue, setQueue] = useState<Question[]>(initialQueue);
+  const [index, setIndex] = useState(0);
+  const [typed, setTyped] = useState("");
+  const [result, setResult] = useState<Result | null>(null);
+  const [answered, setAnswered] = useState<Answered[]>([]);
 
   const shownAt = useRef<number>(Date.now());
-  const msToAnswer = useRef<number>(0);
+  const advancing = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const item = queue[index];
-  const done = !item;
+  const question = queue[index];
+  const done = !question;
 
-  // Card render to reveal, not to grade.
+  // Time to answer runs from the card appearing, not from the first key.
   useEffect(() => {
     shownAt.current = Date.now();
-    msToAnswer.current = 0;
-    setRevealed(false);
+    setTyped("");
+    setResult(null);
   }, [index]);
 
-  const reveal = useCallback(() => {
-    setRevealed((was) => {
-      if (was) return was;
-      msToAnswer.current = Date.now() - shownAt.current;
-      return true;
-    });
+  useEffect(() => {
+    return () => {
+      if (advancing.current) clearTimeout(advancing.current);
+    };
   }, []);
 
-  const previews = useMemo(() => {
-    if (!item) return null;
-    const now = new Date();
-    const capped = capturedLessons[item.lessonNumber] ?? false;
-    const state = {
-      ease: item.ease,
-      intervalDays: item.intervalDays,
-      repetitions: item.repetitions,
-      lapses: item.lapses,
-    };
-    return Object.fromEntries(
-      GRADES.map(({ grade }) => [
-        grade,
-        formatInterval(
-          schedule(state, grade, {
-            now,
-            capToCurrentLesson: capped,
-            // A stable midpoint, so the label does not disagree with
-            // itself between renders.
-            random: () => 0.5,
-          }),
-        ),
-      ]),
-    ) as Record<Grade, string>;
-  }, [item, capturedLessons]);
+  const answer = useCallback(
+    (outcome: { correct: boolean; close?: boolean }) => {
+      if (!question || result) return;
 
-  const grade = useCallback(
-    (g: Grade) => {
-      if (!item || !revealed) return;
-      const ms = msToAnswer.current;
+      const ms = Date.now() - shownAt.current;
+      const scored = { ...outcome, msToAnswer: ms, mode: question.mode };
+      const grade = gradeFor(scored);
       const reviewedAt = new Date().toISOString();
 
-      /*
-        The session does not block on this. If the request fails the
-        grade goes to the outbox and flushes on the next online event,
-        keyed by card and timestamp so a double flush cannot double
-        count.
-      */
+      setResult({
+        grade,
+        correct: outcome.correct,
+        message: feedbackFor(scored, grade),
+      });
+
       void submitGrade({
-        cardId: item.cardId,
-        direction: item.direction,
-        grade: g,
+        cardId: question.cardId,
+        direction: question.direction,
+        grade,
         msToAnswer: ms,
       }).catch(() =>
         enqueue({
-          cardId: item.cardId,
-          direction: item.direction,
-          grade: g,
+          cardId: question.cardId,
+          direction: question.direction,
+          grade,
           msToAnswer: ms,
           reviewedAt,
         }).catch(() => {
@@ -123,95 +102,87 @@ export function ReviewSession({
         }),
       );
 
-      setAnswered((prev) => [...prev, { item, grade: g, msToAnswer: ms }]);
+      setAnswered((prev) => [
+        ...prev,
+        { question, grade, correct: outcome.correct, msToAnswer: ms },
+      ]);
 
-      // The relearn bucket. An again card comes back later in this same
-      // session rather than being scheduled for a future day.
-      if (g === "again") {
-        setQueue((prev) => [...prev, item]);
-      }
+      // A wrong answer comes back later in this same session.
+      if (grade === "again") setQueue((prev) => [...prev, question]);
 
-      setIndex((i) => i + 1);
+      advancing.current = setTimeout(
+        () => setIndex((i) => i + 1),
+        outcome.correct ? FEEDBACK_MS : FEEDBACK_WRONG_MS,
+      );
     },
-    [item, revealed],
+    [question, result],
   );
 
   const undo = useCallback(() => {
-    if (answered.length === 0) return;
+    if (answered.length === 0 || result) return;
     const last = answered[answered.length - 1];
 
     void undoGrade({
-      cardId: last.item.cardId,
-      direction: last.item.direction,
+      cardId: last.question.cardId,
+      direction: last.question.direction,
       previous: {
-        ease: last.item.ease,
-        intervalDays: last.item.intervalDays,
-        repetitions: last.item.repetitions,
-        lapses: last.item.lapses,
+        ease: last.question.ease,
+        intervalDays: last.question.intervalDays,
+        repetitions: last.question.repetitions,
+        lapses: last.question.lapses,
         dueAt: new Date().toISOString(),
-        existed: !last.item.isNew,
+        existed: !last.question.isNew,
       },
     });
 
     setAnswered((prev) => prev.slice(0, -1));
-    // If the card was pushed back into the relearn bucket, take it out.
-    if (last.grade === "again") {
-      setQueue((prev) => prev.slice(0, -1));
-    }
+    if (last.grade === "again") setQueue((prev) => prev.slice(0, -1));
     setIndex((i) => Math.max(0, i - 1));
-  }, [answered]);
+  }, [answered, result]);
 
-  /*
-    space reveal, 1 to 4 grade, u undo, h harakat, esc end the session.
-    Bound to the document rather than to the card, because on desktop
-    the keyboard is the primary input and nothing here is ever focused.
-  */
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (isTyping(e.target) || !isPlainKey(e) || overlayOpen()) return;
 
-      if (e.key === " ") {
-        e.preventDefault();
-        reveal();
-        return;
-      }
-      if (e.key === "u" || e.key === "U") {
+      if (e.key === "u") {
         e.preventDefault();
         undo();
         return;
       }
-      if (e.key === "h" || e.key === "H") {
-        e.preventDefault();
-        setShowHarakat((on) => !on);
-        return;
-      }
+
       if (e.key === "Escape") {
         e.preventDefault();
         router.push("/today");
         return;
       }
-      const n = Number(e.key);
-      if (n >= 1 && n <= 4) {
-        e.preventDefault();
-        grade(GRADES[n - 1].grade);
+
+      /*
+        1 to 4 pick an option, so the whole drill is reachable from the
+        keyboard without the mouse. Typed cards ignore this, since the
+        digits belong in the box.
+      */
+      if (question?.mode === "choice" && !result) {
+        const n = Number(e.key);
+        if (n >= 1 && n <= question.options.length) {
+          e.preventDefault();
+          const option = question.options[n - 1];
+          answer({ correct: option.english === question.english });
+        }
       }
     }
+
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [reveal, undo, grade, router]);
+  }, [undo, router, question, result, answer]);
 
   if (done) {
     return <SessionEnd answered={answered} weekMedianMs={weekMedianMs} />;
   }
 
-  const progress = totalPlanned === 0 ? 0 : Math.min(1, index / queue.length);
-  const front = item.direction === "recognition" ? "arabic" : "english";
+  const progress = Math.min(1, index / queue.length);
 
   return (
     <div className="flex flex-col" style={{ height: "100dvh" }}>
-      <Help mode="review" />
-
-      {/* Hairline progress, no percentage label. */}
       <div className="bg-rule h-[2px] shrink-0">
         <div
           className="bg-lapis h-full transition-[width] duration-200"
@@ -219,134 +190,212 @@ export function ReviewSession({
         />
       </div>
 
-      {/*
-        Tap anywhere to reveal on a phone. On desktop the whole field
-        stops taking clicks and only the card face does, because a mouse
-        lands on empty space by accident in a way a thumb does not.
-      */}
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={reveal}
-        aria-label="Reveal"
-        className="flip-scene relative min-h-0 flex-1 cursor-default lg:pointer-events-none"
-      >
-        <div
-          key={index}
-          className={`deck-advance flip-inner absolute inset-0 ${
-            revealed ? "is-flipped" : ""
-          }`}
-        >
-          <div className="flip-face flip-face-front absolute inset-0 flex items-center justify-center px-6">
-            {front === "arabic" ? (
-              <Arabic
-                as="p"
-                showHarakat={showHarakat}
-                className="text-ink text-[64px] leading-[1.8] md:text-[88px] lg:pointer-events-auto lg:cursor-pointer lg:text-[112px]"
-              >
-                {item.arabic}
-              </Arabic>
-            ) : (
-              <p className="text-ink text-[32px] leading-snug lg:pointer-events-auto lg:cursor-pointer">
-                {item.english}
-              </p>
-            )}
-          </div>
+      <Help mode="review" />
 
-          <div className="flip-face flip-face-back absolute inset-0 flex items-center justify-center overflow-y-auto px-6 py-6">
-            <CardBack item={item} showHarakat={showHarakat} />
-          </div>
-        </div>
-      </div>
+      <div className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col justify-center gap-10 px-6 lg:max-w-[680px]">
+        <Prompt question={question} />
 
-      <div
-        className="mx-auto w-full max-w-[560px] shrink-0 px-6 pt-4 lg:max-w-[680px]"
-        style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
-      >
-        {revealed ? (
-          /*
-            The buttons stretch to fill on a phone. On desktop they are
-            fixed at 140px and sit centred, because a 300px wide target
-            is one you cannot miss, and a grade you cannot miss stops
-            being a grade you thought about.
-          */
-          <div className="grid grid-cols-4 gap-2 lg:flex lg:justify-center lg:gap-4">
-            {GRADES.map((g, i) => (
-              <button
-                key={g.grade}
-                type="button"
-                onClick={() => grade(g.grade)}
-                className="border-rule bg-surface hover:bg-surface-sunk flex flex-col items-center gap-1 rounded-[12px] border py-3 transition-colors lg:w-[140px]"
-              >
-                <span className="tabular text-ink-soft text-[13px]">
-                  {previews?.[g.grade]}
-                </span>
-                <span
-                  className="text-[15px] font-medium"
-                  style={{ color: g.color }}
-                >
-                  {g.label}
-                </span>
-                {/* The whole keyboard map lives in Settings. This is
-                    the one part of it that is worth carrying here. */}
-                <span className="tabular text-ink-faint hidden text-[11px] lg:block">
-                  {i + 1}
-                </span>
-              </button>
-            ))}
-          </div>
+        {question.mode === "choice" ? (
+          <ChoiceAnswers
+            question={question}
+            answered={Boolean(result)}
+            onPick={(english) =>
+              answer({ correct: english === question.english })
+            }
+          />
         ) : (
-          <Button variant="quiet" className="w-full" onClick={reveal}>
-            Reveal
-          </Button>
+          <WrittenAnswer
+            question={question}
+            typed={typed}
+            setTyped={setTyped}
+            locked={Boolean(result)}
+            onSubmit={() => {
+              const match = checkAnswer(typed, question.english);
+              answer({
+                correct: match.kind !== "wrong",
+                close: match.kind === "close",
+              });
+            }}
+          />
         )}
+
+        <Feedback question={question} result={result} />
       </div>
     </div>
   );
 }
 
-function CardBack({
-  item,
-  showHarakat,
-}: {
-  item: QueueItem;
-  showHarakat: boolean;
-}) {
+/*
+  Recognition shows the Arabic and nothing else, because anything else
+  on screen is something the eye can cheat with.
+*/
+function Prompt({ question }: { question: Question }) {
+  if (question.direction === "production") {
+    return (
+      <p className="text-ink text-center text-[32px] leading-snug">
+        {question.english}
+      </p>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-center gap-7">
-      <Arabic
-        as="p"
-        showHarakat={showHarakat}
-        className="text-ink text-[68px] leading-[1.7] md:text-[80px] lg:text-[112px]"
+    <Arabic
+      as="p"
+      className="text-ink text-center text-[64px] leading-[1.8] md:text-[88px]"
+    >
+      {question.arabic}
+    </Arabic>
+  );
+}
+
+function ChoiceAnswers({
+  question,
+  answered,
+  onPick,
+}: {
+  question: Question;
+  answered: boolean;
+  onPick: (english: string) => void;
+}) {
+  const [picked, setPicked] = useState<string | null>(null);
+
+  useEffect(() => setPicked(null), [question.cardId, question.direction]);
+
+  return (
+    <div className="grid gap-3">
+      {question.options.map((option, i) => {
+        const isAnswer = option.english === question.english;
+        const isPicked = option.english === picked;
+
+        // Once answered, the right one is marked whether or not it was
+        // the one chosen. Seeing only your own mistake teaches nothing.
+        let border = "border-rule";
+        if (answered && isAnswer) border = "border-verdigris";
+        else if (answered && isPicked) border = "border-clay";
+
+        return (
+          <button
+            key={option.english}
+            type="button"
+            disabled={answered}
+            onClick={() => {
+              setPicked(option.english);
+              onPick(option.english);
+            }}
+            className={`bg-surface hover:bg-surface-sunk flex items-center gap-4 rounded-[12px] border px-5 py-4 transition-colors disabled:cursor-default ${border}`}
+          >
+            <span className="tabular text-ink-faint hidden text-[13px] lg:inline">
+              {i + 1}
+            </span>
+            <span className="flex-1 text-center">
+              {question.direction === "production" ? (
+                <Arabic className="text-ink text-[28px] leading-[1.8]">
+                  {option.arabic}
+                </Arabic>
+              ) : (
+                <span className="text-ink text-[18px]">{option.english}</span>
+              )}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function WrittenAnswer({
+  question,
+  typed,
+  setTyped,
+  locked,
+  onSubmit,
+}: {
+  question: Question;
+  typed: string;
+  setTyped: (s: string) => void;
+  locked: boolean;
+  onSubmit: () => void;
+}) {
+  const input = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    input.current?.focus();
+  }, [question.cardId]);
+
+  return (
+    <form
+      className="flex flex-col gap-3"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!locked && typed.trim().length > 0) onSubmit();
+      }}
+    >
+      <input
+        ref={input}
+        value={typed}
+        onChange={(e) => setTyped(e.target.value)}
+        disabled={locked}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
+        aria-label="The English meaning"
+        placeholder="Type the meaning"
+        className="border-rule bg-surface-sunk text-ink placeholder:text-ink-faint focus:border-lapis rounded-[12px] border px-4 py-3.5 text-center text-[20px] outline-none"
+      />
+      <Button type="submit" disabled={locked || typed.trim().length === 0}>
+        Check
+      </Button>
+    </form>
+  );
+}
+
+/*
+  What just happened. On a wrong answer the card itself, because the
+  moment right after getting it wrong is the moment worth showing it.
+
+  Fixed height, so the answers never jump when the result appears.
+*/
+function Feedback({
+  question,
+  result,
+}: {
+  question: Question;
+  result: Result | null;
+}) {
+  if (!result) return <div className="h-[112px]" aria-hidden />;
+
+  return (
+    <div className="flex h-[112px] flex-col items-center justify-start gap-2">
+      <p
+        className="text-[16px]"
+        style={{ color: result.correct ? "var(--verdigris)" : "var(--clay)" }}
       >
-        {item.arabic}
-      </Arabic>
+        {result.message}
+      </p>
 
-      {item.transliteration ? (
-        <p className="text-ink-faint text-[22px] italic">
-          {item.transliteration}
-        </p>
-      ) : null}
-
-      <hr className="border-rule w-32 border-t" />
-
-      <p className="text-ink text-[36px] leading-snug">{item.english}</p>
-
-      {item.gender || item.plural ? (
-        <div className="flex flex-wrap justify-center gap-2">
-          {item.gender ? (
-            <Pill>{item.gender === "m" ? "masculine" : "feminine"}</Pill>
+      {result.correct ? null : (
+        <>
+          <p className="text-ink text-[22px]">{question.english}</p>
+          {question.transliteration ? (
+            <p className="text-ink-faint text-[15px] italic">
+              {question.transliteration}
+            </p>
           ) : null}
-          {item.plural ? (
+        </>
+      )}
+
+      {result.correct && (question.gender || question.plural) ? (
+        <div className="flex flex-wrap justify-center gap-2">
+          {question.gender ? (
+            <Pill>{question.gender === "m" ? "masculine" : "feminine"}</Pill>
+          ) : null}
+          {question.plural ? (
             <Pill>
-              <Arabic showHarakat={showHarakat}>{item.plural}</Arabic>
+              <Arabic>{question.plural}</Arabic>
             </Pill>
           ) : null}
         </div>
-      ) : null}
-
-      {item.note ? (
-        <p className="text-ink-soft max-w-[460px] text-[20px]">{item.note}</p>
       ) : null}
     </div>
   );
@@ -360,23 +409,20 @@ function SessionEnd({
   weekMedianMs: number | null;
 }) {
   const reviewed = answered.length;
-  const correct = answered.filter(
-    (a) => a.grade === "good" || a.grade === "easy",
-  ).length;
+  const correct = answered.filter((a) => a.correct).length;
   const accuracy = reviewed === 0 ? 0 : Math.round((correct / reviewed) * 100);
   const median = medianOf(answered.map((a) => a.msToAnswer));
 
-  // The desktop "press R" hint has done its job once a session ends.
   useEffect(() => {
     if (reviewed > 0) markReviewed();
   }, [reviewed]);
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-10 px-6">
-      <Stat label="cards reviewed" value={String(reviewed)} />
+      <Stat label="cards answered" value={String(reviewed)} />
       <Stat label="accuracy" value={`${accuracy}%`} />
       <Stat
-        label="median to reveal"
+        label="median to answer"
         value={median === null ? "0.0s" : `${(median / 1000).toFixed(1)}s`}
       />
 
@@ -401,7 +447,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 function comparisonLine(median: number | null, week: number | null): string {
-  if (median === null) return "Nothing graded this session.";
+  if (median === null) return "Nothing answered this session.";
   if (week === null) return "No week to compare against yet.";
   const deltaSeconds = (week - median) / 1000;
   const size = Math.abs(deltaSeconds).toFixed(1);

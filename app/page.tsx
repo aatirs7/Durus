@@ -28,6 +28,12 @@ export const metadata = {
   words rather than filler, because the one thing this page has to say
   is what is inside it. The positions are written down rather than
   generated, so the page looks the same every time it is served.
+
+  Two sets, because a phone is not a small desktop. The same eight
+  words at the same eight percentages would land on top of the heading
+  in a 390px column, so the narrow layout gets fewer of them, smaller,
+  and pushed into the top and bottom margins where there is nothing to
+  collide with.
 */
 const FIELD = [
   { word: "بَيْتٌ", top: "14%", left: "9%", size: 52, fade: 0.1 },
@@ -38,6 +44,13 @@ const FIELD = [
   { word: "نَجْمٌ", top: "9%", left: "64%", size: 38, fade: 0.08 },
   { word: "طَالِبٌ", top: "47%", left: "92%", size: 42, fade: 0.08 },
   { word: "سَرِيرٌ", top: "44%", left: "3%", size: 38, fade: 0.07 },
+];
+
+const FIELD_NARROW = [
+  { word: "بَيْتٌ", top: "6%", left: "16%", size: 34, fade: 0.09 },
+  { word: "مَسْجِدٌ", top: "10%", left: "78%", size: 38, fade: 0.09 },
+  { word: "مِفْتَاحٌ", top: "90%", left: "74%", size: 34, fade: 0.08 },
+  { word: "قَلَمٌ", top: "94%", left: "22%", size: 30, fade: 0.07 },
 ];
 
 const DRILLS = [
@@ -85,20 +98,30 @@ export default function LandingPage() {
         >
           دُرُوس
         </Arabic>
-        <Link
-          href="/unlock"
-          className="text-ink-soft hover:text-ink text-[15px] transition-colors"
-        >
-          Sign in
-        </Link>
+        <div className="flex items-center gap-5">
+          <Link
+            href="/unlock"
+            className="text-ink-soft hover:text-ink text-[15px] transition-colors"
+          >
+            Sign in
+          </Link>
+          <ButtonLink
+            href="/unlock?new"
+            variant="quiet"
+            className="px-4 py-2 text-[15px]"
+          >
+            Create an account
+          </ButtonLink>
+        </div>
       </header>
 
       {/* The hero, over the ring and the word field. */}
       <section className="relative w-full overflow-hidden">
         <Ring />
-        <WordField />
+        <WordField words={FIELD_NARROW} className="lg:hidden" />
+        <WordField words={FIELD} className="hidden lg:block" />
 
-        <div className="relative mx-auto flex w-full max-w-[680px] flex-col items-center gap-8 px-6 py-24 lg:py-32">
+        <div className="relative mx-auto flex w-full max-w-[680px] flex-col items-center gap-8 px-6 py-16 sm:py-24 lg:py-32">
           <Arabic
             as="p"
             showHarakat={false}
@@ -117,9 +140,23 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <ButtonLink href="/unlock" className="min-w-[220px]">
-            Sign in to your review
-          </ButtonLink>
+          <div className="flex w-full max-w-[320px] flex-col items-center gap-3 sm:max-w-none">
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              <ButtonLink href="/unlock?new" className="sm:min-w-[220px]">
+                Create an account
+              </ButtonLink>
+              <ButtonLink
+                href="/unlock"
+                variant="quiet"
+                className="sm:min-w-[220px]"
+              >
+                Sign in
+              </ButtonLink>
+            </div>
+            <p className="text-ink-faint text-[13px]">
+              A name and a four digit PIN. Nothing else is asked for.
+            </p>
+          </div>
 
           <Ticks />
         </div>
@@ -130,7 +167,7 @@ export default function LandingPage() {
         thing beats describing it, and this is the whole product in a
         single tile.
       */}
-      <section className="mx-auto flex w-full max-w-[1040px] flex-col items-center gap-12 px-6 pb-24 lg:flex-row lg:justify-center lg:gap-16">
+      <section className="mx-auto flex w-full max-w-[1040px] flex-col items-center gap-10 px-6 pb-20 sm:gap-12 sm:pb-24 lg:flex-row lg:justify-center lg:gap-16">
         <Specimen />
 
         <div className="flex max-w-[380px] flex-col gap-4 lg:text-left">
@@ -185,13 +222,18 @@ export default function LandingPage() {
       </section>
 
       {/* Three figures, tabular, no chart. */}
-      <section className="mx-auto flex w-full max-w-[880px] justify-center gap-12 px-6 py-16 lg:gap-24">
+      <section className="mx-auto flex w-full max-w-[880px] justify-center gap-8 px-6 py-16 sm:gap-14 lg:gap-24">
         {FIGURES.map((figure) => (
-          <div key={figure.label} className="flex flex-col items-center gap-2">
+          <div
+            key={figure.label}
+            className="flex max-w-[96px] flex-col items-center gap-2 sm:max-w-none"
+          >
             <span className="tabular text-ink text-[40px] leading-none">
               {figure.value}
             </span>
-            <span className="text-ink-soft text-[13px]">{figure.label}</span>
+            <span className="text-ink-soft text-[13px] leading-snug">
+              {figure.label}
+            </span>
           </div>
         ))}
       </section>
@@ -228,14 +270,22 @@ export default function LandingPage() {
         >
           دُرُوس
         </Arabic>
-        <Link
-          href="/unlock"
-          className="text-lapis text-[16px] underline-offset-4 hover:underline"
-        >
-          Sign in
-        </Link>
+        <div className="flex items-center gap-5">
+          <Link
+            href="/unlock?new"
+            className="text-lapis text-[16px] underline-offset-4 hover:underline"
+          >
+            Create an account
+          </Link>
+          <Link
+            href="/unlock"
+            className="text-ink-soft text-[16px] underline-offset-4 hover:underline"
+          >
+            Sign in
+          </Link>
+        </div>
         <p className="text-ink-faint text-[13px]">
-          A private app for one reader. There is no sign up.
+          Everyone gets their own progress through the book.
         </p>
       </footer>
     </main>
@@ -243,17 +293,22 @@ export default function LandingPage() {
 }
 
 /*
-  The vocabulary field. Desktop only, because on a phone the hero is
-  already the width of the screen and the words would sit under the
-  text rather than around it.
+  The vocabulary field. The sizes are numbers rather than classes, so
+  the two layouts are two elements and only one of them is ever shown.
 */
-function WordField() {
+function WordField({
+  words,
+  className,
+}: {
+  words: typeof FIELD;
+  className: string;
+}) {
   return (
     <div
-      className="pointer-events-none absolute inset-0 hidden lg:block"
+      className={`pointer-events-none absolute inset-0 ${className}`}
       aria-hidden
     >
-      {FIELD.map((entry) => (
+      {words.map((entry) => (
         <Arabic
           key={entry.word}
           as="span"
@@ -276,6 +331,9 @@ function WordField() {
   The speed ring at hero scale, drawn once and left to sit there. It is
   the app's one piece of visual expression, so the landing page borrows
   it rather than inventing a second one.
+
+  It is a viewBox and a width class rather than a fixed size, so the
+  phone gets the same ring at 300px instead of getting nothing.
 */
 function Ring() {
   const r = 256;
@@ -283,10 +341,13 @@ function Ring() {
 
   return (
     <div
-      className="pointer-events-none absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 lg:block"
+      className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
       aria-hidden
     >
-      <svg width="520" height="520" viewBox="0 0 520 520">
+      <svg
+        viewBox="0 0 520 520"
+        className="h-auto w-[300px] sm:w-[380px] lg:w-[520px]"
+      >
         <circle
           cx="260"
           cy="260"

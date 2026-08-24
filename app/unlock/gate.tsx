@@ -13,13 +13,19 @@ import { createAccount, findAccount, signIn } from "./actions";
 
   Type a name. If an account has it, the pad asks for that account's
   PIN. If nothing has it, the pad asks for a new PIN twice and creates
-  the account. Nothing here needs a "sign up" tab, because the name
-  already says which of the two you meant.
+  the account. There is still no sign up tab, because the name already
+  says which of the two you meant.
+
+  What the intent changes is only the first line on the screen. The
+  landing page has a Create an account button, and someone who presses
+  it should not be met by a screen that assumes they have been here
+  before. The flow underneath is the same either way, so a returning
+  reader who arrives on the signup wording still just signs in.
 */
 
 type Step = "name" | "pin" | "create" | "confirm";
 
-export function Gate() {
+export function Gate({ intent = "signin" }: { intent?: "signin" | "signup" }) {
   const router = useRouter();
   const [step, setStep] = useState<Step>("name");
   const [name, setName] = useState("");
@@ -98,6 +104,13 @@ export function Gate() {
           دُرُوس
         </Arabic>
 
+        {/*
+          Only the signup entry announces itself. The plain gate is what
+          the phone opens into every day and it is left exactly as it
+          was.
+        */}
+        {intent === "signup" ? <Eyebrow>New account</Eyebrow> : null}
+
         <form
           className="flex w-full max-w-[320px] flex-col gap-4"
           onSubmit={(e) => {
@@ -115,7 +128,7 @@ export function Gate() {
             autoComplete="username"
             maxLength={MAX_NAME_LENGTH}
             aria-label="Your name"
-            placeholder="Your name"
+            placeholder={intent === "signup" ? "Pick a name" : "Your name"}
             className="border-rule bg-surface-sunk text-ink placeholder:text-ink-faint focus:border-lapis rounded-[12px] border px-4 py-3.5 text-center text-[18px] outline-none"
           />
           <Button type="submit" disabled={busy}>
@@ -124,7 +137,9 @@ export function Gate() {
         </form>
 
         <p className="text-ink-faint max-w-[320px] text-[14px]">
-          A new name creates an account. Everyone gets their own progress.
+          {intent === "signup"
+            ? "Choose a name, then a four digit PIN. That is the whole sign up."
+            : "A new name creates an account. Everyone gets their own progress."}
         </p>
 
         <p className="text-clay h-6 text-[15px]">{error ?? ""}</p>

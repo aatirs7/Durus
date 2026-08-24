@@ -109,7 +109,9 @@ export function DesktopShell({
         already had, so the mobile box model is unchanged. At lg it
         holds the main column clear of the rail.
       */}
-      <div className="flex flex-1 flex-col lg:pl-[220px]">{children}</div>
+      <div className="app-column flex flex-1 flex-col lg:pl-[220px]">
+        {children}
+      </div>
     </>
   );
 }

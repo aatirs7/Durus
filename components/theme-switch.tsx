@@ -34,7 +34,12 @@ export function ThemeSwitch() {
       type="button"
       aria-label={dark ? "Switch to light" : "Switch to dark"}
       onClick={() => setTheme(dark ? "light" : "dark")}
-      className="border-rule bg-surface active:bg-surface-sunk fixed right-4 z-20 flex size-10 items-center justify-center rounded-[999px] border transition-colors"
+      /*
+        Flat. No border, no fill, no circle. It is a glyph in the corner
+        rather than a control competing with the primary button, and the
+        size-10 box is only there so a thumb has something to land on.
+      */
+      className="fixed right-4 z-20 flex size-10 items-center justify-center opacity-70 transition-opacity hover:opacity-100 active:opacity-100"
       style={{ top: "max(1rem, calc(env(safe-area-inset-top) + 0.25rem))" }}
     >
       {!mounted ? null : dark ? <Sun /> : <Moon />}

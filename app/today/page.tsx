@@ -2,6 +2,7 @@ import Link from "next/link";
 import { InstallHint } from "@/components/install-hint";
 import { OfflinePill } from "@/components/offline-pill";
 import { PwaRuntime } from "@/components/pwa-runtime";
+import { Arabic } from "@/components/arabic";
 import { ReviewHint } from "@/components/review-hint";
 import { ButtonLink, Eyebrow, Numeral } from "@/components/ui";
 import { UnlockNext } from "@/components/unlock-next";
@@ -27,8 +28,10 @@ export default async function TodayPage() {
   const newAvailable = await countNewAvailable(config.currentLesson);
   const newToday = Math.min(newAvailable, config.newPerDay);
   const next = await getNextLesson();
-  // Only for the desktop tick marks, where each tick names its lesson.
+  // The tick marks name their lesson on desktop, and the masthead names
+  // the one you are on.
   const lessons = await listLessons();
+  const current = lessons.find((l) => l.number === config.currentLesson);
 
   const clear = due === 0 && newToday === 0;
 
@@ -44,24 +47,52 @@ export default async function TodayPage() {
     >
       <PwaRuntime dueCount={due} />
 
-      {/* Above the centre line. */}
-      <div className="flex flex-col items-center justify-end gap-4 pb-8">
-        <Eyebrow>{dateLine(now, config.timezone)}</Eyebrow>
+      {/*
+        Above the centre line. The masthead sits at the top of the row
+        and the count sits at the bottom of it, so the empty space ends
+        up between them rather than above everything.
+      */}
+      <div className="flex flex-col items-center justify-between pb-8">
+        <div className="flex flex-col items-center gap-2 pt-1">
+          <Arabic
+            showHarakat={false}
+            className="text-lapis text-[30px] leading-none"
+          >
+            دُرُوس
+          </Arabic>
+          {/*
+            Which lesson you are in, in the book's own words. Never
+            in the same text node as the English, or bidi reorders the
+            two around each other.
+          */}
+          {current ? (
+            <>
+              <Arabic className="text-ink-soft text-[19px] leading-[1.9]">
+                {current.titleAr}
+              </Arabic>
+              <span className="eyebrow">Lesson {current.number}</span>
+            </>
+          ) : null}
+        </div>
 
-        {clear ? (
-          <Numeral className="lg:text-[64px]">Clear</Numeral>
-        ) : (
-          <>
-            <Numeral className="lg:text-[64px]">{due}</Numeral>
-            <span className="eyebrow">due today</span>
-          </>
-        )}
+        <div className="flex flex-col items-center gap-4">
+          <Eyebrow>{dateLine(now, config.timezone)}</Eyebrow>
 
-        {newToday > 0 ? (
-          <p className="text-ink-soft text-[16px]">
-            {newToday} new from Lesson {config.currentLesson}
-          </p>
-        ) : null}
+          {clear ? (
+            <Numeral className="lg:text-[64px]">Clear</Numeral>
+          ) : (
+            <>
+              <Numeral className="lg:text-[64px]">{due}</Numeral>
+              <span className="eyebrow">due today</span>
+            </>
+          )}
+
+          {newToday > 0 ? (
+            <p className="text-ink-soft text-[16px]">
+              {newToday} new from Lesson {config.currentLesson}
+            </p>
+          ) : null}
+        </div>
       </div>
 
       {/* The centre line. */}

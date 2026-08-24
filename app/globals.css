@@ -103,6 +103,38 @@ body {
   height: 0;
 }
 
+/*
+  Installed on a phone, the document itself does not scroll.
+
+  A web page that scrolls under your thumb, drags the whole app with it
+  and bounces at the end is the loudest tell that something is not a
+  native app, and the drills are all sized to the viewport anyway. Where
+  a screen genuinely has more than fits, the lessons list and the leech
+  list, the main column scrolls inside itself instead, so nothing
+  becomes unreachable and Settings still reaches its last field.
+
+  Browser tabs and desktop are untouched.
+*/
+@media (display-mode: standalone) and (max-width: 1023px) {
+  html,
+  body {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* A flex child will not scroll until it is allowed to be short. */
+  .app-column,
+  main {
+    min-height: 0;
+  }
+
+  main {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
 /* Numerals never jitter as they tick. */
 .tabular {
   font-family: var(--font-plex-mono), ui-monospace, monospace;
