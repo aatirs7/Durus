@@ -20,6 +20,9 @@ export const CASE_LABELS: Record<CaseEnding, { ar: string; en: string }> = {
   un: { ar: "ٌ", en: "tanwin" },
 };
 
+/* Stands in for the missing harakah. */
+export const BLANK = "ـٜ";
+
 export const CASE_ORDER: CaseEnding[] = ["u", "i", "a", "un"];
 
 const DAMMA = "ُ";
@@ -71,8 +74,10 @@ export type CaseQuestion = {
   /* The words before and after the blanked one, already joined. */
   before: string;
   after: string;
-  /* The blanked word without its final harakah, punctuation kept. */
+  /* The blanked word without its final harakah. */
   stem: string;
+  /* Trailing punctuation, which goes after the ending, not before. */
+  punct: string;
   answer: CaseEnding;
   english: string;
 };
@@ -104,7 +109,8 @@ export function buildCaseQuestion(
     cardId: card.id,
     before: words.slice(0, chosen).join(" "),
     after: words.slice(chosen + 1).join(" "),
-    stem: core.slice(0, -1) + punct,
+    stem: core.slice(0, -1),
+    punct,
     answer,
     english: card.english,
   };

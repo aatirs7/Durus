@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { ButtonLink, Eyebrow, Numeral, Screen } from "@/components/ui";
 import {
+  BLANK,
   CASE_LABELS,
   CASE_ORDER,
   type CaseEnding,
@@ -54,7 +55,11 @@ export function CaseRun({ questions }: { questions: CaseQuestion[] }) {
         elements to style the blank would let bidi reorder the pieces.
       */}
       <Arabic as="p" className="text-ink text-[32px] leading-[2]">
-        {[q.before, answered ? q.stem + CASE_LABELS[q.answer].ar : q.stem + "؞", q.after]
+        {[
+          q.before,
+          q.stem + (answered ? CASE_LABELS[q.answer].ar : BLANK) + q.punct,
+          q.after,
+        ]
           .filter(Boolean)
           .join(" ")}
       </Arabic>

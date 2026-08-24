@@ -67,7 +67,8 @@ describe("buildCaseQuestion", () => {
       first,
     )!;
     expect(q2.answer).toBe("u");
-    expect(q2.stem).toBe("الكِتَاب؟");
+    expect(q2.stem).toBe("الكِتَاب");
+    expect(q2.punct).toBe("؟");
     expect(q2.before).toBe("أَيْنَ");
   });
 
@@ -84,7 +85,8 @@ describe("buildCaseQuestion", () => {
       },
       first,
     )!;
-    expect(q.stem).toBe("الوَلَد؟");
+    expect(q.stem).toBe("الوَلَد");
+    expect(q.punct).toBe("؟");
     expect(q.answer).toBe("u");
   });
 
