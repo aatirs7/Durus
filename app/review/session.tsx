@@ -381,7 +381,7 @@ function SessionEnd({
         {comparisonLine(median, weekMedianMs)}
       </p>
 
-      <ButtonLink href="/" className="w-full max-w-[320px]">
+      <ButtonLink href="/today" className="w-full max-w-[320px]">
         Back to today
       </ButtonLink>
     </div>

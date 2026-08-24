@@ -15,7 +15,7 @@ export default async function CasesPage() {
           The case drill needs phrases with case endings on them. Those
           start in Lesson 4.
         </p>
-        <ButtonLink href="/" variant="quiet">
+        <ButtonLink href="/today" variant="quiet">
           Back to today
         </ButtonLink>
       </Screen>

@@ -10,7 +10,7 @@ export default function NotFound() {
     <Screen className="items-center justify-center gap-6">
       <Eyebrow>Not here</Eyebrow>
       <p className="text-ink text-[22px]">That page does not exist yet.</p>
-      <ButtonLink href="/" className="w-full max-w-[320px]">
+      <ButtonLink href="/today" className="w-full max-w-[320px]">
         Back to today
       </ButtonLink>
     </Screen>

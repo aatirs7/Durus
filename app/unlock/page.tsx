@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export default async function UnlockPage() {
   // Already signed in, nothing to unlock.
   const jar = await cookies();
-  if (verifySessionToken(jar.get(SESSION_COOKIE)?.value)) redirect("/");
+  if (verifySessionToken(jar.get(SESSION_COOKIE)?.value)) redirect("/today");
 
   const [row] = await db.select().from(profile).where(eq(profile.id, 1));
 

@@ -17,7 +17,7 @@ export default async function SpeedPage() {
           The speed drill draws from words you have already answered
           correctly twice. Review for a few days first.
         </p>
-        <ButtonLink href="/" variant="quiet">
+        <ButtonLink href="/today" variant="quiet">
           Back to today
         </ButtonLink>
       </Screen>

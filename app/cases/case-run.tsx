@@ -35,7 +35,7 @@ export function CaseRun({ questions }: { questions: CaseQuestion[] }) {
         <p className="text-ink-soft text-[16px]">
           {correct} of {questions.length}
         </p>
-        <ButtonLink href="/" className="w-full max-w-[320px]">
+        <ButtonLink href="/today" className="w-full max-w-[320px]">
           Back to today
         </ButtonLink>
       </Screen>

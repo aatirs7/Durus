@@ -1,224 +1,181 @@
 import Link from "next/link";
-import { InstallHint } from "@/components/install-hint";
-import { OfflinePill } from "@/components/offline-pill";
-import { PwaRuntime } from "@/components/pwa-runtime";
-import { ReviewHint } from "@/components/review-hint";
-import { ButtonLink, Eyebrow, Numeral } from "@/components/ui";
-import { UnlockNext } from "@/components/unlock-next";
-import { getNextLesson } from "./unlock-lesson";
-import { TOTAL_LESSONS, listLessons } from "@/lib/lessons";
-import { countDue, countNewAvailable, getSettings } from "@/lib/queue";
-
-export const dynamic = "force-dynamic";
+import { Arabic } from "@/components/arabic";
+import { StandaloneRedirect } from "@/components/standalone-redirect";
+import { ButtonLink, Eyebrow } from "@/components/ui";
+import { TOTAL_LESSONS } from "@/lib/constants";
 
 /*
-  The home screen and the PWA entry point. It answers one question:
-  what do I do right now.
+  The front door, and the only public page in the app. Everything else
+  sits behind the PIN gate, so this is the one screen a stranger can
+  see: what Durus is, what the three drills do, and one way in.
 
-  Laid out as three rows, 1fr auto 1fr, so the primary action sits on
-  the exact centre line of the viewport regardless of how much sits
-  above or below it. Centring the whole stack instead would drift the
-  button every time a line appears or disappears.
+  It is written for a desktop browser, since that is where a link gets
+  opened. The installed app never sees it, because the manifest starts
+  at /today and anything launched in standalone mode is sent there.
+
+  The palette is the icon: lapis on paper, and paper on lapis for the
+  one band in the middle. Same two colours, turned over.
 */
-export default async function TodayPage() {
-  const now = new Date();
-  const config = await getSettings();
-  const due = await countDue(now);
-  const newAvailable = await countNewAvailable(config.currentLesson);
-  const newToday = Math.min(newAvailable, config.newPerDay);
-  const next = await getNextLesson();
-  // Only for the desktop tick marks, where each tick names its lesson.
-  const lessons = await listLessons();
 
-  const clear = due === 0 && newToday === 0;
+export const metadata = {
+  title: "Durus, Arabic revision for Madinah Book 1",
+  description:
+    "Spaced repetition, recognition speed, and case endings for the vocabulary of Madinah Book 1.",
+};
 
+const DRILLS = [
+  {
+    title: "Review",
+    body: "Every word you have been taught, scheduled so it comes back the day before you would have forgotten it. Grade a card in one keystroke.",
+  },
+  {
+    title: "Speed",
+    body: "A word for a second and a half, then it blurs. Recognition is not the same skill as reading, and this is the one that measures it.",
+  },
+  {
+    title: "Cases",
+    body: "Raf', nasb, jarr, on the letter rather than after the punctuation. The endings are the grammar, so they get their own drill.",
+  },
+];
+
+export default function LandingPage() {
   return (
-    <main
-      className="mx-auto grid w-full max-w-[560px] overflow-hidden px-6 lg:max-w-[680px]"
-      style={{
-        height: "100dvh",
-        gridTemplateRows: "1fr auto 1fr",
-        paddingTop: "max(1rem, env(safe-area-inset-top))",
-        paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
-      }}
-    >
-      <PwaRuntime dueCount={due} />
+    <main className="flex w-full flex-1 flex-col">
+      <StandaloneRedirect />
 
-      {/* Above the centre line. */}
-      <div className="flex flex-col items-center justify-end gap-4 pb-8">
-        <Eyebrow>{dateLine(now, config.timezone)}</Eyebrow>
+      <header className="mx-auto flex w-full max-w-[880px] items-center justify-between px-6 py-5">
+        <Arabic showHarakat={false} className="text-lapis text-[24px] leading-none">
+          دُرُوس
+        </Arabic>
+        <Link
+          href="/unlock"
+          className="text-ink-soft hover:text-ink text-[15px] transition-colors"
+        >
+          Sign in
+        </Link>
+      </header>
 
-        {clear ? (
-          <Numeral className="lg:text-[64px]">Clear</Numeral>
-        ) : (
-          <>
-            <Numeral className="lg:text-[64px]">{due}</Numeral>
-            <span className="eyebrow">due today</span>
-          </>
-        )}
+      {/* The hero. One mark, one line, one way in. */}
+      <section className="mx-auto flex w-full max-w-[680px] flex-col items-center gap-8 px-6 py-20 lg:py-28">
+        {/*
+          Unvowelled, like the rail. The marks are drawn into the app
+          icon, but the browser will not attach them to the letters.
+        */}
+        <Arabic
+          as="p"
+          showHarakat={false}
+          className="text-lapis text-[72px] leading-[1.6] lg:text-[112px]"
+        >
+          دُرُوس
+        </Arabic>
 
-        {newToday > 0 ? (
-          <p className="text-ink-soft text-[16px]">
-            {newToday} new from Lesson {config.currentLesson}
+        <div className="flex flex-col items-center gap-4">
+          <h1 className="text-ink text-[32px] leading-tight font-medium tracking-tight lg:text-[40px]">
+            Arabic revision for Madinah Book 1
+          </h1>
+          <p className="text-ink-soft max-w-[520px] text-[18px] leading-relaxed">
+            {TOTAL_LESSONS} lessons of vocabulary, drilled the way the book
+            teaches it. Nothing appears before you have been taught it.
           </p>
-        ) : null}
-      </div>
-
-      {/* The centre line. */}
-      {clear ? (
-        <ButtonLink href="/speed" className="w-full">
-          Speed drill
-        </ButtonLink>
-      ) : (
-        <ButtonLink href="/review" className="w-full">
-          Start review
-        </ButtonLink>
-      )}
-
-      {/* Below the centre line. */}
-      <div className="flex flex-col items-center justify-start gap-5 pt-6">
-        {clear ? null : <ReviewHint />}
-
-        <div className="flex flex-wrap justify-center gap-x-5">
-          {clear ? null : (
-            <ButtonLink href="/speed" variant="text">
-              Speed drill
-            </ButtonLink>
-          )}
-          <ButtonLink href="/cases" variant="text">
-            Case drill
-          </ButtonLink>
-          <ButtonLink href={`/lessons/${config.currentLesson}`} variant="text">
-            Browse lesson {config.currentLesson}
-          </ButtonLink>
         </div>
 
-        <UnlockNext next={next} />
-        <OfflinePill />
-        <InstallHint />
+        <ButtonLink href="/unlock" className="min-w-[220px]">
+          Sign in to your review
+        </ButtonLink>
+      </section>
 
-        <div className="mt-auto flex flex-col items-center gap-5">
-          <LessonTicks current={config.currentLesson} />
-          <LessonTicksDesktop
-            current={config.currentLesson}
-            lessons={lessons}
-          />
-          <div className="flex justify-center gap-6">
-            <ButtonLink href="/stats" variant="text">
-              Stats
-            </ButtonLink>
-            <ButtonLink href="/settings" variant="text">
-              Settings
-            </ButtonLink>
+      {/*
+        The band. Paper on lapis, the icon turned over. It is the only
+        inverted surface in the app, so it carries the three drills and
+        nothing else.
+      */}
+      <section
+        className="w-full py-20 lg:py-24"
+        style={{ backgroundColor: "var(--lapis)" }}
+      >
+        <div className="mx-auto flex w-full max-w-[880px] flex-col gap-12 px-6">
+          <p
+            className="eyebrow"
+            style={{ color: "var(--paper)", opacity: 0.7 }}
+          >
+            Three drills
+          </p>
+
+          <div className="grid gap-12 lg:grid-cols-3 lg:gap-10">
+            {DRILLS.map((drill) => (
+              <div key={drill.title} className="flex flex-col gap-3">
+                <h2
+                  className="text-[22px] font-medium"
+                  style={{ color: "var(--paper)" }}
+                >
+                  {drill.title}
+                </h2>
+                <p
+                  className="text-[16px] leading-relaxed"
+                  style={{ color: "var(--paper)", opacity: 0.82 }}
+                >
+                  {drill.body}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Back to paper. The quiet half of the page. */}
+      <section className="mx-auto flex w-full max-w-[680px] flex-col items-center gap-10 px-6 py-20 lg:py-24">
+        <Eyebrow>How it works</Eyebrow>
+
+        <ul className="flex w-full flex-col gap-8">
+          <Point title="Locked to your lesson">
+            The book is taught in order, so the app is too. A lesson unlocks
+            when you say you have sat it, and its words are capped for three
+            days so a new lesson cannot bury the old ones.
+          </Point>
+          <Point title="Harakat, until you do not need them">
+            Every word is stored fully vowelled. One key strips them mid
+            session, which is the whole point of learning to read the script.
+          </Point>
+          <Point title="Offline, and on your phone">
+            Install it to the home screen. Grades made without a signal go to
+            an outbox and settle the next time you have one.
+          </Point>
+          <Point title="A keyboard, if you have one">
+            Space reveals, one to four grade, u undoes. A session at a desk is
+            a session you never touch the mouse for.
+          </Point>
+        </ul>
+      </section>
+
+      <footer className="border-rule mx-auto flex w-full max-w-[880px] flex-col items-center gap-4 border-t px-6 py-12">
+        <Arabic showHarakat={false} className="text-lapis text-[22px] leading-none">
+          دُرُوس
+        </Arabic>
+        <Link
+          href="/unlock"
+          className="text-lapis text-[16px] underline-offset-4 hover:underline"
+        >
+          Sign in
+        </Link>
+        <p className="text-ink-faint text-[13px]">
+          A private app for one reader. There is no sign up.
+        </p>
+      </footer>
     </main>
   );
 }
 
-/*
-  Twenty three tick marks, no numbers. A progress bar that happens to be
-  honest about how far the book goes.
-
-  On a phone this is decoration and nothing more, because a two pixel
-  tap target is not a control. The desktop version below replaces it
-  outright rather than adding behaviour to it, so the mobile markup is
-  untouched.
-*/
-function LessonTicks({ current }: { current: number }) {
-  return (
-    <div className="flex justify-center gap-1.5 lg:hidden" aria-hidden>
-      {Array.from({ length: TOTAL_LESSONS }, (_, i) => (
-        <span
-          key={i}
-          className="h-4 w-[2px] rounded-[999px]"
-          style={{
-            backgroundColor: i < current ? "var(--lapis)" : "var(--rule)",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-/* Hijri and Gregorian on one line, through Intl, no library. */
-function dateLine(now: Date, timeZone: string): string {
-  const gregorian = new Intl.DateTimeFormat("en-GB", {
-    timeZone,
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(now);
-
-  const hijri = new Intl.DateTimeFormat("en-GB-u-ca-islamic-umalqura", {
-    timeZone,
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(now);
-
-  return `${hijri.replace(" AH", "")} AH, ${gregorian}`;
-}
-
-/*
-  The same twenty three ticks with a pointer over them. Each one names
-  its lesson and its card count on hover and, once the lesson has been
-  reached, walks through to it. Ticks past the current lesson stay dead,
-  the same rule the lessons list follows.
-*/
-function LessonTicksDesktop({
-  current,
-  lessons,
+function Point({
+  title,
+  children,
 }: {
-  current: number;
-  lessons: { number: number; cardCount: number }[];
+  title: string;
+  children: React.ReactNode;
 }) {
-  const counts = new Map(lessons.map((l) => [l.number, l.cardCount]));
-
   return (
-    <div className="hidden justify-center gap-1.5 lg:flex">
-      {Array.from({ length: TOTAL_LESSONS }, (_, i) => {
-        const number = i + 1;
-        const done = i < current;
-        const count = counts.get(number) ?? 0;
-        const label = `Lesson ${number}, ${
-          count === 0 ? "no cards yet" : `${count} cards`
-        }`;
-        const tick = (
-          <span
-            className="block h-4 w-[2px] rounded-[999px]"
-            style={{ backgroundColor: done ? "var(--lapis)" : "var(--rule)" }}
-          />
-        );
-
-        const tip = (
-          <span className="border-rule bg-surface text-ink-soft pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 hidden -translate-x-1/2 rounded-[12px] border px-3 py-1.5 text-[12px] whitespace-nowrap group-hover:block">
-            {label}
-          </span>
-        );
-
-        return number > current ? (
-          <span
-            key={number}
-            className="group relative flex cursor-default"
-            aria-label={label}
-          >
-            {tick}
-            {tip}
-          </span>
-        ) : (
-          <Link
-            key={number}
-            href={`/lessons/${number}`}
-            aria-label={label}
-            className="group relative flex"
-          >
-            {tick}
-            {tip}
-          </Link>
-        );
-      })}
-    </div>
+    <li className="flex flex-col gap-2">
+      <h3 className="text-ink text-[18px] font-medium">{title}</h3>
+      <p className="text-ink-soft text-[16px] leading-relaxed">{children}</p>
+    </li>
   );
 }

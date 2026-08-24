@@ -123,7 +123,7 @@ export function SpeedRun({
           </Button>
         ) : null}
 
-        <ButtonLink href="/" className="w-full max-w-[320px]">
+        <ButtonLink href="/today" className="w-full max-w-[320px]">
           Back to today
         </ButtonLink>
       </Screen>
@@ -181,7 +181,7 @@ export function SpeedRun({
         </Button>
       </div>
 
-      <Link href="/" className="text-ink-soft text-[15px]">
+      <Link href="/today" className="text-ink-soft text-[15px]">
         End run
       </Link>
     </Screen>

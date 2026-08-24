@@ -11,7 +11,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Durus",
     short_name: "Durus",
     description: "Arabic revision for Madinah Book 1",
-    start_url: "/?source=pwa",
+    start_url: "/today?source=pwa",
     scope: "/",
     display: "standalone",
     orientation: "portrait",

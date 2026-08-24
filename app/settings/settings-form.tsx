@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button, Eyebrow, PageTitle, Rule, Screen } from "@/components/ui";
 import type { Settings } from "@/db/schema";
-import { TOTAL_LESSONS } from "@/lib/lessons";
+import { TOTAL_LESSONS } from "@/lib/constants";
 import { exportAll, updateSettings } from "./actions";
 import { PushSettings } from "./push-settings";
 import { SignOutButton } from "./sign-out-button";
@@ -122,6 +122,29 @@ export function SettingsForm({
         </Button>
       </Field>
 
+      {/*
+        Desktop only. The review screen carries the four grade numerals
+        under its buttons and nothing else, so the full map has to live
+        somewhere, and Settings is where you look for it once.
+      */}
+      <div className="hidden lg:block">
+        <Rule className="mb-10" />
+        <Field label="Keyboard">
+          <ul className="flex flex-col items-center gap-2">
+            {KEYS.map((row) => (
+              <li key={row.action} className="flex items-baseline gap-3">
+                <span className="tabular text-ink-soft w-[92px] text-right text-[13px]">
+                  {row.key}
+                </span>
+                <span className="text-ink w-[160px] text-left text-[15px]">
+                  {row.action}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Field>
+      </div>
+
       <Rule />
 
       <Field label="Account">
@@ -129,12 +152,26 @@ export function SettingsForm({
         <SignOutButton />
       </Field>
 
-      <Link href="/" className="text-lapis text-[16px] underline-offset-4">
+      <Link href="/today" className="text-lapis text-[16px] underline-offset-4">
         Back to today
       </Link>
     </Screen>
   );
 }
+
+/*
+  Pairs, not a table. The key column is monospace so the glyphs line up
+  against each other rather than against the words.
+*/
+const KEYS = [
+  { key: "r", action: "Start a review" },
+  { key: "space", action: "Reveal" },
+  { key: "1 2 3 4", action: "Again, hard, good, easy" },
+  { key: "u", action: "Undo the last grade" },
+  { key: "h", action: "Toggle harakat" },
+  { key: "esc", action: "End the session" },
+  { key: "← →", action: "Missed it, knew it" },
+] as const;
 
 function Field({
   label,

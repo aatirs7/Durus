@@ -6,12 +6,13 @@
   fallback.
 */
 
-const VERSION = "durus-v1";
+const VERSION = "durus-v2";
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 
 const PRECACHE = [
   "/",
+  "/today",
   "/manifest.webmanifest",
   "/icon-192.png",
   "/icon-512.png",
@@ -78,7 +79,7 @@ self.addEventListener("fetch", (event) => {
         caches.open(RUNTIME).then((c) => c.put(request, copy));
         return res;
       })
-      .catch(() => caches.match(request).then((hit) => hit || caches.match("/"))),
+      .catch(() => caches.match(request).then((hit) => hit || caches.match("/today"))),
   );
 });
 
@@ -89,7 +90,7 @@ self.addEventListener("push", (event) => {
   try {
     payload = event.data.json();
   } catch {
-    payload = { title: "Durus", body: event.data.text(), url: "/" };
+    payload = { title: "Durus", body: event.data.text(), url: "/today" };
   }
 
   event.waitUntil(
@@ -97,7 +98,7 @@ self.addEventListener("push", (event) => {
       body: payload.body || "",
       icon: "/icon-192.png",
       badge: "/icon-192.png",
-      data: { url: payload.url || "/" },
+      data: { url: payload.url || "/today" },
       // No sound, no vibration. The app does not shout.
       silent: false,
     }),
@@ -106,7 +107,7 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const target = (event.notification.data && event.notification.data.url) || "/";
+  const target = (event.notification.data && event.notification.data.url) || "/today";
 
   event.waitUntil(
     self.clients

@@ -16,7 +16,7 @@ import { Arabic } from "@/components/arabic";
 */
 
 const NAV = [
-  { href: "/", label: "Today", icon: TodayIcon },
+  { href: "/today", label: "Today", icon: TodayIcon },
   { href: "/review", label: "Review", icon: ReviewIcon },
   { href: "/speed", label: "Speed", icon: SpeedIcon },
   { href: "/cases", label: "Cases", icon: CasesIcon },
@@ -34,8 +34,13 @@ export function DesktopShell({
 }) {
   const pathname = usePathname();
 
-  // The lock screen is not part of the app yet. No rail, no nav.
-  if (pathname.startsWith("/unlock")) return <>{children}</>;
+  /*
+    The rail is the app's own furniture. The public landing page and the
+    lock screen are outside it, so they get the plain document.
+  */
+  if (pathname === "/" || pathname.startsWith("/unlock")) {
+    return <>{children}</>;
+  }
 
   return (
     <>
@@ -44,16 +49,22 @@ export function DesktopShell({
         className="border-rule bg-surface fixed top-0 left-0 z-10 hidden w-[220px] flex-col border-r px-4 py-6 text-left lg:flex"
         style={{ height: "100dvh" }}
       >
-        <Link href="/" className="text-lapis px-3 pb-6">
-          <Arabic className="text-[28px] leading-none">دُرُوس</Arabic>
+        {/*
+          The wordmark is set unvowelled here and on the landing page.
+          The marks belong on the icon, where they are drawn into the
+          art, but Amiri as loaded in the browser does not attach them
+          to the letters, and a wordmark is the wrong place to carry
+          that. See the note in the summary.
+        */}
+        <Link href="/today" className="text-lapis px-3 pb-6">
+          <Arabic showHarakat={false} className="text-[28px] leading-none">
+            دُرُوس
+          </Arabic>
         </Link>
 
         <ul className="flex flex-col gap-1">
           {NAV.map((entry) => {
-            const active =
-              entry.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(entry.href);
+            const active = pathname.startsWith(entry.href);
             const Icon = entry.icon;
             return (
               <li key={entry.href}>
@@ -92,9 +103,12 @@ export function DesktopShell({
         </div>
       </nav>
 
-      <div className="flex min-h-0 flex-1 flex-col lg:pl-[220px]">
-        {children}
-      </div>
+      {/*
+        Below lg this div adds nothing but the flex column the body
+        already had, so the mobile box model is unchanged. At lg it
+        holds the main column clear of the rail.
+      */}
+      <div className="flex flex-1 flex-col lg:pl-[220px]">{children}</div>
     </>
   );
 }

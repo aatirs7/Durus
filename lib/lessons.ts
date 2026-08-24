@@ -1,11 +1,20 @@
 import { and, asc, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cardStates, cards, lessons } from "@/db/schema";
+import { MATURE_DAYS, maturityOf, type Maturity } from "./constants";
 
-export const TOTAL_LESSONS = 23;
-
-/* Interval over 21 days counts as mature, per the stats spec. */
-export const MATURE_DAYS = 21;
+/*
+  Re-exported so existing server side callers keep working. A client
+  component must import these from lib/constants directly, because this
+  module pulls in the Neon client.
+*/
+export {
+  TOTAL_LESSONS,
+  MATURE_DAYS,
+  MATURITY_COLOR,
+  maturityOf,
+  type Maturity,
+} from "./constants";
 
 export type LessonRow = {
   number: number;
@@ -29,8 +38,6 @@ export async function listLessons(): Promise<LessonRow[]> {
 
   return rows;
 }
-
-export type Maturity = "unseen" | "learning" | "mature";
 
 export type LessonCard = {
   id: number;
@@ -86,13 +93,3 @@ export async function getLesson(number: number) {
   return { lesson, cards: items };
 }
 
-export function maturityOf(intervalDays: number | null): Maturity {
-  if (intervalDays === null) return "unseen";
-  return intervalDays > MATURE_DAYS ? "mature" : "learning";
-}
-
-export const MATURITY_COLOR: Record<Maturity, string> = {
-  unseen: "var(--rule)",
-  learning: "var(--saffron)",
-  mature: "var(--verdigris)",
-};

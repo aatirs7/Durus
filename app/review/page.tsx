@@ -27,7 +27,7 @@ export default async function ReviewPage({
     return (
       <Screen className="items-center justify-center gap-6">
         <p className="text-ink text-[22px]">Nothing to review right now.</p>
-        <ButtonLink href="/" variant="quiet">
+        <ButtonLink href="/today" variant="quiet">
           Back to today
         </ButtonLink>
       </Screen>

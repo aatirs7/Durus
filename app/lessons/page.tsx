@@ -60,7 +60,7 @@ export default async function LessonsPage() {
         })}
       </ul>
 
-      <Link href="/" className="text-lapis text-[16px] underline-offset-4">
+      <Link href="/today" className="text-lapis text-[16px] underline-offset-4">
         Back to today
       </Link>
     </Screen>

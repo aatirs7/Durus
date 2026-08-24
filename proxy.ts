@@ -7,6 +7,9 @@ import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth";
   the Node runtime, so node:crypto is available here.
 */
 export function proxy(request: NextRequest) {
+  // The landing page is public. It is the only page that is.
+  if (request.nextUrl.pathname === "/") return NextResponse.next();
+
   const token = request.cookies.get(SESSION_COOKIE)?.value;
   if (verifySessionToken(token)) return NextResponse.next();
 
