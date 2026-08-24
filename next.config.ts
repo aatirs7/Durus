@@ -1,13 +1,15 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  async redirects() {
-    return [
-      // The password gate used to live here. Anything still pointing at
-      // it, a bookmark or an open tab, lands on Today instead of a 404.
-      { source: "/unlock", destination: "/", permanent: false },
-    ];
-  },
-};
+/*
+  There is deliberately no redirect for /unlock here.
+
+  An earlier version redirected /unlock to / for the sake of a stale
+  bookmark from the removed password gate. Once /unlock became the PIN
+  screen again, that turned into a redirect loop: the proxy sends an
+  unauthenticated request to /unlock, and the redirect sent it straight
+  back to /. Route level redirects and the proxy have to agree about
+  which paths are terminal.
+*/
+const nextConfig: NextConfig = {};
 
 export default nextConfig;
