@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Eyebrow } from "@/components/ui";
 import type { Settings } from "@/db/schema";
+import { TestPushButton } from "./test-push-button";
 import { Toggle } from "./toggle";
 
 /*
@@ -158,6 +159,14 @@ export function PushSettings({
               onChange={(classDayReminder) => onPatch({ classDayReminder })}
             />
           </div>
+
+          {/*
+            The real reminder only fires on the hour, only when
+            something is due, and only when you have not just reviewed.
+            Waiting until 20:00 to find out whether push works at all is
+            not a debugging loop, so this ignores every gate.
+          */}
+          <TestPushButton />
         </>
       ) : null}
     </Section>
