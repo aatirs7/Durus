@@ -1,0 +1,152 @@
+import {
+  boolean,
+  date,
+  integer,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  real,
+  serial,
+  text,
+  timestamp,
+  uniqueIndex,
+  index,
+} from "drizzle-orm/pg-core";
+
+export const cardTypeEnum = pgEnum("card_type", ["vocab", "phrase"]);
+export const genderEnum = pgEnum("gender", ["m", "f"]);
+
+/* cardStates has two directions. reviews has three, because speed runs
+   are logged but never scheduled. Two separate enums on purpose. */
+export const stateDirectionEnum = pgEnum("state_direction", [
+  "recognition",
+  "production",
+]);
+export const reviewDirectionEnum = pgEnum("review_direction", [
+  "recognition",
+  "production",
+  "speed",
+]);
+export const gradeEnum = pgEnum("grade", ["again", "hard", "good", "easy"]);
+
+export const lessons = pgTable("lessons", {
+  id: serial("id").primaryKey(),
+  number: integer("number").notNull().unique(),
+  titleAr: text("title_ar").notNull(),
+  titleEn: text("title_en").notNull(),
+  grammarNote: text("grammar_note"),
+  // Null means the lesson has not been covered in class yet.
+  unlockedAt: timestamp("unlocked_at", { withTimezone: true }),
+});
+
+export const cards = pgTable(
+  "cards",
+  {
+    id: serial("id").primaryKey(),
+    lessonId: integer("lesson_id")
+      .notNull()
+      .references(() => lessons.id, { onDelete: "cascade" }),
+    type: cardTypeEnum("type").notNull().default("vocab"),
+    arabic: text("arabic").notNull(),
+    english: text("english").notNull(),
+    transliteration: text("transliteration"),
+    gender: genderEnum("gender"),
+    plural: text("plural"),
+    note: text("note"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    index("cards_lesson_idx").on(t.lessonId),
+    // Pasting the same block twice should not double the deck.
+    uniqueIndex("cards_lesson_arabic_idx").on(t.lessonId, t.arabic),
+  ],
+);
+
+/*
+  Keyed on card and direction, because recognising a word and producing it
+  from the English are two different skills that mature at different rates.
+  Recognition is seeded active. Production is created lazily, only once
+  recognition for that card reaches repetitions >= 2.
+*/
+export const cardStates = pgTable(
+  "card_states",
+  {
+    cardId: integer("card_id")
+      .notNull()
+      .references(() => cards.id, { onDelete: "cascade" }),
+    direction: stateDirectionEnum("direction").notNull(),
+    ease: real("ease").notNull().default(2.5),
+    intervalDays: real("interval_days").notNull().default(0),
+    repetitions: integer("repetitions").notNull().default(0),
+    dueAt: timestamp("due_at", { withTimezone: true }).notNull().defaultNow(),
+    lapses: integer("lapses").notNull().default(0),
+    suspended: boolean("suspended").notNull().default(false),
+  },
+  (t) => [
+    primaryKey({ columns: [t.cardId, t.direction] }),
+    index("card_states_due_idx").on(t.dueAt),
+  ],
+);
+
+/* Append only. Undo is the one documented exception. */
+export const reviews = pgTable(
+  "reviews",
+  {
+    id: serial("id").primaryKey(),
+    cardId: integer("card_id")
+      .notNull()
+      .references(() => cards.id, { onDelete: "cascade" }),
+    direction: reviewDirectionEnum("direction").notNull(),
+    grade: gradeEnum("grade").notNull(),
+    msToAnswer: integer("ms_to_answer").notNull(),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [index("reviews_reviewed_at_idx").on(t.reviewedAt)],
+);
+
+/* Single row, id is always 1. */
+export const settings = pgTable("settings", {
+  id: integer("id").primaryKey().default(1),
+  currentLesson: integer("current_lesson").notNull().default(1),
+  newPerDay: integer("new_per_day").notNull().default(12),
+  maxReviews: integer("max_reviews").notNull().default(120),
+  showHarakat: boolean("show_harakat").notNull().default(true),
+  speedWindowMs: integer("speed_window_ms").notNull().default(2000),
+  remindersOn: boolean("reminders_on").notNull().default(false),
+  reminderHour: integer("reminder_hour").notNull().default(20),
+  classDayReminder: boolean("class_day_reminder").notNull().default(true),
+  timezone: text("timezone").notNull().default("America/New_York"),
+  lastNotifiedOn: date("last_notified_on"),
+  // Set when currentLesson last changed. The SRS interval cap on the
+  // current lesson expires 14 days after this.
+  currentLessonSince: timestamp("current_lesson_since", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+/* Not used until push lands, but in the schema now so there is no
+   second migration later. */
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: serial("id").primaryKey(),
+  endpoint: text("endpoint").notNull().unique(),
+  p256dh: text("p256dh").notNull(),
+  auth: text("auth").notNull(),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  lastSeenAt: timestamp("last_seen_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  failCount: integer("fail_count").notNull().default(0),
+});
+
+export type Lesson = typeof lessons.$inferSelect;
+export type Card = typeof cards.$inferSelect;
+export type CardState = typeof cardStates.$inferSelect;
+export type Review = typeof reviews.$inferSelect;
+export type Settings = typeof settings.$inferSelect;

@@ -1,0 +1,184 @@
+@import "tailwindcss";
+
+/*
+  The only hex values in this project live in this file.
+  Nothing downstream writes a raw color. If you find yourself
+  reaching for a hex outside this block, add a token instead.
+
+  No pure white, no pure black. Ever.
+*/
+
+:root {
+  --paper: #f1efe9;
+  --surface: #faf8f4;
+  --surface-sunk: #e7e4dc;
+  --ink: #1c2231;
+  --ink-soft: #5b6377;
+  --ink-faint: #949aa8;
+  --rule: #dad6cc;
+  --lapis: #2a4a8b;
+  --lapis-wash: #e3e9f5;
+  --verdigris: #3e7c6e;
+  --clay: #a8555c;
+  --saffron: #b4832c;
+}
+
+.dark {
+  --paper: #131722;
+  --surface: #1b2130;
+  --surface-sunk: #232a3b;
+  --ink: #e9e7e1;
+  --ink-soft: #a2a9b8;
+  --ink-faint: #6b7385;
+  --rule: #2e3648;
+  --lapis: #7fa0dc;
+  --lapis-wash: #1f2a42;
+  --verdigris: #6fb6a4;
+  --clay: #d4868c;
+  --saffron: #d6ac5e;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-surface-sunk: var(--surface-sunk);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+  --color-lapis: var(--lapis);
+  --color-lapis-wash: var(--lapis-wash);
+  --color-verdigris: var(--verdigris);
+  --color-clay: var(--clay);
+  --color-saffron: var(--saffron);
+
+  --font-sans: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-arabic: var(--font-amiri), "Noto Naskh Arabic", serif;
+
+  --radius-card: 16px;
+  --radius-button: 12px;
+  --radius-pill: 999px;
+}
+
+html {
+  color-scheme: light;
+  /* A downward swipe mid review must not reload the session. */
+  overscroll-behavior-y: contain;
+  -webkit-text-size-adjust: 100%;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
+  overscroll-behavior-y: contain;
+  /* Kills the 300ms tap delay on the grade buttons. */
+  touch-action: manipulation;
+  text-align: center;
+}
+
+/* Numerals never jitter as they tick. */
+.tabular {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/*
+  Arabic is the loudest thing on screen and it should never be
+  selectable, because a long press on a card face should do nothing.
+*/
+.arabic {
+  font-family: var(--font-amiri), "Noto Naskh Arabic", serif;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Label / eyebrow role. */
+.eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* Motion is limited to the card flip, the deck advance, and the speed ring. */
+@keyframes durus-advance {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.deck-advance {
+  animation: durus-advance 180ms cubic-bezier(0.2, 0, 0.1, 1);
+}
+
+.flip-scene {
+  perspective: 1600px;
+}
+
+.flip-inner {
+  transform-style: preserve-3d;
+  transition: transform 280ms cubic-bezier(0.2, 0, 0.1, 1);
+}
+
+.flip-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flip-face-back {
+  transform: rotateY(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes durus-advance {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .flip-inner,
+  .flip-inner.is-flipped {
+    transform: none;
+    transition: none;
+  }
+
+  .flip-face {
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+    transition: opacity 180ms linear;
+  }
+
+  .flip-face-back {
+    transform: none;
+    opacity: 0;
+  }
+
+  .flip-inner.is-flipped .flip-face-front {
+    opacity: 0;
+  }
+
+  .flip-inner.is-flipped .flip-face-back {
+    opacity: 1;
+  }
+}
