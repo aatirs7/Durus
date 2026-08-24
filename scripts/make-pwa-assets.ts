@@ -1,0 +1,83 @@
+/*
+  Generates the PWA icons and the iOS splash screens.
+
+  The mark is the word دُرُوس set in Amiri, lapis on paper, with wide
+  margins. No gradient and no rounded rectangle drawn into the art,
+  because iOS masks the icon itself and drawing our own corners would
+  show up as a double rounding.
+
+  Run with: npx tsx scripts/make-pwa-assets.ts
+*/
+
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { Resvg } from "@resvg/resvg-js";
+
+const FONT = join(import.meta.dirname, "assets", "Amiri-Regular.ttf");
+const OUT = join(import.meta.dirname, "..", "public");
+
+// The tokens, repeated here because an SVG cannot read a CSS variable.
+// These must match --paper and --lapis in app/globals.css.
+const PAPER_LIGHT = "#F1EFE9";
+const PAPER_DARK = "#131722";
+const LAPIS_LIGHT = "#2A4A8B";
+const LAPIS_DARK = "#7FA0DC";
+
+const WORD = "دُرُوس";
+
+function iconSvg(size: number, opts: { maskable?: boolean } = {}): string {
+  // A maskable icon has to survive iOS and Android cropping to a circle,
+  // so the word sits inside the 80 percent safe zone.
+  const scale = opts.maskable ? 0.26 : 0.34;
+  const fontSize = Math.round(size * scale);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+  <rect width="${size}" height="${size}" fill="${PAPER_LIGHT}"/>
+  <text x="50%" y="${Math.round(size * 0.5 + fontSize * 0.3)}" text-anchor="middle"
+        direction="rtl" font-family="Amiri" font-size="${fontSize}"
+        fill="${LAPIS_LIGHT}">${WORD}</text>
+</svg>`;
+}
+
+function splashSvg(w: number, h: number, dark: boolean): string {
+  const fontSize = Math.round(Math.min(w, h) * 0.16);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+  <rect width="${w}" height="${h}" fill="${dark ? PAPER_DARK : PAPER_LIGHT}"/>
+  <text x="50%" y="${Math.round(h * 0.5 + fontSize * 0.3)}" text-anchor="middle"
+        direction="rtl" font-family="Amiri" font-size="${fontSize}"
+        fill="${dark ? LAPIS_DARK : LAPIS_LIGHT}">${WORD}</text>
+</svg>`;
+}
+
+function render(svg: string, width: number): Buffer {
+  const resvg = new Resvg(svg, {
+    fitTo: { mode: "width", value: width },
+    font: { fontFiles: [FONT], loadSystemFonts: false, defaultFontFamily: "Amiri" },
+  });
+  return Buffer.from(resvg.render().asPng());
+}
+
+function write(name: string, buf: Buffer) {
+  writeFileSync(join(OUT, name), buf);
+  console.log(`  ${name} (${(buf.length / 1024).toFixed(1)} kB)`);
+}
+
+mkdirSync(OUT, { recursive: true });
+
+console.log("icons:");
+write("apple-touch-icon.png", render(iconSvg(180), 180));
+write("icon-192.png", render(iconSvg(192), 192));
+write("icon-512.png", render(iconSvg(512), 512));
+write("icon-512-maskable.png", render(iconSvg(512, { maskable: true }), 512));
+
+/*
+  iOS picks a splash by exact media query match. Covering every device
+  is a losing game, so these are the two the spec asks for at a common
+  modern size. A device with no match simply shows the background color
+  from the manifest, which is the same paper, so the worst case is a
+  plain paper screen rather than a white flash.
+*/
+console.log("splash:");
+write("splash-light.png", render(splashSvg(1179, 2556, false), 1179));
+write("splash-dark.png", render(splashSvg(1179, 2556, true), 1179));
+
+console.log("done");

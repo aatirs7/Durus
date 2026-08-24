@@ -33,6 +33,37 @@ const satoshi = localFont({
 export const metadata: Metadata = {
   title: "Durus",
   description: "Arabic revision for Madinah Book 1",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "Durus",
+    statusBarStyle: "black-translucent",
+    startupImage: [
+      {
+        url: "/splash-light.png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/splash-dark.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+  },
+  icons: {
+    icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  other: {
+    /*
+      Next emits the modern mobile-web-app-capable. iOS before 16.4 only
+      understands the apple prefixed one, and it is what actually strips
+      the Safari chrome on an older phone, so both are set.
+    */
+    "apple-mobile-web-app-capable": "yes",
+  },
 };
 
 export const viewport: Viewport = {

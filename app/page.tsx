@@ -1,3 +1,4 @@
+import { InstallHint } from "@/components/install-hint";
 import { ButtonLink, DeadLink, Eyebrow, Numeral, Screen } from "@/components/ui";
 import { countDue, countNewAvailable, getSettings } from "@/lib/queue";
 
@@ -57,7 +58,10 @@ export default async function TodayPage() {
         </div>
       </div>
 
-      <LessonTicks current={config.currentLesson} />
+      <div className="flex flex-col gap-6">
+        <InstallHint />
+        <LessonTicks current={config.currentLesson} />
+      </div>
     </Screen>
   );
 }
