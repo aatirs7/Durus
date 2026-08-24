@@ -59,6 +59,16 @@ describe("checkAnswer", () => {
     expect(checkAnswer("cap", "cat").kind).toBe("wrong");
   });
 
+  it("accepts a swapped pair of letters", () => {
+    expect(checkAnswer("mosqeu", "mosque").kind).toBe("close");
+    expect(checkAnswer("hosue", "house").kind).toBe("close");
+  });
+
+  it("still rejects a near miss on a short word after the swap change", () => {
+    expect(checkAnswer("cap", "cat").kind).toBe("wrong");
+    expect(checkAnswer("pen", "pan").kind).toBe("wrong");
+  });
+
   it("rejects a different word", () => {
     expect(checkAnswer("door", "book").kind).toBe("wrong");
   });
@@ -83,6 +93,16 @@ describe("editDistance", () => {
 
   it("counts an insertion as one", () => {
     expect(editDistance("cat", "cart")).toBe(1);
+  });
+
+  /*
+    Regression. A swap is the commonest typo and plain Levenshtein
+    scores it two, which put it outside the tolerance for a six letter
+    word and rejected "mosqeu" for "mosque".
+  */
+  it("counts an adjacent transposition as one, not two", () => {
+    expect(editDistance("mosqeu", "mosque")).toBe(1);
+    expect(editDistance("hosue", "house")).toBe(1);
   });
 
   it("falls back to length against an empty string", () => {

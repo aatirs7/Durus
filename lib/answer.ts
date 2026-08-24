@@ -93,12 +93,25 @@ export function checkAnswer(typed: string, english: string): MatchResult {
   return { kind: "wrong" };
 }
 
-/* Levenshtein, two rows rather than a full matrix. */
+/*
+  Damerau-Levenshtein, restricted edition, so an adjacent transposition
+  costs one rather than two.
+
+  This matters more than it looks. Swapping two letters is the most
+  common typing slip there is, and plain Levenshtein scores "mosqeu"
+  against "mosque" as two edits, which put the single most likely typo
+  outside the tolerance for a six letter word. It does not loosen the
+  short word rule: cat against cap is still a substitution, still one
+  edit, and still rejected because words of four letters or fewer
+  forgive nothing.
+*/
 export function editDistance(a: string, b: string): number {
   if (a === b) return 0;
   if (a.length === 0) return b.length;
   if (b.length === 0) return a.length;
 
+  // Three rows, because a transposition looks two back.
+  let twoBack = new Array<number>(b.length + 1);
   let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
   let curr = new Array<number>(b.length + 1);
 
@@ -106,9 +119,20 @@ export function editDistance(a: string, b: string): number {
     curr[0] = i;
     for (let j = 1; j <= b.length; j += 1) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      curr[j] = Math.min(curr[j - 1] + 1, prev[j] + 1, prev[j - 1] + cost);
+      let best = Math.min(curr[j - 1] + 1, prev[j] + 1, prev[j - 1] + cost);
+
+      if (
+        i > 1 &&
+        j > 1 &&
+        a[i - 1] === b[j - 2] &&
+        a[i - 2] === b[j - 1]
+      ) {
+        best = Math.min(best, twoBack[j - 2] + 1);
+      }
+
+      curr[j] = best;
     }
-    [prev, curr] = [curr, prev];
+    [twoBack, prev, curr] = [prev, curr, twoBack];
   }
 
   return prev[b.length];
