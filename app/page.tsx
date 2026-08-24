@@ -1,10 +1,12 @@
+import Link from "next/link";
 import { InstallHint } from "@/components/install-hint";
 import { OfflinePill } from "@/components/offline-pill";
 import { PwaRuntime } from "@/components/pwa-runtime";
+import { ReviewHint } from "@/components/review-hint";
 import { ButtonLink, Eyebrow, Numeral } from "@/components/ui";
 import { UnlockNext } from "@/components/unlock-next";
 import { getNextLesson } from "./unlock-lesson";
-import { TOTAL_LESSONS } from "@/lib/lessons";
+import { TOTAL_LESSONS, listLessons } from "@/lib/lessons";
 import { countDue, countNewAvailable, getSettings } from "@/lib/queue";
 
 export const dynamic = "force-dynamic";
@@ -25,12 +27,14 @@ export default async function TodayPage() {
   const newAvailable = await countNewAvailable(config.currentLesson);
   const newToday = Math.min(newAvailable, config.newPerDay);
   const next = await getNextLesson();
+  // Only for the desktop tick marks, where each tick names its lesson.
+  const lessons = await listLessons();
 
   const clear = due === 0 && newToday === 0;
 
   return (
     <main
-      className="mx-auto grid w-full max-w-[560px] overflow-hidden px-6"
+      className="mx-auto grid w-full max-w-[560px] overflow-hidden px-6 lg:max-w-[680px]"
       style={{
         height: "100dvh",
         gridTemplateRows: "1fr auto 1fr",
@@ -45,10 +49,10 @@ export default async function TodayPage() {
         <Eyebrow>{dateLine(now, config.timezone)}</Eyebrow>
 
         {clear ? (
-          <Numeral>Clear</Numeral>
+          <Numeral className="lg:text-[64px]">Clear</Numeral>
         ) : (
           <>
-            <Numeral>{due}</Numeral>
+            <Numeral className="lg:text-[64px]">{due}</Numeral>
             <span className="eyebrow">due today</span>
           </>
         )}
@@ -73,6 +77,8 @@ export default async function TodayPage() {
 
       {/* Below the centre line. */}
       <div className="flex flex-col items-center justify-start gap-5 pt-6">
+        {clear ? null : <ReviewHint />}
+
         <div className="flex flex-wrap justify-center gap-x-5">
           {clear ? null : (
             <ButtonLink href="/speed" variant="text">
@@ -93,6 +99,10 @@ export default async function TodayPage() {
 
         <div className="mt-auto flex flex-col items-center gap-5">
           <LessonTicks current={config.currentLesson} />
+          <LessonTicksDesktop
+            current={config.currentLesson}
+            lessons={lessons}
+          />
           <div className="flex justify-center gap-6">
             <ButtonLink href="/stats" variant="text">
               Stats
@@ -110,10 +120,15 @@ export default async function TodayPage() {
 /*
   Twenty three tick marks, no numbers. A progress bar that happens to be
   honest about how far the book goes.
+
+  On a phone this is decoration and nothing more, because a two pixel
+  tap target is not a control. The desktop version below replaces it
+  outright rather than adding behaviour to it, so the mobile markup is
+  untouched.
 */
 function LessonTicks({ current }: { current: number }) {
   return (
-    <div className="flex justify-center gap-1.5" aria-hidden>
+    <div className="flex justify-center gap-1.5 lg:hidden" aria-hidden>
       {Array.from({ length: TOTAL_LESSONS }, (_, i) => (
         <span
           key={i}
@@ -144,4 +159,66 @@ function dateLine(now: Date, timeZone: string): string {
   }).format(now);
 
   return `${hijri.replace(" AH", "")} AH, ${gregorian}`;
+}
+
+/*
+  The same twenty three ticks with a pointer over them. Each one names
+  its lesson and its card count on hover and, once the lesson has been
+  reached, walks through to it. Ticks past the current lesson stay dead,
+  the same rule the lessons list follows.
+*/
+function LessonTicksDesktop({
+  current,
+  lessons,
+}: {
+  current: number;
+  lessons: { number: number; cardCount: number }[];
+}) {
+  const counts = new Map(lessons.map((l) => [l.number, l.cardCount]));
+
+  return (
+    <div className="hidden justify-center gap-1.5 lg:flex">
+      {Array.from({ length: TOTAL_LESSONS }, (_, i) => {
+        const number = i + 1;
+        const done = i < current;
+        const count = counts.get(number) ?? 0;
+        const label = `Lesson ${number}, ${
+          count === 0 ? "no cards yet" : `${count} cards`
+        }`;
+        const tick = (
+          <span
+            className="block h-4 w-[2px] rounded-[999px]"
+            style={{ backgroundColor: done ? "var(--lapis)" : "var(--rule)" }}
+          />
+        );
+
+        const tip = (
+          <span className="border-rule bg-surface text-ink-soft pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 hidden -translate-x-1/2 rounded-[12px] border px-3 py-1.5 text-[12px] whitespace-nowrap group-hover:block">
+            {label}
+          </span>
+        );
+
+        return number > current ? (
+          <span
+            key={number}
+            className="group relative flex cursor-default"
+            aria-label={label}
+          >
+            {tick}
+            {tip}
+          </span>
+        ) : (
+          <Link
+            key={number}
+            href={`/lessons/${number}`}
+            aria-label={label}
+            className="group relative flex"
+          >
+            {tick}
+            {tip}
+          </Link>
+        );
+      })}
+    </div>
+  );
 }

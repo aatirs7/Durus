@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Amiri, IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeSwitch } from "@/components/theme-switch";
+import { DesktopShell } from "@/components/desktop-shell";
+import { RailDue } from "@/components/rail-due";
 import "./globals.css";
 
 /*
@@ -50,10 +53,41 @@ export const metadata: Metadata = {
       },
     ],
   },
+  /*
+    The browser tab carries the same mark as the home screen icon, the
+    word دُرُوس in Amiri. Light gets lapis on paper, dark gets the
+    inversion, paper on lapis, so the tab reads either way round without
+    a paper square glowing on a dark tab strip.
+
+    app/favicon.ico is deliberately absent. The file convention would
+    win over this block and there is no way to give it a dark variant.
+  */
   icons: {
     icon: [
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      {
+        url: "/icon-32.png",
+        sizes: "32x32",
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/icon-192.png",
+        sizes: "192x192",
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/icon-32-dark.png",
+        sizes: "32x32",
+        type: "image/png",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url: "/icon-192-dark.png",
+        sizes: "192x192",
+        type: "image/png",
+        media: "(prefers-color-scheme: dark)",
+      },
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
@@ -93,7 +127,19 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
           <ThemeSwitch />
-          {children}
+          {/*
+            The rail is desktop only and renders nothing below 1024px,
+            so the mobile document is what it always was.
+          */}
+          <DesktopShell
+            due={
+              <Suspense fallback={null}>
+                <RailDue />
+              </Suspense>
+            }
+          >
+            {children}
+          </DesktopShell>
         </ThemeProvider>
       </body>
     </html>

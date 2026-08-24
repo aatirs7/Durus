@@ -43,7 +43,7 @@ export default async function LessonPage({
         aligned, because it is running prose and centering breaks it.
       */}
       {lesson.grammarNote ? (
-        <p className="text-ink-soft text-left text-[16px] leading-relaxed">
+        <p className="text-ink-soft mx-auto w-full text-left text-[16px] leading-relaxed lg:max-w-[560px]">
           {lesson.grammarNote}
         </p>
       ) : null}
@@ -55,7 +55,13 @@ export default async function LessonPage({
           No cards in Lesson {lesson.number} yet. Add them after class.
         </p>
       ) : (
-        <ul className="flex flex-col">
+        /*
+          Two columns of tiles on desktop. Each tile keeps its own
+          English left, Arabic right, and the two columns are
+          deliberately not aligned to a shared Arabic axis, because that
+          would turn a set of cards into a spreadsheet.
+        */
+        <ul className="flex flex-col lg:grid lg:grid-cols-2 lg:gap-x-10">
           {cards.map((card) => (
             <li
               key={card.id}

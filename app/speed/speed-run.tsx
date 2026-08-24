@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { SpeedRing } from "@/components/speed-ring";
 import { Button, ButtonLink, Eyebrow, Numeral, Screen } from "@/components/ui";
+import { isPlainKey, isTyping } from "@/lib/keys";
 import { recordSpeedRun, tightenSpeedWindow } from "./actions";
 import {
   SPEED_FLOOR_MS,
@@ -58,6 +59,28 @@ export function SpeedRun({
     },
     [word, windowMs],
   );
+
+  /*
+    Left arrow missed it, right arrow knew it. The drill is measuring
+    recognition, and a key press is both faster and more consistent than
+    a thumb, so on desktop the arrows are the real input and the buttons
+    are the label for them.
+  */
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (isTyping(e.target) || !isPlainKey(e)) return;
+      if (!blurred) return;
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        answer(false);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        answer(true);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [answer, blurred]);
 
   useEffect(() => {
     if (!done || results.length === 0) return;
@@ -113,38 +136,48 @@ export function SpeedRun({
         {index + 1} of {words.length}
       </Eyebrow>
 
-      <SpeedRing progress={ringProgress} animateMs={windowMs}>
-        {/*
-          Once the window closes the word blurs out. Any longer look
-          would measure reading, not recognition. The blur is on a
-          wrapper rather than the text node so the harakat do not
-          reflow as it fades.
-        */}
-        <div
-          className="transition-[filter,opacity] duration-200"
-          style={
-            blurred
-              ? { filter: "blur(10px)", opacity: 0.25 }
-              : { filter: "none", opacity: 1 }
-          }
-        >
-          <Arabic as="p" className="text-ink text-[40px] leading-[1.8]">
-            {word.arabic}
-          </Arabic>
-        </div>
-      </SpeedRing>
+      {/*
+        Once the window closes the word blurs out. Any longer look would
+        measure reading, not recognition. The blur is on a wrapper
+        rather than the text node so the harakat do not reflow as it
+        fades.
 
-      <div className="flex w-full gap-3">
+        The ring is drawn twice, at 220 for the phone and 240 for
+        desktop, because its diameter is a number rather than a class
+        and only one of the two is ever displayed.
+      */}
+      <div className="lg:hidden">
+        <SpeedRing progress={ringProgress} animateMs={windowMs}>
+          <Word arabic={word.arabic} blurred={blurred} />
+        </SpeedRing>
+      </div>
+      <div className="hidden lg:block">
+        <SpeedRing progress={ringProgress} animateMs={windowMs} size={240}>
+          <Word arabic={word.arabic} blurred={blurred} desktop />
+        </SpeedRing>
+      </div>
+
+      <div className="flex w-full gap-3 lg:justify-center lg:gap-4">
         <Button
           variant="quiet"
-          className="flex-1"
+          className="flex-1 flex-col gap-0.5 lg:w-[180px] lg:flex-none"
           disabled={!blurred}
           onClick={() => answer(false)}
         >
           Missed it
+          <span className="tabular text-ink-faint hidden text-[11px] lg:block">
+            &#8592;
+          </span>
         </Button>
-        <Button className="flex-1" disabled={!blurred} onClick={() => answer(true)}>
+        <Button
+          className="flex-1 flex-col gap-0.5 lg:w-[180px] lg:flex-none"
+          disabled={!blurred}
+          onClick={() => answer(true)}
+        >
           Knew it
+          <span className="tabular text-paper hidden text-[11px] opacity-70 lg:block">
+            &#8594;
+          </span>
         </Button>
       </div>
 
@@ -152,5 +185,40 @@ export function SpeedRun({
         End run
       </Link>
     </Screen>
+  );
+}
+
+/*
+  The drilled word inside the ring. Desktop gets more of it, though not
+  the full card face size, because this one has a 240px circle drawn
+  around it and a 112px word would sit outside its own timer.
+*/
+function Word({
+  arabic,
+  blurred,
+  desktop = false,
+}: {
+  arabic: string;
+  blurred: boolean;
+  desktop?: boolean;
+}) {
+  return (
+    <div
+      className="transition-[filter,opacity] duration-200"
+      style={
+        blurred
+          ? { filter: "blur(10px)", opacity: 0.25 }
+          : { filter: "none", opacity: 1 }
+      }
+    >
+      <Arabic
+        as="p"
+        className={`text-ink leading-[1.8] ${
+          desktop ? "text-[72px]" : "text-[40px]"
+        }`}
+      >
+        {arabic}
+      </Arabic>
+    </div>
   );
 }

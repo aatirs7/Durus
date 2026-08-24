@@ -17,7 +17,12 @@ export default async function LessonsPage() {
         <PageTitle>Lessons</PageTitle>
       </div>
 
-      <ul className="flex flex-col">
+      {/*
+        One column on a phone. Two on desktop, filled column first so
+        the numbers still read downwards, twelve rows each. Not three
+        columns, and never a table.
+      */}
+      <ul className="flex flex-col lg:grid lg:grid-flow-col lg:grid-cols-2 lg:grid-rows-[repeat(12,auto)] lg:gap-x-10">
         {rows.map((lesson) => {
           // Lessons beyond the current one are not tappable. Never show
           // material from a lesson that has not been taught yet.

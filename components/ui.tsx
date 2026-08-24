@@ -6,7 +6,8 @@ import type { ComponentProps, ReactNode } from "react";
   for primitives that are genuinely fiddly.
 
   Max content width 560px, centered, generous vertical rhythm. Phone
-  first, and it happens to work on desktop.
+  first. At 1024px and above it goes to 680px, and the extra 120px is
+  breathing room on what is already there, never more per row.
 */
 export function Screen({
   children,
@@ -24,7 +25,7 @@ export function Screen({
       the notch. The bottom one keeps buttons off the home indicator.
     */
     <main
-      className={`mx-auto flex w-full max-w-[560px] flex-1 flex-col px-6 ${
+      className={`mx-auto flex w-full max-w-[560px] flex-1 flex-col px-6 lg:max-w-[680px] ${
         fixed ? "overflow-hidden" : ""
       } ${className}`}
       style={{

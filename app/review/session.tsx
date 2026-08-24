@@ -1,9 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { Button, ButtonLink, Numeral, Pill } from "@/components/ui";
 import type { QueueItem } from "@/lib/queue";
+import { isPlainKey, isTyping, markReviewed } from "@/lib/keys";
 import { enqueue } from "@/lib/outbox";
 import { formatInterval, schedule, type Grade } from "@/lib/srs";
 import { submitGrade, undoGrade } from "./actions";
@@ -35,6 +37,14 @@ export function ReviewSession({
   const [revealed, setRevealed] = useState(false);
   const [answered, setAnswered] = useState<Answered[]>([]);
   const [totalPlanned] = useState(initialQueue.length);
+  /*
+    Harakat are on unless the h key turns them off, for the length of
+    this session only. Reading unvowelled is the eventual goal, so it
+    has to be one key away, but it is not a setting you should leave
+    behind you by accident.
+  */
+  const [showHarakat, setShowHarakat] = useState(true);
+  const router = useRouter();
 
   const shownAt = useRef<number>(Date.now());
   const msToAnswer = useRef<number>(0);
@@ -150,16 +160,33 @@ export function ReviewSession({
     setIndex((i) => Math.max(0, i - 1));
   }, [answered]);
 
+  /*
+    space reveal, 1 to 4 grade, u undo, h harakat, esc end the session.
+    Bound to the document rather than to the card, because on desktop
+    the keyboard is the primary input and nothing here is ever focused.
+  */
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      if (isTyping(e.target) || !isPlainKey(e)) return;
+
       if (e.key === " ") {
         e.preventDefault();
         reveal();
         return;
       }
-      if (e.key === "u") {
+      if (e.key === "u" || e.key === "U") {
         e.preventDefault();
         undo();
+        return;
+      }
+      if (e.key === "h" || e.key === "H") {
+        e.preventDefault();
+        setShowHarakat((on) => !on);
+        return;
+      }
+      if (e.key === "Escape") {
+        e.preventDefault();
+        router.push("/");
         return;
       }
       const n = Number(e.key);
@@ -170,7 +197,7 @@ export function ReviewSession({
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [reveal, undo, grade]);
+  }, [reveal, undo, grade, router]);
 
   if (done) {
     return <SessionEnd answered={answered} weekMedianMs={weekMedianMs} />;
@@ -189,13 +216,17 @@ export function ReviewSession({
         />
       </div>
 
-      {/* Tap anywhere to reveal. */}
+      {/*
+        Tap anywhere to reveal on a phone. On desktop the whole field
+        stops taking clicks and only the card face does, because a mouse
+        lands on empty space by accident in a way a thumb does not.
+      */}
       <div
         role="button"
         tabIndex={0}
         onClick={reveal}
         aria-label="Reveal"
-        className="flip-scene relative min-h-0 flex-1 cursor-default"
+        className="flip-scene relative min-h-0 flex-1 cursor-default lg:pointer-events-none"
       >
         <div
           key={index}
@@ -207,33 +238,42 @@ export function ReviewSession({
             {front === "arabic" ? (
               <Arabic
                 as="p"
-                className="text-ink text-[64px] leading-[1.8] md:text-[88px]"
+                showHarakat={showHarakat}
+                className="text-ink text-[64px] leading-[1.8] md:text-[88px] lg:pointer-events-auto lg:cursor-pointer lg:text-[112px]"
               >
                 {item.arabic}
               </Arabic>
             ) : (
-              <p className="text-ink text-[32px] leading-snug">{item.english}</p>
+              <p className="text-ink text-[32px] leading-snug lg:pointer-events-auto lg:cursor-pointer">
+                {item.english}
+              </p>
             )}
           </div>
 
           <div className="flip-face flip-face-back absolute inset-0 flex items-center justify-center overflow-y-auto px-6 py-6">
-            <CardBack item={item} />
+            <CardBack item={item} showHarakat={showHarakat} />
           </div>
         </div>
       </div>
 
       <div
-        className="mx-auto w-full max-w-[560px] shrink-0 px-6 pt-4"
+        className="mx-auto w-full max-w-[560px] shrink-0 px-6 pt-4 lg:max-w-[680px]"
         style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
       >
         {revealed ? (
-          <div className="grid grid-cols-4 gap-2">
-            {GRADES.map((g) => (
+          /*
+            The buttons stretch to fill on a phone. On desktop they are
+            fixed at 140px and sit centred, because a 300px wide target
+            is one you cannot miss, and a grade you cannot miss stops
+            being a grade you thought about.
+          */
+          <div className="grid grid-cols-4 gap-2 lg:flex lg:justify-center lg:gap-4">
+            {GRADES.map((g, i) => (
               <button
                 key={g.grade}
                 type="button"
                 onClick={() => grade(g.grade)}
-                className="border-rule bg-surface hover:bg-surface-sunk flex flex-col items-center gap-1 rounded-[12px] border py-3 transition-colors"
+                className="border-rule bg-surface hover:bg-surface-sunk flex flex-col items-center gap-1 rounded-[12px] border py-3 transition-colors lg:w-[140px]"
               >
                 <span className="tabular text-ink-soft text-[13px]">
                   {previews?.[g.grade]}
@@ -243,6 +283,11 @@ export function ReviewSession({
                   style={{ color: g.color }}
                 >
                   {g.label}
+                </span>
+                {/* The whole keyboard map lives in Settings. This is
+                    the one part of it that is worth carrying here. */}
+                <span className="tabular text-ink-faint hidden text-[11px] lg:block">
+                  {i + 1}
                 </span>
               </button>
             ))}
@@ -257,10 +302,20 @@ export function ReviewSession({
   );
 }
 
-function CardBack({ item }: { item: QueueItem }) {
+function CardBack({
+  item,
+  showHarakat,
+}: {
+  item: QueueItem;
+  showHarakat: boolean;
+}) {
   return (
     <div className="flex flex-col items-center gap-7">
-      <Arabic as="p" className="text-ink text-[68px] leading-[1.7] md:text-[80px]">
+      <Arabic
+        as="p"
+        showHarakat={showHarakat}
+        className="text-ink text-[68px] leading-[1.7] md:text-[80px] lg:text-[112px]"
+      >
         {item.arabic}
       </Arabic>
 
@@ -281,7 +336,7 @@ function CardBack({ item }: { item: QueueItem }) {
           ) : null}
           {item.plural ? (
             <Pill>
-              <Arabic>{item.plural}</Arabic>
+              <Arabic showHarakat={showHarakat}>{item.plural}</Arabic>
             </Pill>
           ) : null}
         </div>
@@ -307,6 +362,11 @@ function SessionEnd({
   ).length;
   const accuracy = reviewed === 0 ? 0 : Math.round((correct / reviewed) * 100);
   const median = medianOf(answered.map((a) => a.msToAnswer));
+
+  // The desktop "press R" hint has done its job once a session ends.
+  useEffect(() => {
+    if (reviewed > 0) markReviewed();
+  }, [reviewed]);
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-10 px-6">

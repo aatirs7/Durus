@@ -10,14 +10,13 @@
 
 const SIZE = 220;
 const STROKE = 6;
-const RADIUS = (SIZE - STROKE) / 2;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export function SpeedRing({
   progress,
   secondary,
   children,
   animateMs,
+  size = SIZE,
 }: {
   /* 0 to 1. */
   progress: number;
@@ -26,34 +25,42 @@ export function SpeedRing({
   children?: React.ReactNode;
   /* When set, the arc drains over this many milliseconds via CSS. */
   animateMs?: number;
+  /*
+    Diameter in pixels. 220 everywhere on a phone. Desktop passes a
+    larger one, and the stroke deliberately does not scale with it, so
+    the ring stays a hairline rather than becoming a band.
+  */
+  size?: number;
 }) {
   const clamp = (n: number) => Math.max(0, Math.min(1, n));
   const main = clamp(progress);
+  const RADIUS = (size - STROKE) / 2;
+  const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
   return (
     <div
       className="relative mx-auto"
-      style={{ width: SIZE, height: SIZE }}
+      style={{ width: size, height: size }}
     >
       <svg
-        width={SIZE}
-        height={SIZE}
-        viewBox={`0 0 ${SIZE} ${SIZE}`}
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
         /* Start the arc at twelve o'clock. */
         style={{ transform: "rotate(-90deg)" }}
         aria-hidden
       >
         <circle
-          cx={SIZE / 2}
-          cy={SIZE / 2}
+          cx={size / 2}
+          cy={size / 2}
           r={RADIUS}
           fill="none"
           stroke="var(--surface-sunk)"
           strokeWidth={STROKE}
         />
         <circle
-          cx={SIZE / 2}
-          cy={SIZE / 2}
+          cx={size / 2}
+          cy={size / 2}
           r={RADIUS}
           fill="none"
           stroke="var(--lapis)"
@@ -71,8 +78,8 @@ export function SpeedRing({
         />
         {secondary === undefined ? null : (
           <circle
-            cx={SIZE / 2}
-            cy={SIZE / 2}
+            cx={size / 2}
+            cy={size / 2}
             r={RADIUS - STROKE * 2}
             fill="none"
             stroke="var(--verdigris)"

@@ -25,16 +25,23 @@ const LAPIS_DARK = "#7FA0DC";
 
 const WORD = "دُرُوس";
 
-function iconSvg(size: number, opts: { maskable?: boolean } = {}): string {
+function iconSvg(
+  size: number,
+  opts: { maskable?: boolean; invert?: boolean; scale?: number } = {},
+): string {
   // A maskable icon has to survive iOS and Android cropping to a circle,
   // so the word sits inside the 80 percent safe zone.
-  const scale = opts.maskable ? 0.26 : 0.34;
+  const scale = opts.scale ?? (opts.maskable ? 0.26 : 0.34);
   const fontSize = Math.round(size * scale);
+  // The favicon inverts for a dark tab strip: paper on lapis rather
+  // than lapis on paper. Same mark, same two colours, swapped.
+  const ground = opts.invert ? LAPIS_LIGHT : PAPER_LIGHT;
+  const mark = opts.invert ? PAPER_LIGHT : LAPIS_LIGHT;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-  <rect width="${size}" height="${size}" fill="${PAPER_LIGHT}"/>
+  <rect width="${size}" height="${size}" fill="${ground}"/>
   <text x="50%" y="${Math.round(size * 0.5 + fontSize * 0.3)}" text-anchor="middle"
         direction="rtl" font-family="Amiri" font-size="${fontSize}"
-        fill="${LAPIS_LIGHT}">${WORD}</text>
+        fill="${mark}">${WORD}</text>
 </svg>`;
 }
 
@@ -68,6 +75,16 @@ write("apple-touch-icon.png", render(iconSvg(180), 180));
 write("icon-192.png", render(iconSvg(192), 192));
 write("icon-512.png", render(iconSvg(512), 512));
 write("icon-512-maskable.png", render(iconSvg(512, { maskable: true }), 512));
+
+/*
+  Favicons. Same mark as the home screen icon, drawn a little larger in
+  its square because a browser tab renders it at about sixteen points
+  and the 34 percent word turns to a smudge at that size. The 32px file
+  is what a tab actually uses, the 192 is for bookmarks and high DPI.
+*/
+write("icon-32.png", render(iconSvg(128, { scale: 0.46 }), 32));
+write("icon-32-dark.png", render(iconSvg(128, { scale: 0.46, invert: true }), 32));
+write("icon-192-dark.png", render(iconSvg(192, { invert: true }), 192));
 
 /*
   iOS picks a splash by exact media query match. Covering every device
