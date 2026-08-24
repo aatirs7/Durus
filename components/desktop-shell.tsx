@@ -50,11 +50,12 @@ export function DesktopShell({
         style={{ height: "100dvh" }}
       >
         {/*
-          The wordmark is set unvowelled here and on the landing page.
-          The marks belong on the icon, where they are drawn into the
-          art, but Amiri as loaded in the browser does not attach them
-          to the letters, and a wordmark is the wrong place to carry
-          that. See the note in the summary.
+          The wordmark is unvowelled here and on the landing page. The
+          harakat belong on the icon, where the art is drawn tight
+          around them. Set as running text they sit high above the
+          letters and read as floating, which is fine on a card face
+          you are meant to study and wrong on a mark you are meant to
+          recognise at a glance.
         */}
         <Link href="/today" className="text-lapis px-3 pb-6">
           <Arabic showHarakat={false} className="text-[28px] leading-none">

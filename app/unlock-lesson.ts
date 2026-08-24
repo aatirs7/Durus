@@ -1,9 +1,11 @@
 "use server";
 
-import { and, eq, gt, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { cards, lessons, settings } from "@/db/schema";
+import { TOTAL_LESSONS } from "@/lib/constants";
+import { getSettingsFor, requireProfileId } from "@/lib/session";
 
 /*
   Vocabulary lives in the repository, seeded lesson by lesson as class
@@ -14,11 +16,13 @@ import { cards, lessons, settings } from "@/db/schema";
   Advancing the gate is therefore the only thing this has to do.
 */
 
-export type NextLesson = {
-  number: number;
-  titleEn: string;
-  cardCount: number;
-} | null;
+export type NextLesson =
+  | { state: "ready"; number: number; titleEn: string; cardCount: number }
+  /* The lesson exists in the book but its words are not written yet. */
+  | { state: "coming-soon"; number: number }
+  /* Lesson 23 is the end of Book 1. */
+  | { state: "finished" }
+  | null;
 
 /*
   The next lesson, but only once its cards have actually been seeded.
@@ -26,8 +30,11 @@ export type NextLesson = {
   no-change, which reads as a broken button.
 */
 export async function getNextLesson(): Promise<NextLesson> {
-  const [config] = await db.select().from(settings).where(eq(settings.id, 1));
-  if (!config) throw new Error("settings row is missing, run the seed");
+  const profileId = await requireProfileId();
+  const config = await getSettingsFor(profileId);
+  const number = config.currentLesson + 1;
+
+  if (number > TOTAL_LESSONS) return { state: "finished" };
 
   const [row] = await db
     .select({
@@ -37,21 +44,30 @@ export async function getNextLesson(): Promise<NextLesson> {
     })
     .from(lessons)
     .leftJoin(cards, eq(cards.lessonId, lessons.id))
-    .where(gt(lessons.number, config.currentLesson))
-    .groupBy(lessons.number, lessons.titleEn)
-    .orderBy(lessons.number)
-    .limit(1);
+    .where(eq(lessons.number, number))
+    .groupBy(lessons.number, lessons.titleEn);
 
-  if (!row || row.cardCount === 0) return null;
-  return row;
+  /*
+    A lesson with no cards has not been typed up yet. Say so rather than
+    offering a button that would open an empty lesson.
+  */
+  if (!row || row.cardCount === 0) return { state: "coming-soon", number };
+
+  return {
+    state: "ready",
+    number: row.number,
+    titleEn: row.titleEn,
+    cardCount: row.cardCount,
+  };
 }
 
 export async function unlockNextLesson() {
-  const [config] = await db.select().from(settings).where(eq(settings.id, 1));
-  if (!config) throw new Error("settings row is missing, run the seed");
+  const profileId = await requireProfileId();
 
   const next = await getNextLesson();
-  if (!next) return { ok: false as const, message: "No lesson is ready yet." };
+  if (!next || next.state !== "ready") {
+    return { ok: false as const, message: "No lesson is ready yet." };
+  }
 
   const now = new Date();
 
@@ -63,7 +79,7 @@ export async function unlockNextLesson() {
   await db
     .update(settings)
     .set({ currentLesson: next.number, currentLessonSince: now })
-    .where(eq(settings.id, 1));
+    .where(eq(settings.profileId, profileId));
 
   await db
     .update(lessons)

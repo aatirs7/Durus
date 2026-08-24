@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { pushSubscriptions } from "@/db/schema";
+import { currentProfileId } from "@/lib/session";
 
 /*
   Re-registered on every launch, not just the first, because iOS
@@ -15,9 +16,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "incomplete subscription" }, { status: 400 });
   }
 
+  // A subscription belongs to whoever is signed in, so a reminder about
+  // due cards reaches the person whose cards they are.
+  const profileId = await currentProfileId();
+  if (profileId === null) {
+    return NextResponse.json({ error: "not signed in" }, { status: 401 });
+  }
+
   await db
     .insert(pushSubscriptions)
     .values({
+      profileId,
       endpoint,
       p256dh: keys.p256dh,
       auth: keys.auth,
@@ -27,6 +36,7 @@ export async function POST(request: Request) {
     .onConflictDoUpdate({
       target: pushSubscriptions.endpoint,
       set: {
+        profileId,
         p256dh: keys.p256dh,
         auth: keys.auth,
         userAgent: userAgent ?? null,

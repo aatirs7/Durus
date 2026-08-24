@@ -4,6 +4,7 @@ CREATE TYPE "public"."grade" AS ENUM('again', 'hard', 'good', 'easy');--> statem
 CREATE TYPE "public"."review_direction" AS ENUM('recognition', 'production', 'speed');--> statement-breakpoint
 CREATE TYPE "public"."state_direction" AS ENUM('recognition', 'production');--> statement-breakpoint
 CREATE TABLE "card_states" (
+	"profile_id" integer NOT NULL,
 	"card_id" integer NOT NULL,
 	"direction" "state_direction" NOT NULL,
 	"ease" real DEFAULT 2.5 NOT NULL,
@@ -12,7 +13,7 @@ CREATE TABLE "card_states" (
 	"due_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"lapses" integer DEFAULT 0 NOT NULL,
 	"suspended" boolean DEFAULT false NOT NULL,
-	CONSTRAINT "card_states_card_id_direction_pk" PRIMARY KEY("card_id","direction")
+	CONSTRAINT "card_states_profile_id_card_id_direction_pk" PRIMARY KEY("profile_id","card_id","direction")
 );
 --> statement-breakpoint
 CREATE TABLE "cards" (
@@ -38,8 +39,17 @@ CREATE TABLE "lessons" (
 	CONSTRAINT "lessons_number_unique" UNIQUE("number")
 );
 --> statement-breakpoint
+CREATE TABLE "profile" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"pin_hash" text NOT NULL,
+	"pin_salt" text NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "push_subscriptions" (
 	"id" serial PRIMARY KEY NOT NULL,
+	"profile_id" integer NOT NULL,
 	"endpoint" text NOT NULL,
 	"p256dh" text NOT NULL,
 	"auth" text NOT NULL,
@@ -52,6 +62,7 @@ CREATE TABLE "push_subscriptions" (
 --> statement-breakpoint
 CREATE TABLE "reviews" (
 	"id" serial PRIMARY KEY NOT NULL,
+	"profile_id" integer NOT NULL,
 	"card_id" integer NOT NULL,
 	"direction" "review_direction" NOT NULL,
 	"grade" "grade" NOT NULL,
@@ -60,7 +71,7 @@ CREATE TABLE "reviews" (
 );
 --> statement-breakpoint
 CREATE TABLE "settings" (
-	"id" integer PRIMARY KEY DEFAULT 1 NOT NULL,
+	"profile_id" integer PRIMARY KEY NOT NULL,
 	"current_lesson" integer DEFAULT 1 NOT NULL,
 	"new_per_day" integer DEFAULT 12 NOT NULL,
 	"max_reviews" integer DEFAULT 120 NOT NULL,
@@ -74,10 +85,15 @@ CREATE TABLE "settings" (
 	"current_lesson_since" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+ALTER TABLE "card_states" ADD CONSTRAINT "card_states_profile_id_profile_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profile"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "card_states" ADD CONSTRAINT "card_states_card_id_cards_id_fk" FOREIGN KEY ("card_id") REFERENCES "public"."cards"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "cards" ADD CONSTRAINT "cards_lesson_id_lessons_id_fk" FOREIGN KEY ("lesson_id") REFERENCES "public"."lessons"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "push_subscriptions" ADD CONSTRAINT "push_subscriptions_profile_id_profile_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profile"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_profile_id_profile_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profile"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_card_id_cards_id_fk" FOREIGN KEY ("card_id") REFERENCES "public"."cards"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "card_states_due_idx" ON "card_states" USING btree ("due_at");--> statement-breakpoint
+ALTER TABLE "settings" ADD CONSTRAINT "settings_profile_id_profile_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profile"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "card_states_due_idx" ON "card_states" USING btree ("profile_id","due_at");--> statement-breakpoint
 CREATE INDEX "cards_lesson_idx" ON "cards" USING btree ("lesson_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "cards_lesson_arabic_idx" ON "cards" USING btree ("lesson_id","arabic");--> statement-breakpoint
-CREATE INDEX "reviews_reviewed_at_idx" ON "reviews" USING btree ("reviewed_at");
+CREATE UNIQUE INDEX "profile_name_idx" ON "profile" USING btree (lower("name"));--> statement-breakpoint
+CREATE INDEX "reviews_reviewed_at_idx" ON "reviews" USING btree ("profile_id","reviewed_at");

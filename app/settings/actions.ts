@@ -3,13 +3,8 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import {
-  cardStates,
-  cards,
-  lessons,
-  reviews,
-  settings,
-} from "@/db/schema";
+import { cardStates, cards, lessons, reviews, settings } from "@/db/schema";
+import { getSettingsFor, requireProfileId } from "@/lib/session";
 
 export type SettingsPatch = Partial<{
   currentLesson: number;
@@ -23,8 +18,8 @@ export type SettingsPatch = Partial<{
 }>;
 
 export async function updateSettings(patch: SettingsPatch) {
-  const [current] = await db.select().from(settings).where(eq(settings.id, 1));
-  if (!current) throw new Error("settings row is missing, run the seed");
+  const profileId = await requireProfileId();
+  const current = await getSettingsFor(profileId);
 
   /*
     The three day cap on the current lesson runs for 14 days from the
@@ -41,7 +36,7 @@ export async function updateSettings(patch: SettingsPatch) {
       ...patch,
       ...(movedLesson ? { currentLessonSince: new Date() } : {}),
     })
-    .where(eq(settings.id, 1));
+    .where(eq(settings.profileId, profileId));
 
   // Unlock the lesson if it has not been opened before.
   if (movedLesson && patch.currentLesson !== undefined) {
@@ -63,15 +58,22 @@ export async function updateSettings(patch: SettingsPatch) {
 }
 
 /* Everything, as one JSON blob. No filtering, no pagination. */
+/* Only this account's progress. Lessons and cards are shared. */
 export async function exportAll() {
-  const [config] = await db.select().from(settings).where(eq(settings.id, 1));
+  const profileId = await requireProfileId();
 
   return {
     exportedAt: new Date().toISOString(),
-    settings: config,
+    settings: await getSettingsFor(profileId),
     lessons: await db.select().from(lessons),
     cards: await db.select().from(cards),
-    cardStates: await db.select().from(cardStates),
-    reviews: await db.select().from(reviews),
+    cardStates: await db
+      .select()
+      .from(cardStates)
+      .where(eq(cardStates.profileId, profileId)),
+    reviews: await db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.profileId, profileId)),
   };
 }

@@ -171,6 +171,7 @@ const KEYS = [
   { key: "h", action: "Toggle harakat" },
   { key: "esc", action: "End the session" },
   { key: "← →", action: "Missed it, knew it" },
+  { key: "?", action: "What this drill is for" },
 ] as const;
 
 function Field({

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { hasReviewed, isPlainKey, isTyping } from "@/lib/keys";
+import { hasReviewed, isPlainKey, isTyping, overlayOpen } from "@/lib/keys";
 
 /*
   R starts a review from Today. The binding is live at every width,
@@ -20,7 +20,7 @@ export function ReviewHint({ href = "/review" }: { href?: string }) {
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (isTyping(e.target) || !isPlainKey(e)) return;
+      if (isTyping(e.target) || !isPlainKey(e) || overlayOpen()) return;
       if (e.key !== "r" && e.key !== "R") return;
       e.preventDefault();
       router.push(href);

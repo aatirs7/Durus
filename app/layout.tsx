@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import { Suspense } from "react";
 import { Amiri, IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
@@ -6,6 +7,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { DesktopShell } from "@/components/desktop-shell";
 import { RailDue } from "@/components/rail-due";
+import { ThemeCookie } from "@/components/theme-cookie";
+import { PAPER, SPLASH, THEME_COOKIE, isResolvedTheme } from "@/lib/theme";
 import "./globals.css";
 
 /*
@@ -34,26 +37,68 @@ const satoshi = localFont({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Durus",
-  description: "Arabic revision for Madinah Book 1",
-  manifest: "/manifest.webmanifest",
-  appleWebApp: {
-    capable: true,
-    title: "Durus",
-    statusBarStyle: "black-translucent",
-    startupImage: [
-      {
-        url: "/splash-light.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/splash-dark.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-    ],
-  },
+/*
+  The chosen theme, read from the cookie the client mirrors it into.
+  Null before anything has been chosen, in which case the document
+  falls back to the operating system scheme the way it always did.
+*/
+async function chosenTheme() {
+  const jar = await cookies();
+  const value = jar.get(THEME_COOKIE)?.value;
+  return isResolvedTheme(value) ? value : null;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const theme = await chosenTheme();
+
   /*
+    iOS reads the startup image out of the markup, so a splash can only
+    follow the in app theme toggle if the server already knows about it.
+    Once a theme has been chosen there is one splash and no media query,
+    because the phone being in light mode says nothing about what the
+    app was last set to.
+  */
+  const startupImage = theme
+    ? [{ url: SPLASH[theme] }]
+    : [
+        { url: SPLASH.light, media: "(prefers-color-scheme: light)" },
+        { url: SPLASH.dark, media: "(prefers-color-scheme: dark)" },
+      ];
+
+  return metadataFor(startupImage);
+}
+
+export async function generateViewport(): Promise<Viewport> {
+  const theme = await chosenTheme();
+
+  return {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    viewportFit: "cover",
+    themeColor: theme
+      ? PAPER[theme]
+      : [
+          { media: "(prefers-color-scheme: light)", color: PAPER.light },
+          { media: "(prefers-color-scheme: dark)", color: PAPER.dark },
+        ],
+  };
+}
+
+function metadataFor(
+  startupImage: { url: string; media?: string }[],
+): Metadata {
+  return {
+    title: "Durus",
+    description: "Arabic revision for Madinah Book 1",
+    manifest: "/manifest.webmanifest",
+    appleWebApp: {
+      capable: true,
+      title: "Durus",
+      statusBarStyle: "black-translucent",
+      startupImage,
+    },
+    /*
     The browser tab carries the same mark as the home screen icon, the
     word دُرُوس in Amiri. Light gets lapis on paper, dark gets the
     inversion, paper on lapis, so the tab reads either way round without
@@ -62,70 +107,71 @@ export const metadata: Metadata = {
     app/favicon.ico is deliberately absent. The file convention would
     win over this block and there is no way to give it a dark variant.
   */
-  icons: {
-    icon: [
-      {
-        url: "/icon-32.png",
-        sizes: "32x32",
-        type: "image/png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-192.png",
-        sizes: "192x192",
-        type: "image/png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-32-dark.png",
-        sizes: "32x32",
-        type: "image/png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon-192-dark.png",
-        sizes: "192x192",
-        type: "image/png",
-        media: "(prefers-color-scheme: dark)",
-      },
-    ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
-  },
-  other: {
-    /*
+    icons: {
+      icon: [
+        {
+          url: "/icon-32.png",
+          sizes: "32x32",
+          type: "image/png",
+          media: "(prefers-color-scheme: light)",
+        },
+        {
+          url: "/icon-192.png",
+          sizes: "192x192",
+          type: "image/png",
+          media: "(prefers-color-scheme: light)",
+        },
+        {
+          url: "/icon-32-dark.png",
+          sizes: "32x32",
+          type: "image/png",
+          media: "(prefers-color-scheme: dark)",
+        },
+        {
+          url: "/icon-192-dark.png",
+          sizes: "192x192",
+          type: "image/png",
+          media: "(prefers-color-scheme: dark)",
+        },
+      ],
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    },
+    other: {
+      /*
       Next emits the modern mobile-web-app-capable. iOS before 16.4 only
       understands the apple prefixed one, and it is what actually strips
       the Safari chrome on an older phone, so both are set.
     */
-    "apple-mobile-web-app-capable": "yes",
-  },
-};
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f1efe9" },
-    { media: "(prefers-color-scheme: dark)", color: "#131722" },
-  ],
-};
+      "apple-mobile-web-app-capable": "yes",
+    },
+  };
+}
 
 /*
   The document stays LTR. Arabic gets dir="rtl" on its own element,
   through the Arabic component, and nowhere else.
 */
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const theme = await chosenTheme();
+
   return (
     <html
       lang="en"
       dir="ltr"
       suppressHydrationWarning
-      className={`${amiri.variable} ${plexMono.variable} ${satoshi.variable} h-full antialiased`}
+      /*
+        The chosen theme is on the server rendered html element too, so
+        the first paint is already the right one. next-themes still runs
+        its own script and stays the authority.
+      */
+      className={`${amiri.variable} ${plexMono.variable} ${satoshi.variable} h-full antialiased${
+        theme === "dark" ? " dark" : ""
+      }`}
+      style={theme ? { colorScheme: theme } : undefined}
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
+          <ThemeCookie />
           <ThemeSwitch />
           {/*
             The rail is desktop only and renders nothing below 1024px,

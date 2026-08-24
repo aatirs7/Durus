@@ -3,9 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Arabic } from "@/components/arabic";
+import { Help } from "@/components/help";
 import { Button, ButtonLink, Numeral, Pill } from "@/components/ui";
 import type { QueueItem } from "@/lib/queue";
-import { isPlainKey, isTyping, markReviewed } from "@/lib/keys";
+import { isPlainKey, isTyping, markReviewed, overlayOpen } from "@/lib/keys";
 import { enqueue } from "@/lib/outbox";
 import { formatInterval, schedule, type Grade } from "@/lib/srs";
 import { submitGrade, undoGrade } from "./actions";
@@ -167,7 +168,7 @@ export function ReviewSession({
   */
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (isTyping(e.target) || !isPlainKey(e)) return;
+      if (isTyping(e.target) || !isPlainKey(e) || overlayOpen()) return;
 
       if (e.key === " ") {
         e.preventDefault();
@@ -186,7 +187,7 @@ export function ReviewSession({
       }
       if (e.key === "Escape") {
         e.preventDefault();
-        router.push("/");
+        router.push("/today");
         return;
       }
       const n = Number(e.key);
@@ -208,6 +209,8 @@ export function ReviewSession({
 
   return (
     <div className="flex flex-col" style={{ height: "100dvh" }}>
+      <Help mode="review" />
+
       {/* Hairline progress, no percentage label. */}
       <div className="bg-rule h-[2px] shrink-0">
         <div

@@ -1,5 +1,5 @@
 {
-  "id": "f456f8cb-168a-411e-9145-caf7523bab9e",
+  "id": "a77e467d-8fbe-423c-bd8a-54017c934836",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -8,6 +8,12 @@
       "name": "card_states",
       "schema": "",
       "columns": {
+        "profile_id": {
+          "name": "profile_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
         "card_id": {
           "name": "card_id",
           "type": "integer",
@@ -69,6 +75,12 @@
           "name": "card_states_due_idx",
           "columns": [
             {
+              "expression": "profile_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
               "expression": "due_at",
               "isExpression": false,
               "asc": true,
@@ -82,6 +94,19 @@
         }
       },
       "foreignKeys": {
+        "card_states_profile_id_profile_id_fk": {
+          "name": "card_states_profile_id_profile_id_fk",
+          "tableFrom": "card_states",
+          "tableTo": "profile",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
         "card_states_card_id_cards_id_fk": {
           "name": "card_states_card_id_cards_id_fk",
           "tableFrom": "card_states",
@@ -97,9 +122,10 @@
         }
       },
       "compositePrimaryKeys": {
-        "card_states_card_id_direction_pk": {
-          "name": "card_states_card_id_direction_pk",
+        "card_states_profile_id_card_id_direction_pk": {
+          "name": "card_states_profile_id_card_id_direction_pk",
           "columns": [
+            "profile_id",
             "card_id",
             "direction"
           ]
@@ -295,6 +321,66 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.profile": {
+      "name": "profile",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pin_hash": {
+          "name": "pin_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pin_salt": {
+          "name": "pin_salt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "profile_name_idx": {
+          "name": "profile_name_idx",
+          "columns": [
+            {
+              "expression": "lower(\"name\")",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.push_subscriptions": {
       "name": "push_subscriptions",
       "schema": "",
@@ -303,6 +389,12 @@
           "name": "id",
           "type": "serial",
           "primaryKey": true,
+          "notNull": true
+        },
+        "profile_id": {
+          "name": "profile_id",
+          "type": "integer",
+          "primaryKey": false,
           "notNull": true
         },
         "endpoint": {
@@ -352,7 +444,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "push_subscriptions_profile_id_profile_id_fk": {
+          "name": "push_subscriptions_profile_id_profile_id_fk",
+          "tableFrom": "push_subscriptions",
+          "tableTo": "profile",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "push_subscriptions_endpoint_unique": {
@@ -375,6 +481,12 @@
           "name": "id",
           "type": "serial",
           "primaryKey": true,
+          "notNull": true
+        },
+        "profile_id": {
+          "name": "profile_id",
+          "type": "integer",
+          "primaryKey": false,
           "notNull": true
         },
         "card_id": {
@@ -416,6 +528,12 @@
           "name": "reviews_reviewed_at_idx",
           "columns": [
             {
+              "expression": "profile_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
               "expression": "reviewed_at",
               "isExpression": false,
               "asc": true,
@@ -429,6 +547,19 @@
         }
       },
       "foreignKeys": {
+        "reviews_profile_id_profile_id_fk": {
+          "name": "reviews_profile_id_profile_id_fk",
+          "tableFrom": "reviews",
+          "tableTo": "profile",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
         "reviews_card_id_cards_id_fk": {
           "name": "reviews_card_id_cards_id_fk",
           "tableFrom": "reviews",
@@ -453,12 +584,11 @@
       "name": "settings",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
+        "profile_id": {
+          "name": "profile_id",
           "type": "integer",
           "primaryKey": true,
-          "notNull": true,
-          "default": 1
+          "notNull": true
         },
         "current_lesson": {
           "name": "current_lesson",
@@ -538,7 +668,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "settings_profile_id_profile_id_fk": {
+          "name": "settings_profile_id_profile_id_fk",
+          "tableFrom": "settings",
+          "tableTo": "profile",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},

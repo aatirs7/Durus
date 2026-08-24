@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Arabic } from "@/components/arabic";
+import { Help } from "@/components/help";
 import { ButtonLink, Eyebrow, Numeral, Screen } from "@/components/ui";
 import {
   BLANK,
@@ -46,6 +47,8 @@ export function CaseRun({ questions }: { questions: CaseQuestion[] }) {
 
   return (
     <Screen className="items-center justify-center gap-10 py-10">
+      <Help mode="cases" />
+
       <Eyebrow>
         {index + 1} of {questions.length}
       </Eyebrow>

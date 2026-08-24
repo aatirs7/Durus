@@ -7,11 +7,23 @@ import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth";
   the Node runtime, so node:crypto is available here.
 */
 export function proxy(request: NextRequest) {
-  // The landing page is public. It is the only page that is.
-  if (request.nextUrl.pathname === "/") return NextResponse.next();
-
   const token = request.cookies.get(SESSION_COOKIE)?.value;
-  if (verifySessionToken(token)) return NextResponse.next();
+  const signedIn = verifySessionToken(token);
+
+  /*
+    The landing page is the one public page, and it is only ever for
+    someone who is not signed in. Anyone with a session goes straight
+    to Today, which is also what the installed app wants, since a
+    shortcut saved before the split still points at the root.
+  */
+  if (request.nextUrl.pathname === "/") {
+    if (!signedIn) return NextResponse.next();
+    const home = request.nextUrl.clone();
+    home.pathname = "/today";
+    return NextResponse.redirect(home);
+  }
+
+  if (signedIn) return NextResponse.next();
 
   const url = request.nextUrl.clone();
   url.pathname = "/unlock";

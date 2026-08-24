@@ -2,6 +2,7 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cardStates, cards, lessons } from "@/db/schema";
 import { MATURE_DAYS, maturityOf, type Maturity } from "./constants";
+import { requireProfileId } from "./session";
 
 /*
   Re-exported so existing server side callers keep working. A client
@@ -51,6 +52,7 @@ export type LessonCard = {
 };
 
 export async function getLesson(number: number) {
+  const profileId = await requireProfileId();
   const [lesson] = await db
     .select()
     .from(lessons)
@@ -74,6 +76,7 @@ export async function getLesson(number: number) {
       and(
         eq(cardStates.cardId, cards.id),
         eq(cardStates.direction, "recognition"),
+        eq(cardStates.profileId, profileId),
       ),
     )
     .where(eq(cards.lessonId, lesson.id))

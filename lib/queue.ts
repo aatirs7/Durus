@@ -1,6 +1,7 @@
 import { and, asc, eq, isNull, lte, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { cardStates, cards, lessons, settings } from "@/db/schema";
+import { cardStates, cards, lessons } from "@/db/schema";
+import { getSettingsFor, requireProfileId } from "./session";
 
 export type QueueItem = {
   cardId: number;
@@ -20,10 +21,9 @@ export type QueueItem = {
   isNew: boolean;
 };
 
+/* Settings for whoever is signed in. */
 export async function getSettings() {
-  const [row] = await db.select().from(settings).where(eq(settings.id, 1));
-  if (!row) throw new Error("settings row is missing, run the seed");
-  return row;
+  return getSettingsFor(await requireProfileId());
 }
 
 /* Shuffle within a bucket. Never across buckets. */
@@ -37,14 +37,22 @@ function shuffle<T>(items: T[]): T[] {
 }
 
 export async function countDue(now = new Date()): Promise<number> {
+  const profileId = await requireProfileId();
   const [row] = await db
     .select({ count: sql<number>`count(*)::int` })
     .from(cardStates)
-    .where(and(lte(cardStates.dueAt, now), eq(cardStates.suspended, false)));
+    .where(
+      and(
+        eq(cardStates.profileId, profileId),
+        lte(cardStates.dueAt, now),
+        eq(cardStates.suspended, false),
+      ),
+    );
   return row?.count ?? 0;
 }
 
 export async function countNewAvailable(currentLesson: number): Promise<number> {
+  const profileId = await requireProfileId();
   const [row] = await db
     .select({ count: sql<number>`count(*)::int` })
     .from(cards)
@@ -54,6 +62,7 @@ export async function countNewAvailable(currentLesson: number): Promise<number> 
       and(
         eq(cardStates.cardId, cards.id),
         eq(cardStates.direction, "recognition"),
+        eq(cardStates.profileId, profileId),
       ),
     )
     .where(and(lte(lessons.number, currentLesson), isNull(cardStates.cardId)));
@@ -74,7 +83,8 @@ export async function buildQueue(
   options: { lessonNumber?: number; now?: Date } = {},
 ): Promise<QueueItem[]> {
   const now = options.now ?? new Date();
-  const config = await getSettings();
+  const profileId = await requireProfileId();
+  const config = await getSettingsFor(profileId);
 
   const lessonFilter = options.lessonNumber
     ? eq(lessons.number, options.lessonNumber)
@@ -103,6 +113,7 @@ export async function buildQueue(
     .innerJoin(lessons, eq(cards.lessonId, lessons.id))
     .where(
       and(
+        eq(cardStates.profileId, profileId),
         lte(cardStates.dueAt, now),
         eq(cardStates.suspended, false),
         lessonFilter,
@@ -130,6 +141,7 @@ export async function buildQueue(
       and(
         eq(cardStates.cardId, cards.id),
         eq(cardStates.direction, "recognition"),
+        eq(cardStates.profileId, profileId),
       ),
     )
     .where(and(lessonFilter, isNull(cardStates.cardId)))

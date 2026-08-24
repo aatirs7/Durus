@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   date,
@@ -73,6 +74,9 @@ export const cards = pgTable(
 export const cardStates = pgTable(
   "card_states",
   {
+    profileId: integer("profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
     cardId: integer("card_id")
       .notNull()
       .references(() => cards.id, { onDelete: "cascade" }),
@@ -85,8 +89,8 @@ export const cardStates = pgTable(
     suspended: boolean("suspended").notNull().default(false),
   },
   (t) => [
-    primaryKey({ columns: [t.cardId, t.direction] }),
-    index("card_states_due_idx").on(t.dueAt),
+    primaryKey({ columns: [t.profileId, t.cardId, t.direction] }),
+    index("card_states_due_idx").on(t.profileId, t.dueAt),
   ],
 );
 
@@ -95,6 +99,9 @@ export const reviews = pgTable(
   "reviews",
   {
     id: serial("id").primaryKey(),
+    profileId: integer("profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
     cardId: integer("card_id")
       .notNull()
       .references(() => cards.id, { onDelete: "cascade" }),
@@ -105,12 +112,18 @@ export const reviews = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (t) => [index("reviews_reviewed_at_idx").on(t.reviewedAt)],
+  (t) => [index("reviews_reviewed_at_idx").on(t.profileId, t.reviewedAt)],
 );
 
-/* Single row, id is always 1. */
+/*
+  One row per profile. Everything here is a personal preference or a
+  personal position in the book, so it cannot be shared between
+  accounts.
+*/
 export const settings = pgTable("settings", {
-  id: integer("id").primaryKey().default(1),
+  profileId: integer("profile_id")
+    .primaryKey()
+    .references(() => profiles.id, { onDelete: "cascade" }),
   currentLesson: integer("current_lesson").notNull().default(1),
   newPerDay: integer("new_per_day").notNull().default(12),
   maxReviews: integer("max_reviews").notNull().default(120),
@@ -129,28 +142,41 @@ export const settings = pgTable("settings", {
 });
 
 /*
-  The single profile. One row, id 1, created the first time the app is
-  opened. The PIN is stored as a salted hash, never in the clear.
+  An account. Several people can use one install, each with their own
+  name and PIN. The PIN is stored as a salted scrypt hash, never in the
+  clear.
 
-  A four digit PIN is 10,000 possibilities, so the throttle below is
-  what actually protects it rather than the length.
+  There is deliberately no attempt limit. 10,000 possibilities with
+  unlimited tries is not a barrier to anything automated, so treat the
+  PIN as a "not my phone" speed bump rather than as security.
+
+  Names are compared case insensitively on sign in, so "Aatir" and
+  "aatir" are the same account rather than two.
 */
-export const profile = pgTable("profile", {
-  id: integer("id").primaryKey().default(1),
-  name: text("name").notNull(),
-  pinHash: text("pin_hash").notNull(),
-  pinSalt: text("pin_salt").notNull(),
-  failedAttempts: integer("failed_attempts").notNull().default(0),
-  lockedUntil: timestamp("locked_until", { withTimezone: true }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-});
+export const profiles = pgTable(
+  // The SQL table keeps its original singular name so this is a column
+  // change rather than a rename, which drizzle-kit cannot resolve
+  // without an interactive prompt.
+  "profile",
+  {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    pinHash: text("pin_hash").notNull(),
+    pinSalt: text("pin_salt").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [uniqueIndex("profile_name_idx").on(sql`lower(${t.name})`)],
+);
 
 /* Not used until push lands, but in the schema now so there is no
    second migration later. */
 export const pushSubscriptions = pgTable("push_subscriptions", {
   id: serial("id").primaryKey(),
+  profileId: integer("profile_id")
+    .notNull()
+    .references(() => profiles.id, { onDelete: "cascade" }),
   endpoint: text("endpoint").notNull().unique(),
   p256dh: text("p256dh").notNull(),
   auth: text("auth").notNull(),
@@ -169,4 +195,4 @@ export type Card = typeof cards.$inferSelect;
 export type CardState = typeof cardStates.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type Settings = typeof settings.$inferSelect;
-export type Profile = typeof profile.$inferSelect;
+export type Profile = typeof profiles.$inferSelect;

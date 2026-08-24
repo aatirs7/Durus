@@ -2,7 +2,8 @@
 
 import { and, desc, eq, gte, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { cardStates, cards, lessons, reviews, settings } from "@/db/schema";
+import { cardStates, cards, lessons, reviews } from "@/db/schema";
+import { getSettingsFor, requireProfileId } from "@/lib/session";
 import { isCurrentLessonCapped, schedule, type Grade } from "@/lib/srs";
 
 export type GradePayload = {
@@ -19,6 +20,7 @@ export type GradePayload = {
 */
 export async function submitGrade(payload: GradePayload) {
   const now = new Date();
+  const profileId = await requireProfileId();
 
   const [row] = await db
     .select({
@@ -35,13 +37,14 @@ export async function submitGrade(payload: GradePayload) {
       and(
         eq(cardStates.cardId, cards.id),
         eq(cardStates.direction, payload.direction),
+        eq(cardStates.profileId, profileId),
       ),
     )
     .where(eq(cards.id, payload.cardId));
 
   if (!row) throw new Error(`card ${payload.cardId} not found`);
 
-  const config = await getConfig();
+  const config = await getSettingsFor(profileId);
 
   const state = {
     ease: row.ease ?? 2.5,
@@ -63,6 +66,7 @@ export async function submitGrade(payload: GradePayload) {
   await db
     .insert(cardStates)
     .values({
+      profileId,
       cardId: payload.cardId,
       direction: payload.direction,
       ease: next.ease,
@@ -72,7 +76,7 @@ export async function submitGrade(payload: GradePayload) {
       dueAt: next.dueAt,
     })
     .onConflictDoUpdate({
-      target: [cardStates.cardId, cardStates.direction],
+      target: [cardStates.profileId, cardStates.cardId, cardStates.direction],
       set: {
         ease: next.ease,
         intervalDays: next.intervalDays,
@@ -83,6 +87,7 @@ export async function submitGrade(payload: GradePayload) {
     });
 
   await db.insert(reviews).values({
+    profileId,
     cardId: payload.cardId,
     direction: payload.direction,
     grade: payload.grade,
@@ -99,6 +104,7 @@ export async function submitGrade(payload: GradePayload) {
     await db
       .insert(cardStates)
       .values({
+        profileId,
         cardId: payload.cardId,
         direction: "production",
         dueAt: now,
@@ -125,11 +131,13 @@ export async function undoGrade(payload: {
     existed: boolean;
   };
 }) {
+  const profileId = await requireProfileId();
   const [last] = await db
     .select({ id: reviews.id })
     .from(reviews)
     .where(
       and(
+        eq(reviews.profileId, profileId),
         eq(reviews.cardId, payload.cardId),
         eq(reviews.direction, payload.direction),
       ),
@@ -144,6 +152,7 @@ export async function undoGrade(payload: {
       .delete(cardStates)
       .where(
         and(
+          eq(cardStates.profileId, profileId),
           eq(cardStates.cardId, payload.cardId),
           eq(cardStates.direction, payload.direction),
         ),
@@ -162,18 +171,13 @@ export async function undoGrade(payload: {
     })
     .where(
       and(
+        eq(cardStates.profileId, profileId),
         eq(cardStates.cardId, payload.cardId),
         eq(cardStates.direction, payload.direction),
       ),
     );
 
   return { ok: true as const };
-}
-
-async function getConfig() {
-  const [row] = await db.select().from(settings).where(eq(settings.id, 1));
-  if (!row) throw new Error("settings row is missing, run the seed");
-  return row;
 }
 
 /*
@@ -189,6 +193,11 @@ export async function getWeekMedianMs(): Promise<number | null> {
       >`percentile_cont(0.5) within group (order by ${reviews.msToAnswer})`,
     })
     .from(reviews)
-    .where(gte(reviews.reviewedAt, since));
+    .where(
+      and(
+        eq(reviews.profileId, await requireProfileId()),
+        gte(reviews.reviewedAt, since),
+      ),
+    );
   return row?.median ?? null;
 }

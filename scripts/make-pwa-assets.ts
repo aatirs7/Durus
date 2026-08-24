@@ -18,7 +18,7 @@ const OUT = join(import.meta.dirname, "..", "public");
 
 // The tokens, repeated here because an SVG cannot read a CSS variable.
 // These must match --paper and --lapis in app/globals.css.
-const PAPER_LIGHT = "#F1EFE9";
+const PAPER_LIGHT = "#F6F4EF";
 const PAPER_DARK = "#131722";
 const LAPIS_LIGHT = "#2A4A8B";
 const LAPIS_DARK = "#7FA0DC";

@@ -25,14 +25,20 @@ export type Notification = {
 };
 
 /*
-  Sends to every registered subscription. iOS silently invalidates
+  Sends to one account's devices. iOS silently invalidates
   subscriptions, so a 404 or 410 means the row is dead and should go.
   Anything else gets three strikes.
 */
-export async function sendToAll(notification: Notification) {
+export async function sendToProfile(
+  profileId: number,
+  notification: Notification,
+) {
   configure();
 
-  const subs = await db.select().from(pushSubscriptions);
+  const subs = await db
+    .select()
+    .from(pushSubscriptions)
+    .where(eq(pushSubscriptions.profileId, profileId));
   let sent = 0;
   let removed = 0;
 

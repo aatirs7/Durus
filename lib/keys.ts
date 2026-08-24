@@ -16,6 +16,17 @@ export function isTyping(target: EventTarget | null): boolean {
   );
 }
 
+/*
+  Set on the body while the help panel is open. Every document level
+  handler bails while it is there, so a space bar meant to close the
+  panel cannot also reveal the card underneath it.
+*/
+export const OVERLAY_ATTR = "data-overlay";
+
+export function overlayOpen(): boolean {
+  return typeof document !== "undefined" && document.body.hasAttribute(OVERLAY_ATTR);
+}
+
 /* A modified key belongs to the browser, never to us. */
 export function isPlainKey(e: KeyboardEvent): boolean {
   return !e.metaKey && !e.ctrlKey && !e.altKey;

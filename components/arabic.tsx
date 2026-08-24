@@ -1,4 +1,4 @@
-import type { ElementType } from "react";
+import type { CSSProperties, ElementType } from "react";
 import { stripHarakat } from "@/lib/harakat";
 
 /*
@@ -17,6 +17,8 @@ type ArabicProps = {
   showHarakat?: boolean;
   className?: string;
   as?: ElementType;
+  /* For the one case where the size is data rather than a class. */
+  style?: CSSProperties;
 };
 
 export function Arabic({
@@ -24,10 +26,11 @@ export function Arabic({
   showHarakat = true,
   className = "",
   as: Tag = "span",
+  style,
 }: ArabicProps) {
   const text = showHarakat ? children : stripHarakat(children);
   return (
-    <Tag dir="rtl" lang="ar" className={`arabic ${className}`}>
+    <Tag dir="rtl" lang="ar" className={`arabic ${className}`} style={style}>
       {text}
     </Tag>
   );

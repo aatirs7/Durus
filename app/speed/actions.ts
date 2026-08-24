@@ -3,6 +3,7 @@
 import { and, eq, gte, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cardStates, cards, reviews, settings } from "@/db/schema";
+import { requireProfileId } from "@/lib/session";
 import { SPEED_FLOOR_MS, SPEED_RUN_LENGTH, type SpeedWord } from "@/lib/speed";
 
 
@@ -11,6 +12,7 @@ import { SPEED_FLOOR_MS, SPEED_RUN_LENGTH, type SpeedWord } from "@/lib/speed";
   drill is not speed testing something that was never learned.
 */
 export async function getSpeedWords(): Promise<SpeedWord[]> {
+  const profileId = await requireProfileId();
   const rows = await db
     .select({
       cardId: cards.id,
@@ -21,6 +23,7 @@ export async function getSpeedWords(): Promise<SpeedWord[]> {
     .innerJoin(cards, eq(cardStates.cardId, cards.id))
     .where(
       and(
+        eq(cardStates.profileId, profileId),
         eq(cardStates.direction, "recognition"),
         gte(cardStates.repetitions, 2),
         eq(cardStates.suspended, false),
@@ -40,9 +43,11 @@ export async function recordSpeedRun(
   results: { cardId: number; knew: boolean; windowMs: number }[],
 ) {
   if (results.length === 0) return { ok: true as const };
+  const profileId = await requireProfileId();
 
   await db.insert(reviews).values(
     results.map((r) => ({
+      profileId,
       cardId: r.cardId,
       direction: "speed" as const,
       // Knew it maps to good, missed it to again, so the accuracy maths
@@ -61,6 +66,6 @@ export async function tightenSpeedWindow(nextMs: number) {
   await db
     .update(settings)
     .set({ speedWindowMs: clamped })
-    .where(eq(settings.id, 1));
+    .where(eq(settings.profileId, await requireProfileId()));
   return { speedWindowMs: clamped };
 }

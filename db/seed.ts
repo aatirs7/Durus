@@ -6,7 +6,7 @@
 
 import { eq, sql } from "drizzle-orm";
 import { db } from "./index";
-import { cards, lessons, settings } from "./schema";
+import { cards, lessons } from "./schema";
 import { LESSON_TITLES, SEED_LESSONS } from "./seed-data/lessons-1-4";
 import { parseCards } from "../lib/parse-cards";
 
@@ -47,12 +47,6 @@ async function main() {
       });
   }
   console.log(`lessons: ${TOTAL_LESSONS} rows present`);
-
-  await db
-    .insert(settings)
-    .values({ id: 1, currentLesson: CURRENT_LESSON })
-    .onConflictDoNothing();
-  console.log("settings: single row present");
 
   const lessonRows = await db.select().from(lessons);
   const lessonIdByNumber = new Map(lessonRows.map((l) => [l.number, l.id]));

@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Arabic } from "@/components/arabic";
+import { Help } from "@/components/help";
 import { SpeedRing } from "@/components/speed-ring";
 import { Button, ButtonLink, Eyebrow, Numeral, Screen } from "@/components/ui";
-import { isPlainKey, isTyping } from "@/lib/keys";
+import { isPlainKey, isTyping, overlayOpen } from "@/lib/keys";
 import { recordSpeedRun, tightenSpeedWindow } from "./actions";
 import {
   SPEED_FLOOR_MS,
@@ -68,7 +69,7 @@ export function SpeedRun({
   */
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (isTyping(e.target) || !isPlainKey(e)) return;
+      if (isTyping(e.target) || !isPlainKey(e) || overlayOpen()) return;
       if (!blurred) return;
       if (e.key === "ArrowLeft") {
         e.preventDefault();
@@ -132,6 +133,8 @@ export function SpeedRun({
 
   return (
     <Screen className="items-center justify-center gap-10 py-10">
+      <Help mode="speed" />
+
       <Eyebrow>
         {index + 1} of {words.length}
       </Eyebrow>

@@ -6,12 +6,16 @@
   fallback.
 */
 
-const VERSION = "durus-v2";
+const VERSION = "durus-v3";
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 
+/*
+  The shell is Today, not the root. The root is the public landing page
+  and the installed app never shows it, so caching it would only mean
+  serving marketing to someone who is offline mid review.
+*/
 const PRECACHE = [
-  "/",
   "/today",
   "/manifest.webmanifest",
   "/icon-192.png",

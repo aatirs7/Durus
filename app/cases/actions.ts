@@ -2,7 +2,8 @@
 
 import { and, eq, lte, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { cards, lessons, settings } from "@/db/schema";
+import { cards, lessons } from "@/db/schema";
+import { getSettingsFor, requireProfileId } from "@/lib/session";
 import { buildCaseQuestion, type CaseQuestion } from "@/lib/case-drill";
 import { CASE_RUN_LENGTH } from "@/lib/speed";
 
@@ -12,8 +13,7 @@ import { CASE_RUN_LENGTH } from "@/lib/speed";
   case context, so this widens on its own as the course goes.
 */
 export async function getCaseQuestions(): Promise<CaseQuestion[]> {
-  const [config] = await db.select().from(settings).where(eq(settings.id, 1));
-  if (!config) throw new Error("settings row is missing, run the seed");
+  const config = await getSettingsFor(await requireProfileId());
 
   const rows = await db
     .select({
