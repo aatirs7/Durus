@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { OVERLAY_ATTR, isPlainKey, isTyping } from "@/lib/keys";
 
@@ -287,6 +288,13 @@ function seenKey(mode: Mode) {
 }
 
 export function Help({ mode }: { mode: Mode }) {
+  const pathname = usePathname();
+  /*
+    The theme switch hides itself on /review so the card face stays
+    bare. Without this the question mark would sit beside an empty slot
+    rather than in the corner.
+  */
+  const alone = pathname.startsWith("/review");
   const [open, setOpen] = useState(false);
   const [slide, setSlide] = useState(0);
   const help = SLIDES[mode];
@@ -357,7 +365,9 @@ export function Help({ mode }: { mode: Mode }) {
         onClick={() => setOpen(true)}
         aria-label={`What is the ${help.title.toLowerCase()} for`}
         /* Flat, like the sun and moon it sits beside. */
-        className="text-ink-soft hover:text-ink active:text-ink fixed right-16 z-20 flex size-10 items-center justify-center text-[17px] opacity-70 transition-opacity hover:opacity-100"
+        className={`text-ink-soft hover:text-ink active:text-ink fixed z-20 flex size-10 items-center justify-center text-[17px] opacity-70 transition-opacity hover:opacity-100 ${
+          alone ? "right-4" : "right-16"
+        }`}
         style={{ top: "max(1rem, calc(env(safe-area-inset-top) + 0.25rem))" }}
       >
         ?

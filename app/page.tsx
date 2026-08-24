@@ -86,7 +86,13 @@ export default function LandingPage() {
     <main className="flex w-full flex-1 flex-col">
       <StandaloneRedirect />
 
-      <header className="mx-auto flex w-full max-w-[1040px] items-center justify-between px-6 py-5">
+      {/*
+        The extra right padding keeps the actions clear of the theme
+        switch, which is fixed to the viewport corner rather than to
+        this row, and would otherwise sit on top of them at exactly
+        1024px.
+      */}
+      <header className="mx-auto flex w-full max-w-[1040px] items-center justify-between px-6 py-5 lg:pr-20">
         {/*
           The wordmark is unvowelled here and in the rail. At display
           size the harakat sit high enough above the letters to read as
@@ -98,7 +104,12 @@ export default function LandingPage() {
         >
           دُرُوس
         </Arabic>
-        <div className="flex items-center gap-5">
+        {/*
+          Desktop only. On a phone these two would sit under the theme
+          switch, and the hero repeats them a screen height below
+          anyway.
+        */}
+        <div className="hidden items-center gap-5 lg:flex">
           <Link
             href="/unlock"
             className="text-ink-soft hover:text-ink text-[15px] transition-colors"
@@ -110,7 +121,7 @@ export default function LandingPage() {
             variant="quiet"
             className="px-4 py-2 text-[15px]"
           >
-            Create an account
+            Create account
           </ButtonLink>
         </div>
       </header>
@@ -140,15 +151,24 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="flex w-full max-w-[320px] flex-col items-center gap-3 sm:max-w-none">
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-              <ButtonLink href="/unlock?new" className="sm:min-w-[220px]">
-                Create an account
+          <div className="flex w-full max-w-[360px] flex-col items-center gap-3 sm:max-w-none">
+            {/*
+              Side by side at every width. The two doors are a pair and
+              reading them as one line is the point, so on a narrow
+              screen they share the row and lose some padding rather
+              than stacking into a list of two things to decide between.
+            */}
+            <div className="flex w-full gap-3 sm:w-auto">
+              <ButtonLink
+                href="/unlock?new"
+                className="flex-1 px-4 sm:min-w-[200px] sm:flex-none"
+              >
+                Create account
               </ButtonLink>
               <ButtonLink
                 href="/unlock"
                 variant="quiet"
-                className="sm:min-w-[220px]"
+                className="flex-1 px-4 sm:min-w-[200px] sm:flex-none"
               >
                 Sign in
               </ButtonLink>
@@ -270,12 +290,17 @@ export default function LandingPage() {
         >
           دُرُوس
         </Arabic>
-        <div className="flex items-center gap-5">
+        {/*
+          Desktop only. On a phone these two would sit under the theme
+          switch, and the hero repeats them a screen height below
+          anyway.
+        */}
+        <div className="hidden items-center gap-5 lg:flex">
           <Link
             href="/unlock?new"
             className="text-lapis text-[16px] underline-offset-4 hover:underline"
           >
-            Create an account
+            Create account
           </Link>
           <Link
             href="/unlock"

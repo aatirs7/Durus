@@ -110,10 +110,17 @@ export function ReviewSession({
       // A wrong answer comes back later in this same session.
       if (grade === "again") setQueue((prev) => [...prev, question]);
 
-      advancing.current = setTimeout(
-        () => setIndex((i) => i + 1),
-        outcome.correct ? FEEDBACK_MS : FEEDBACK_WRONG_MS,
-      );
+      /*
+        Clearing the result and moving on happen together. Doing the
+        clear in an effect instead leaves one painted frame where the
+        next card is already up with the previous card's answer still
+        marked green, which reads as the app giving it away.
+      */
+      advancing.current = setTimeout(() => {
+        setResult(null);
+        setTyped("");
+        setIndex((i) => i + 1);
+      }, outcome.correct ? FEEDBACK_MS : FEEDBACK_WRONG_MS);
     },
     [question, result],
   );
@@ -192,11 +199,12 @@ export function ReviewSession({
 
       <Help mode="review" />
 
-      <div className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col justify-center gap-10 px-6 lg:max-w-[680px]">
+      <div className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col justify-center gap-9 overflow-y-auto px-6 pt-20 pb-6 lg:max-w-[680px]">
         <Prompt question={question} />
 
         {question.mode === "choice" ? (
           <ChoiceAnswers
+            key={`${question.cardId}-${question.direction}-${index}`}
             question={question}
             answered={Boolean(result)}
             onPick={(english) =>

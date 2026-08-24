@@ -11,8 +11,13 @@ export default async function LessonsPage() {
   const rows = await listLessons();
 
   return (
-    <Screen className="gap-8 py-10">
-      <div className="flex flex-col gap-2">
+    <Screen className="gap-12 py-10">
+      {/*
+        The header needs real air under it. The first row of the list is
+        an Arabic title with harakat above the line, so a normal gap
+        reads as the two colliding.
+      */}
+      <div className="flex flex-col gap-3 pb-2">
         <Eyebrow>Book one</Eyebrow>
         <PageTitle>Lessons</PageTitle>
       </div>
@@ -29,7 +34,7 @@ export default async function LessonsPage() {
           const locked = lesson.number > config.currentLesson;
           const body = (
             <div
-              className={`border-rule flex flex-col items-center gap-1 border-b py-5 ${
+              className={`border-rule flex flex-col items-center gap-1.5 border-b py-6 ${
                 locked ? "opacity-40" : ""
               }`}
             >
