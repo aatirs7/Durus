@@ -57,19 +57,27 @@ export default async function TodayPage() {
         with a caption underneath it is two lines saying one thing.
       */}
       <div className="flex flex-col items-center justify-between pb-8">
-        <Eyebrow>{dateLine(now, config.timezone)}</Eyebrow>
+        {/*
+          The date is the page's header line. The size-10 box gives it
+          the same height as the sun and moon in the corner, which is
+          fixed to the viewport rather than to this row, so the two sit
+          on one line instead of the date floating below it.
+        */}
+        <div className="flex h-10 items-center">
+          <Eyebrow>{dateLine(now, config.timezone)}</Eyebrow>
+        </div>
 
         {/*
-          The English and the Arabic are separate elements. Never one
-          text node, or bidi reorders the two around each other.
+          Where you are in the book. The English sits under the Arabic,
+          the way the lessons list sets it, and never in the same text
+          node, or bidi reorders the two around each other.
         */}
         {current ? (
-          <div className="flex items-center gap-3">
-            <span className="eyebrow">Lesson {current.number}</span>
-            <span className="bg-rule h-4 w-px shrink-0" aria-hidden />
-            <Arabic className="text-ink-soft text-[20px] leading-[2]">
+          <div className="flex flex-col items-center gap-1">
+            <Arabic className="text-ink text-[24px] leading-[1.9]">
               {current.titleAr}
             </Arabic>
+            <span className="eyebrow">Lesson {current.number}</span>
           </div>
         ) : (
           <span />

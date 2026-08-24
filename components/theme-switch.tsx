@@ -40,7 +40,9 @@ export function ThemeSwitch() {
         size-10 box is only there so a thumb has something to land on.
       */
       className="fixed right-4 z-20 flex size-10 items-center justify-center opacity-70 transition-opacity hover:opacity-100 active:opacity-100"
-      style={{ top: "max(1rem, calc(env(safe-area-inset-top) + 0.25rem))" }}
+      /* The same top edge the screens pad to, so a header line on any
+         page sits on this glyph's centre line. */
+      style={{ top: "max(1rem, env(safe-area-inset-top))" }}
     >
       {!mounted ? null : dark ? <Sun /> : <Moon />}
     </button>

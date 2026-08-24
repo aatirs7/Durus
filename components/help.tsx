@@ -71,7 +71,10 @@ function Row({
   );
 }
 
-const SLIDES: Record<Mode, { title: string; slides: Slide[]; keys?: string[] }> = {
+const SLIDES: Record<
+  Mode,
+  { title: string; slides: Slide[]; keys?: string[] }
+> = {
   review: {
     title: "Review",
     slides: [
@@ -79,7 +82,15 @@ const SLIDES: Record<Mode, { title: string; slides: Slide[]; keys?: string[] }> 
         line: "An Arabic word appears on its own. Nothing else, so there is nothing to guess from.",
         art: (
           <Art>
-            <rect x="20" y="14" width="160" height="92" rx="10" fill={C.frame} stroke={C.rule} />
+            <rect
+              x="20"
+              y="14"
+              width="160"
+              height="92"
+              rx="10"
+              fill={C.frame}
+              stroke={C.rule}
+            />
             <text
               x="100"
               y="70"
@@ -119,7 +130,15 @@ const SLIDES: Record<Mode, { title: string; slides: Slide[]; keys?: string[] }> 
             >
               قَلَم
             </text>
-            <rect x="30" y="50" width="140" height="24" rx="8" fill={C.sunk} stroke={C.lapis} />
+            <rect
+              x="30"
+              y="50"
+              width="140"
+              height="24"
+              rx="8"
+              fill={C.sunk}
+              stroke={C.lapis}
+            />
             <rect x="40" y="59" width="42" height="6" rx="3" fill={C.faint} />
             <rect x="30" y="84" width="140" height="22" rx="8" fill={C.lapis} />
           </Art>
@@ -129,7 +148,14 @@ const SLIDES: Record<Mode, { title: string; slides: Slide[]; keys?: string[] }> 
         line: "There is no self rating. Being right sets the schedule, and how fast you were sets how far out.",
         art: (
           <Art>
-            <circle cx="100" cy="60" r="34" fill="none" stroke={C.sunk} strokeWidth="6" />
+            <circle
+              cx="100"
+              cy="60"
+              r="34"
+              fill="none"
+              stroke={C.sunk}
+              strokeWidth="6"
+            />
             <circle
               cx="100"
               cy="60"
@@ -159,7 +185,14 @@ const SLIDES: Record<Mode, { title: string; slides: Slide[]; keys?: string[] }> 
         line: "A word shows for the length of your window, with the ring draining around it.",
         art: (
           <Art>
-            <circle cx="100" cy="60" r="38" fill="none" stroke={C.sunk} strokeWidth="5" />
+            <circle
+              cx="100"
+              cy="60"
+              r="38"
+              fill="none"
+              stroke={C.sunk}
+              strokeWidth="5"
+            />
             <circle
               cx="100"
               cy="60"
@@ -189,7 +222,14 @@ const SLIDES: Record<Mode, { title: string; slides: Slide[]; keys?: string[] }> 
         line: "When the window closes the word blurs out. However long you stare, it is gone.",
         art: (
           <Art>
-            <circle cx="100" cy="60" r="38" fill="none" stroke={C.sunk} strokeWidth="5" />
+            <circle
+              cx="100"
+              cy="60"
+              r="38"
+              fill="none"
+              stroke={C.sunk}
+              strokeWidth="5"
+            />
             <text
               x="100"
               y="68"
@@ -208,12 +248,32 @@ const SLIDES: Record<Mode, { title: string; slides: Slide[]; keys?: string[] }> 
         line: "Say whether you knew it. Nothing is graded here and no schedule moves.",
         art: (
           <Art>
-            <rect x="18" y="48" width="78" height="26" rx="9" fill={C.frame} stroke={C.rule} />
+            <rect
+              x="18"
+              y="48"
+              width="78"
+              height="26"
+              rx="9"
+              fill={C.frame}
+              stroke={C.rule}
+            />
             <rect x="104" y="48" width="78" height="26" rx="9" fill={C.lapis} />
-            <text x="57" y="65" textAnchor="middle" fill={C.faint} fontSize="11">
+            <text
+              x="57"
+              y="65"
+              textAnchor="middle"
+              fill={C.faint}
+              fontSize="11"
+            >
               Missed it
             </text>
-            <text x="143" y="65" textAnchor="middle" fill={C.frame} fontSize="11">
+            <text
+              x="143"
+              y="65"
+              textAnchor="middle"
+              fill={C.frame}
+              fontSize="11"
+            >
               Knew it
             </text>
           </Art>
@@ -230,7 +290,15 @@ const SLIDES: Record<Mode, { title: string; slides: Slide[]; keys?: string[] }> 
         line: "A sentence appears with the final harakah on one noun blanked out.",
         art: (
           <Art>
-            <rect x="16" y="34" width="168" height="40" rx="10" fill={C.frame} stroke={C.rule} />
+            <rect
+              x="16"
+              y="34"
+              width="168"
+              height="40"
+              rx="10"
+              fill={C.frame}
+              stroke={C.rule}
+            />
             <text
               x="100"
               y="60"
@@ -241,7 +309,14 @@ const SLIDES: Record<Mode, { title: string; slides: Slide[]; keys?: string[] }> 
             >
               فِي البَيْت
             </text>
-            <circle cx="126" cy="44" r="4" fill="none" stroke={C.lapis} strokeDasharray="2 2" />
+            <circle
+              cx="126"
+              cy="44"
+              r="4"
+              fill="none"
+              stroke={C.lapis}
+              strokeDasharray="2 2"
+            />
           </Art>
         ),
       },
@@ -250,14 +325,56 @@ const SLIDES: Record<Mode, { title: string; slides: Slide[]; keys?: string[] }> 
         art: (
           <Art>
             <Row y={30} w={40} />
-            <rect x="82" y="30" width="40" height="16" rx="6" fill="var(--lapis-wash)" stroke={C.good} />
+            <rect
+              x="82"
+              y="30"
+              width="40"
+              height="16"
+              rx="6"
+              fill="var(--lapis-wash)"
+              stroke={C.good}
+            />
             <Row y={30} w={40} />
-            <rect x="30" y="30" width="40" height="16" rx="6" fill={C.sunk} stroke={C.rule} />
-            <rect x="134" y="30" width="40" height="16" rx="6" fill={C.sunk} stroke={C.rule} />
-            <text x="50" y="42" textAnchor="middle" fill={C.faint} fontSize="9">marfu</text>
-            <text x="102" y="42" textAnchor="middle" fill={C.good} fontSize="9">majrur</text>
-            <text x="154" y="42" textAnchor="middle" fill={C.faint} fontSize="9">mansub</text>
-            <text x="100" y="80" textAnchor="middle" fill={C.faint} fontSize="10">
+            <rect
+              x="30"
+              y="30"
+              width="40"
+              height="16"
+              rx="6"
+              fill={C.sunk}
+              stroke={C.rule}
+            />
+            <rect
+              x="134"
+              y="30"
+              width="40"
+              height="16"
+              rx="6"
+              fill={C.sunk}
+              stroke={C.rule}
+            />
+            <text x="50" y="42" textAnchor="middle" fill={C.faint} fontSize="9">
+              marfu
+            </text>
+            <text x="102" y="42" textAnchor="middle" fill={C.good} fontSize="9">
+              majrur
+            </text>
+            <text
+              x="154"
+              y="42"
+              textAnchor="middle"
+              fill={C.faint}
+              fontSize="9"
+            >
+              mansub
+            </text>
+            <text
+              x="100"
+              y="80"
+              textAnchor="middle"
+              fill={C.faint}
+              fontSize="10"
+            >
               after a preposition
             </text>
           </Art>
@@ -267,7 +384,15 @@ const SLIDES: Record<Mode, { title: string; slides: Slide[]; keys?: string[] }> 
         line: "This tests the grammar, so it never touches your card schedule.",
         art: (
           <Art>
-            <rect x="40" y="34" width="120" height="52" rx="10" fill={C.frame} stroke={C.rule} />
+            <rect
+              x="40"
+              y="34"
+              width="120"
+              height="52"
+              rx="10"
+              fill={C.frame}
+              stroke={C.rule}
+            />
             <path
               d="M70 60 l14 14 l30 -32"
               fill="none"
@@ -368,7 +493,7 @@ export function Help({ mode }: { mode: Mode }) {
         className={`text-ink-soft hover:text-ink active:text-ink fixed z-20 flex size-10 items-center justify-center text-[17px] opacity-70 transition-opacity hover:opacity-100 ${
           alone ? "right-4" : "right-16"
         }`}
-        style={{ top: "max(1rem, calc(env(safe-area-inset-top) + 0.25rem))" }}
+        style={{ top: "max(1rem, env(safe-area-inset-top))" }}
       >
         ?
       </button>
