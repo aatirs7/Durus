@@ -8,19 +8,24 @@
   No pure white, no pure black. Ever.
 */
 
+/*
+  Light is the icon: lapis on paper. The text is a deep blue rather than
+  a near black, so the whole screen reads as the same ink the mark is
+  drawn in. Still no pure white, the ground stays a warm off white.
+*/
 :root {
-  --paper: #f1efe9;
-  --surface: #faf8f4;
-  --surface-sunk: #e7e4dc;
-  --ink: #1c2231;
-  --ink-soft: #5b6377;
-  --ink-faint: #949aa8;
-  --rule: #dad6cc;
+  --paper: #f6f4ef;
+  --surface: #fcfbf8;
+  --surface-sunk: #eae7df;
+  --ink: #1e356f;
+  --ink-soft: #56679a;
+  --ink-faint: #98a3c0;
+  --rule: #d7d9e2;
   --lapis: #2a4a8b;
   --lapis-wash: #e3e9f5;
-  --verdigris: #3e7c6e;
-  --clay: #a8555c;
-  --saffron: #b4832c;
+  --verdigris: #34705f;
+  --clay: #9c454d;
+  --saffron: #9c6f1e;
 }
 
 .dark {

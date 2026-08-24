@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Amiri, IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeSwitch } from "@/components/theme-switch";
 import "./globals.css";
 
 /*
@@ -90,7 +91,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${amiri.variable} ${plexMono.variable} ${satoshi.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <ThemeSwitch />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

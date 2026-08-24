@@ -66,6 +66,13 @@ export function createSessionToken(now = new Date()): string {
 
 export function verifySessionToken(token: string | undefined): boolean {
   if (!token) return false;
+  /*
+    Never throw from here. This runs in proxy.ts on every request, and a
+    throw there takes down the whole site rather than just refusing the
+    session. A missing secret means nobody is signed in, which lands on
+    the lock screen instead of a redirect loop.
+  */
+  if (!process.env.AUTH_SECRET) return false;
   const lastDot = token.lastIndexOf(".");
   if (lastDot < 1) return false;
 

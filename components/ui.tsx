@@ -114,7 +114,7 @@ export function DeadLink({ children }: { children: ReactNode }) {
 
 export function Pill({ children }: { children: ReactNode }) {
   return (
-    <span className="border-rule text-ink-soft inline-flex items-center rounded-[999px] border px-4 py-1.5 text-[16px]">
+    <span className="border-rule text-ink-soft inline-flex items-center rounded-[999px] border px-5 py-2 text-[18px]">
       {children}
     </span>
   );
