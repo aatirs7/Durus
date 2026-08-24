@@ -11,9 +11,12 @@ import type { ComponentProps, ReactNode } from "react";
 export function Screen({
   children,
   className = "",
+  fixed = false,
 }: {
   children: ReactNode;
   className?: string;
+  /* Pins the screen to the viewport so it cannot scroll at all. */
+  fixed?: boolean;
 }) {
   return (
     /*
@@ -21,10 +24,13 @@ export function Screen({
       the notch. The bottom one keeps buttons off the home indicator.
     */
     <main
-      className={`mx-auto flex w-full max-w-[560px] flex-1 flex-col px-6 ${className}`}
+      className={`mx-auto flex w-full max-w-[560px] flex-1 flex-col px-6 ${
+        fixed ? "overflow-hidden" : ""
+      } ${className}`}
       style={{
         paddingTop: "max(1rem, env(safe-area-inset-top))",
         paddingBottom: "max(2rem, env(safe-area-inset-bottom))",
+        ...(fixed ? { height: "100dvh" } : {}),
       }}
     >
       {children}

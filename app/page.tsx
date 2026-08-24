@@ -24,10 +24,10 @@ export default async function TodayPage() {
   const clear = due === 0 && newToday === 0;
 
   return (
-    <Screen className="justify-center gap-12 py-10">
+    <Screen fixed className="justify-center gap-8 py-6">
       <PwaRuntime dueCount={due} />
 
-      <div className="flex flex-col items-center gap-8">
+      <div className="flex flex-col items-center gap-6">
         <Eyebrow>{dateLine(now, config.timezone)}</Eyebrow>
 
         <div className="flex flex-col items-center gap-3">
@@ -80,7 +80,7 @@ export default async function TodayPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
         <UnlockNext next={next} />
         <OfflinePill />
         <InstallHint />

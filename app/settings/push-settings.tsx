@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Eyebrow } from "@/components/ui";
 import type { Settings } from "@/db/schema";
-import { Toggle } from "./settings-form";
+import { Toggle } from "./toggle";
 
 /*
   iOS constraints shape this whole section, so it is built to them

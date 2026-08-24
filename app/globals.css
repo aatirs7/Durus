@@ -82,6 +82,22 @@ body {
   text-align: center;
 }
 
+/*
+  Scrollbars are hidden everywhere. Scrolling still works, it just does
+  not draw a bar, because a gutter appearing and disappearing between
+  screens is the loudest thing in an otherwise quiet layout.
+*/
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 /* Numerals never jitter as they tick. */
 .tabular {
   font-family: var(--font-plex-mono), ui-monospace, monospace;
