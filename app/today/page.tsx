@@ -48,49 +48,45 @@ export default async function TodayPage() {
       <PwaRuntime dueCount={due} />
 
       {/*
-        Above the centre line. The masthead sits at the top of the row
-        and the count sits at the bottom of it, so the empty space ends
-        up between them rather than above everything.
+        Above the centre line, as three groups spread across the row
+        rather than one column of five centred lines. Date at the top,
+        where you are in the book in the middle, and the count sitting
+        just above the button that acts on it.
+
+        The count carries its own label on the same baseline. A numeral
+        with a caption underneath it is two lines saying one thing.
       */}
       <div className="flex flex-col items-center justify-between pb-8">
-        <div className="flex flex-col items-center gap-2 pt-1">
-          <Arabic
-            showHarakat={false}
-            className="text-lapis text-[30px] leading-none"
-          >
-            دُرُوس
-          </Arabic>
-          {/*
-            Which lesson you are in, in the book's own words. Never
-            in the same text node as the English, or bidi reorders the
-            two around each other.
-          */}
-          {current ? (
-            <>
-              <Arabic className="text-ink-soft text-[19px] leading-[1.9]">
-                {current.titleAr}
-              </Arabic>
-              <span className="eyebrow">Lesson {current.number}</span>
-            </>
-          ) : null}
-        </div>
+        <Eyebrow>{dateLine(now, config.timezone)}</Eyebrow>
 
-        <div className="flex flex-col items-center gap-4">
-          <Eyebrow>{dateLine(now, config.timezone)}</Eyebrow>
+        {/*
+          The English and the Arabic are separate elements. Never one
+          text node, or bidi reorders the two around each other.
+        */}
+        {current ? (
+          <div className="flex items-center gap-3">
+            <span className="eyebrow">Lesson {current.number}</span>
+            <span className="bg-rule h-4 w-px shrink-0" aria-hidden />
+            <Arabic className="text-ink-soft text-[20px] leading-[2]">
+              {current.titleAr}
+            </Arabic>
+          </div>
+        ) : (
+          <span />
+        )}
 
+        <div className="flex flex-col items-center gap-1">
           {clear ? (
             <Numeral className="lg:text-[64px]">Clear</Numeral>
           ) : (
-            <>
+            <div className="flex items-baseline gap-3">
               <Numeral className="lg:text-[64px]">{due}</Numeral>
-              <span className="eyebrow">due today</span>
-            </>
+              <span className="eyebrow">due</span>
+            </div>
           )}
 
           {newToday > 0 ? (
-            <p className="text-ink-soft text-[16px]">
-              {newToday} new from Lesson {config.currentLesson}
-            </p>
+            <p className="text-ink-soft text-[16px]">{newToday} new to learn</p>
           ) : null}
         </div>
       </div>

@@ -32,11 +32,6 @@ type Answered = {
 
 type Result = { grade: Grade; correct: boolean; message: string };
 
-/* How long the result stays up before the deck advances. A wrong
-   answer holds longer, because that is when the card is worth reading. */
-const FEEDBACK_MS = 900;
-const FEEDBACK_WRONG_MS = 2200;
-
 export function ReviewSession({
   initialQueue,
   weekMedianMs,
@@ -52,7 +47,6 @@ export function ReviewSession({
   const [answered, setAnswered] = useState<Answered[]>([]);
 
   const shownAt = useRef<number>(Date.now());
-  const advancing = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const question = queue[index];
   const done = !question;
@@ -63,12 +57,6 @@ export function ReviewSession({
     setTyped("");
     setResult(null);
   }, [index]);
-
-  useEffect(() => {
-    return () => {
-      if (advancing.current) clearTimeout(advancing.current);
-    };
-  }, []);
 
   const answer = useCallback(
     (outcome: { correct: boolean; close?: boolean }) => {
@@ -109,21 +97,27 @@ export function ReviewSession({
 
       // A wrong answer comes back later in this same session.
       if (grade === "again") setQueue((prev) => [...prev, question]);
-
-      /*
-        Clearing the result and moving on happen together. Doing the
-        clear in an effect instead leaves one painted frame where the
-        next card is already up with the previous card's answer still
-        marked green, which reads as the app giving it away.
-      */
-      advancing.current = setTimeout(() => {
-        setResult(null);
-        setTyped("");
-        setIndex((i) => i + 1);
-      }, outcome.correct ? FEEDBACK_MS : FEEDBACK_WRONG_MS);
     },
     [question, result],
   );
+
+  /*
+    The result stays up until it is dismissed. It used to clear itself
+    after a second, or two on a wrong answer, and a timer is the wrong
+    instrument here: the moment right after getting a word wrong is the
+    moment you are actually reading it, and how long that takes is not
+    something the app can know.
+
+    Clearing the result and moving on happen together. Doing the clear
+    in an effect instead leaves one painted frame where the next card is
+    already up with the previous card's answer still marked green, which
+    reads as the app giving it away.
+  */
+  const advance = useCallback(() => {
+    setResult(null);
+    setTyped("");
+    setIndex((i) => i + 1);
+  }, []);
 
   const undo = useCallback(() => {
     if (answered.length === 0 || result) return;
@@ -150,6 +144,14 @@ export function ReviewSession({
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (isTyping(e.target) || !isPlainKey(e) || overlayOpen()) return;
+
+      if (result) {
+        if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          advance();
+        }
+        return;
+      }
 
       if (e.key === "u") {
         e.preventDefault();
@@ -180,7 +182,7 @@ export function ReviewSession({
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [undo, router, question, result, answer]);
+  }, [undo, router, question, result, answer, advance]);
 
   if (done) {
     return <SessionEnd answered={answered} weekMedianMs={weekMedianMs} />;
@@ -229,6 +231,30 @@ export function ReviewSession({
 
         <Feedback question={question} result={result} />
       </div>
+
+      {/*
+        Once the result is up the whole screen carries it forward. It
+        sits under the corner glyphs, so help and the theme are still
+        reachable, and the line is fixed to the bottom rather than in
+        the flow so the card does not jump as it appears.
+      */}
+      {result ? (
+        <>
+          <button
+            type="button"
+            aria-label="Next card"
+            onClick={advance}
+            className="fixed inset-0 z-10 cursor-pointer"
+          />
+          <p
+            className="text-ink-faint pointer-events-none fixed inset-x-0 z-10 text-center text-[14px]"
+            style={{ bottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
+          >
+            <span className="lg:hidden">Tap anywhere to continue</span>
+            <span className="hidden lg:inline">Space to continue</span>
+          </p>
+        </>
+      ) : null}
     </div>
   );
 }

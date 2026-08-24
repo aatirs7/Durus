@@ -14,6 +14,8 @@ export type SettingsPatch = Partial<{
   speedWindowMs: number;
   remindersOn: boolean;
   reminderHour: number;
+  secondReminderOn: boolean;
+  reminderHour2: number;
   classDayReminder: boolean;
 }>;
 

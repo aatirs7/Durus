@@ -130,10 +130,23 @@ export const settings = pgTable("settings", {
   showHarakat: boolean("show_harakat").notNull().default(true),
   speedWindowMs: integer("speed_window_ms").notNull().default(2000),
   remindersOn: boolean("reminders_on").notNull().default(false),
-  reminderHour: integer("reminder_hour").notNull().default(20),
+  /*
+    Two reminders a day, a morning one and an evening one. The second
+    can be turned off on its own, because setting it to the same hour as
+    the first would be a confusing way to say "only once".
+  */
+  reminderHour: integer("reminder_hour").notNull().default(9),
+  secondReminderOn: boolean("second_reminder_on").notNull().default(true),
+  reminderHour2: integer("reminder_hour_2").notNull().default(20),
   classDayReminder: boolean("class_day_reminder").notNull().default(true),
   timezone: text("timezone").notNull().default("America/New_York"),
+  /*
+    Which slot was last served. The date alone was enough while there
+    was one reminder a day. With two, the hour has to be part of it, or
+    the morning send would block the evening one.
+  */
   lastNotifiedOn: date("last_notified_on"),
+  lastNotifiedHour: integer("last_notified_hour"),
   // Set when currentLesson last changed. The SRS interval cap on the
   // current lesson expires 14 days after this.
   currentLessonSince: timestamp("current_lesson_since", { withTimezone: true })

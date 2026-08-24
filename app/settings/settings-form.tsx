@@ -95,6 +95,8 @@ export function SettingsForm({
       <PushSettings
         remindersOn={config.remindersOn}
         reminderHour={config.reminderHour}
+        secondReminderOn={config.secondReminderOn}
+        reminderHour2={config.reminderHour2}
         classDayReminder={config.classDayReminder}
         vapidPublicKey={vapidPublicKey}
         onPatch={patch}

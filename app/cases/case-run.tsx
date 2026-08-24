@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { Help } from "@/components/help";
+import { isPlainKey, isTyping, overlayOpen } from "@/lib/keys";
 import { ButtonLink, Eyebrow, Numeral, Screen } from "@/components/ui";
 import {
   BLANK,
@@ -44,6 +45,30 @@ export function CaseRun({ questions }: { questions: CaseQuestion[] }) {
   }
 
   const answered = picked !== null;
+
+  /*
+    The answered card stays up until it is dismissed. Nothing here is on
+    a timer, because the moment you find out you were wrong is the
+    moment you are actually reading the ending, and a screen that moves
+    on by itself takes that away.
+  */
+  const next = useCallback(() => {
+    setPicked(null);
+    setIndex((i) => i + 1);
+  }, []);
+
+  useEffect(() => {
+    if (!answered) return;
+    function onKey(e: KeyboardEvent) {
+      if (isTyping(e.target) || !isPlainKey(e) || overlayOpen()) return;
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        next();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [answered, next]);
 
   return (
     <Screen className="items-center justify-center gap-10 py-10">
@@ -98,7 +123,10 @@ export function CaseRun({ questions }: { questions: CaseQuestion[] }) {
               <Arabic className="text-ink text-[24px] leading-none">
                 {CASE_LABELS[ending].ar}
               </Arabic>
-              <span className="text-[13px]" style={color ? { color } : undefined}>
+              <span
+                className="text-[13px]"
+                style={color ? { color } : undefined}
+              >
                 {CASE_LABELS[ending].en}
               </span>
             </button>
@@ -107,16 +135,25 @@ export function CaseRun({ questions }: { questions: CaseQuestion[] }) {
       </div>
 
       {answered ? (
-        <button
-          type="button"
-          onClick={() => {
-            setPicked(null);
-            setIndex((i) => i + 1);
-          }}
-          className="text-lapis text-[16px] underline-offset-4"
-        >
-          Next
-        </button>
+        <>
+          {/*
+            The whole screen is the Next button once an answer is in.
+            Hunting for a link after every question is four taps of
+            precision for something that only ever does one thing.
+
+            It sits under the corner glyphs, so help and the theme are
+            still reachable.
+          */}
+          <button
+            type="button"
+            aria-label="Next question"
+            onClick={next}
+            className="fixed inset-0 z-10 cursor-pointer"
+          />
+          <p className="text-ink-faint relative z-10 text-[15px]">
+            Tap anywhere to continue
+          </p>
+        </>
       ) : null}
     </Screen>
   );

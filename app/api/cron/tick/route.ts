@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { cardStates, lessons, profiles, reviews, settings } from "@/db/schema";
 import { sendToProfile } from "@/lib/push";
+import { decideReminder } from "@/lib/reminders";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,8 @@ export const dynamic = "force-dynamic";
   is how both the due count and the notifications get served without a
   second schedule.
 
-  A duplicate invocation is a no-op because of the lastNotifiedOn check.
+  A duplicate invocation is a no-op, because a slot is only served
+  once: the last served date and hour are both recorded.
 */
 export async function GET(request: Request) {
   const auth = request.headers.get("authorization");
@@ -46,17 +48,10 @@ export async function GET(request: Request) {
         ),
       );
 
-    // 2. Gate the notification.
+    // 2. Gate the notification. The rule lives in lib/reminders.ts and
+    //    is unit tested there, because a wrong gate fails silently.
     const local = localParts(now, config.timezone);
-    const isWednesday = local.weekday === 3;
-    const classNudge = isWednesday && config.classDayReminder;
 
-    const reasons: string[] = [];
-    if (!config.remindersOn) reasons.push("reminders are off");
-    if (local.hour !== config.reminderHour) reasons.push("not the reminder hour");
-    if (config.lastNotifiedOn === local.date) reasons.push("already sent today");
-
-    // If a session was already done recently, do not tap the shoulder.
     const fourHoursAgo = new Date(now.getTime() - 4 * 3_600_000);
     const [{ recent }] = await db
       .select({ recent: sql<number>`count(*)::int` })
@@ -67,19 +62,14 @@ export async function GET(request: Request) {
           gte(reviews.reviewedAt, fourHoursAgo),
         ),
       );
-    if (recent > 0) {
-      reasons.push("a session was completed in the last 4 hours");
-    }
 
-    /*
-      The class nudge sends regardless of due count. The review reminder
-      does not send when there is nothing due, and that silence is the
-      reward.
-    */
-    if (dueCount === 0 && !classNudge) reasons.push("nothing is due");
+    const { send, classNudge, reasons } = decideReminder(config, local, {
+      dueCount,
+      reviewsInLastFourHours: recent,
+    });
 
-    if (reasons.length > 0) {
-      results.push({ profileId, dueCount, sent: false, reasons });
+    if (!send) {
+      results.push({ profileId, dueCount, slot: local.hour, sent: false, reasons });
       continue;
     }
 
@@ -99,15 +89,23 @@ export async function GET(request: Request) {
 
     /*
       Stamped in the account's own timezone, not UTC. Getting this wrong
-      is how you end up with two notifications on the day the clocks
-      change.
+      is how you end up with a duplicate on the day the clocks change.
+      The hour is recorded alongside the date so the morning send does
+      not block the evening one.
     */
     await db
       .update(settings)
-      .set({ lastNotifiedOn: local.date })
+      .set({ lastNotifiedOn: local.date, lastNotifiedHour: local.hour })
       .where(eq(settings.profileId, profileId));
 
-    results.push({ profileId, dueCount, sent: true, notification, delivery });
+    results.push({
+      profileId,
+      dueCount,
+      slot: local.hour,
+      sent: true,
+      notification,
+      delivery,
+    });
   }
 
   return NextResponse.json({ accounts: rows.length, results });

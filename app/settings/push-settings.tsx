@@ -22,12 +22,16 @@ type Support = "checking" | "unsupported" | "needs-install" | "ready";
 export function PushSettings({
   remindersOn,
   reminderHour,
+  secondReminderOn,
+  reminderHour2,
   classDayReminder,
   vapidPublicKey,
   onPatch,
 }: {
   remindersOn: boolean;
   reminderHour: number;
+  secondReminderOn: boolean;
+  reminderHour2: number;
   classDayReminder: boolean;
   vapidPublicKey: string | null;
   onPatch: (patch: Partial<Settings>) => void;
@@ -116,31 +120,36 @@ export function PushSettings({
       {remindersOn ? (
         <>
           <div className="flex flex-col items-center gap-3">
-            <Eyebrow>Reminder hour</Eyebrow>
-            <div className="border-rule bg-surface flex items-center gap-1 rounded-[999px] border px-2 py-1">
-              <button
-                type="button"
-                aria-label="Earlier"
-                onClick={() =>
-                  onPatch({ reminderHour: (reminderHour + 23) % 24 })
-                }
-                className="text-ink-soft px-4 py-1 text-[18px]"
-              >
-                -
-              </button>
-              <span className="tabular text-ink w-16 text-[18px]">
-                {String(reminderHour).padStart(2, "0")}:00
-              </span>
-              <button
-                type="button"
-                aria-label="Later"
-                onClick={() => onPatch({ reminderHour: (reminderHour + 1) % 24 })}
-                className="text-ink-soft px-4 py-1 text-[18px]"
-              >
-                +
-              </button>
-            </div>
+            <Eyebrow>Morning</Eyebrow>
+            <HourStepper
+              value={reminderHour}
+              onChange={(reminderHour) => onPatch({ reminderHour })}
+            />
           </div>
+
+          <div className="flex flex-col items-center gap-3">
+            <Eyebrow>Evening</Eyebrow>
+            <Toggle
+              on={secondReminderOn}
+              onChange={(secondReminderOn) => onPatch({ secondReminderOn })}
+            />
+            {secondReminderOn ? (
+              <HourStepper
+                value={reminderHour2}
+                onChange={(reminderHour2) => onPatch({ reminderHour2 })}
+              />
+            ) : null}
+          </div>
+
+          {/*
+            Both reminders only fire when something is actually due, and
+            a session in the last four hours cancels the next one, so
+            two a day is two at most rather than two guaranteed.
+          */}
+          <p className="text-ink-faint max-w-[300px] text-[14px]">
+            Nothing is sent when nothing is due, or within four hours of
+            a session you have already done.
+          </p>
 
           <div className="flex flex-col items-center gap-3">
             <Eyebrow>Wednesday class nudge</Eyebrow>
@@ -152,6 +161,39 @@ export function PushSettings({
         </>
       ) : null}
     </Section>
+  );
+}
+
+/* Wraps at midnight in both directions, so 00:00 is one step below 01:00. */
+function HourStepper({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (n: number) => void;
+}) {
+  return (
+    <div className="border-rule bg-surface flex items-center gap-1 rounded-[999px] border px-2 py-1">
+      <button
+        type="button"
+        aria-label="Earlier"
+        onClick={() => onChange((value + 23) % 24)}
+        className="text-ink-soft px-4 py-1 text-[18px]"
+      >
+        -
+      </button>
+      <span className="tabular text-ink w-16 text-[18px]">
+        {String(value).padStart(2, "0")}:00
+      </span>
+      <button
+        type="button"
+        aria-label="Later"
+        onClick={() => onChange((value + 1) % 24)}
+        className="text-ink-soft px-4 py-1 text-[18px]"
+      >
+        +
+      </button>
+    </div>
   );
 }
 
