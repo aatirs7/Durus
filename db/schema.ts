@@ -128,6 +128,25 @@ export const settings = pgTable("settings", {
     .defaultNow(),
 });
 
+/*
+  The single profile. One row, id 1, created the first time the app is
+  opened. The PIN is stored as a salted hash, never in the clear.
+
+  A four digit PIN is 10,000 possibilities, so the throttle below is
+  what actually protects it rather than the length.
+*/
+export const profile = pgTable("profile", {
+  id: integer("id").primaryKey().default(1),
+  name: text("name").notNull(),
+  pinHash: text("pin_hash").notNull(),
+  pinSalt: text("pin_salt").notNull(),
+  failedAttempts: integer("failed_attempts").notNull().default(0),
+  lockedUntil: timestamp("locked_until", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 /* Not used until push lands, but in the schema now so there is no
    second migration later. */
 export const pushSubscriptions = pgTable("push_subscriptions", {
@@ -150,3 +169,4 @@ export type Card = typeof cards.$inferSelect;
 export type CardState = typeof cardStates.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type Settings = typeof settings.$inferSelect;
+export type Profile = typeof profile.$inferSelect;

@@ -8,14 +8,17 @@ import type { Settings } from "@/db/schema";
 import { TOTAL_LESSONS } from "@/lib/lessons";
 import { exportAll, updateSettings } from "./actions";
 import { PushSettings } from "./push-settings";
+import { SignOutButton } from "./sign-out-button";
 import { Toggle } from "./toggle";
 
 export function SettingsForm({
   initial,
   vapidPublicKey,
+  profileName,
 }: {
   initial: Settings;
   vapidPublicKey: string | null;
+  profileName: string;
 }) {
   const [config, setConfig] = useState(initial);
   const [, start] = useTransition();
@@ -117,6 +120,13 @@ export function SettingsForm({
         >
           Export all data as JSON
         </Button>
+      </Field>
+
+      <Rule />
+
+      <Field label="Account">
+        <p className="text-ink-soft text-[15px]">Signed in as {profileName}</p>
+        <SignOutButton />
       </Field>
 
       <Link href="/" className="text-lapis text-[16px] underline-offset-4">

@@ -125,6 +125,28 @@ body {
   color: var(--ink-soft);
 }
 
+/*
+  The one exception to the motion rule. A wrong PIN needs an answer that
+  is faster than reading, and a 300ms shake is the established one.
+*/
+@keyframes durus-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+
+.pin-shake {
+  animation: durus-shake 300ms cubic-bezier(0.2, 0, 0.1, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pin-shake {
+    animation: none;
+  }
+}
+
 /* Motion is limited to the card flip, the deck advance, and the speed ring. */
 @keyframes durus-advance {
   from {
