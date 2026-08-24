@@ -66,7 +66,7 @@ export async function GET(request: Request) {
         // Wednesday is when class moves, so the nudge points at the
         // lesson that is about to be taught.
         body: `Add today's words from Lesson ${await nextLessonNumber(config.currentLesson)}`,
-        url: `/add?lesson=${config.currentLesson + 1}`,
+        url: "/",
       }
     : {
         title: "Durus",

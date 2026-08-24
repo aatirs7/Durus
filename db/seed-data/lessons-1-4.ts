@@ -1,12 +1,14 @@
 /*
-  Raw paste blocks for lessons 1 to 4, copied verbatim from the notes.
-  These go through lib/parse-cards.ts, the same parser /add uses, so
-  loading the seed proves the parser against real Arabic.
+  Vocabulary lives here, added lesson by lesson as class covers them.
+  These blocks go through lib/parse-cards.ts, so the seed proves the
+  parser against real Arabic on every run.
 
-  Spec section 8 says the repository ships with no vocabulary. This is a
-  deliberate exception, so that /review has real words to be built
-  against rather than lorem. Everything from lesson 5 on is entered
-  through /add after class.
+  Format, pipe delimited:
+    arabic | english | transliteration | gender or the word phrase | plural | note
+
+  Cards for every lesson below are inserted regardless of the gate. The
+  queue only ever draws from lessons up to settings.currentLesson, so a
+  lesson sits here seeded and invisible until Add Lesson N is tapped.
 */
 
 export type SeedLesson = {
@@ -21,38 +23,38 @@ export const SEED_LESSONS: SeedLesson[] = [
     grammarNote:
       'هٰذَا "this". Arabic has no copula, so هٰذَا بَيْتٌ is a complete sentence. Tanwin (the -n ending) is the indefinite article. The particle أ at the front turns a statement into a question.',
     block: `
-بَيْتٌ | house | m
-مَسْجِدٌ | mosque | m
-بَابٌ | door | m
-كِتَابٌ | book | m
-قَلَمٌ | pen | m
-مِفْتَاحٌ | key | m
-مَكْتَبٌ | writing table | m
-سَرِيرٌ | bed | m
-كُرْسِيٌّ | chair | m
-نَجْمٌ | star | m
-قَمِيصٌ | shirt | m
-طَبِيبٌ | doctor | m
-وَلَدٌ | boy | m
-طَالِبٌ | student | m
-رَجُلٌ | man | m
-تَاجِرٌ | merchant | m
-كَلْبٌ | dog | m
-قِطٌّ | cat | m
-حِمَارٌ | donkey | m
-حِصَانٌ | horse | m
-جَمَلٌ | camel | m
-دِيكٌ | rooster | m
-مُدَرِّسٌ | teacher | m
-مِنْدِيلٌ | kerchief | m
-هٰذَا | this | phrase | | written without the first alif, pronounced hadha
-مَا هٰذَا؟ | what is this? | phrase | | used for things
-مَنْ هٰذَا؟ | who is this? | phrase | | used for people
-أَهٰذَا بَيْتٌ؟ | is this a house? | phrase | | the alif turns a statement into a question
-نَعَمْ | yes | phrase
-لَا | no | phrase
-هٰذَا كِتَابٌ | this is a book | phrase | | no word for "is" and no word for "a"
-لَا، هٰذَا مَسْجِدٌ | no, this is a mosque | phrase
+بَيْتٌ | house | baytun | m
+مَسْجِدٌ | mosque | masjidun | m
+بَابٌ | door | babun | m
+كِتَابٌ | book | kitabun | m
+قَلَمٌ | pen | qalamun | m
+مِفْتَاحٌ | key | miftahun | m
+مَكْتَبٌ | writing table | maktabun | m
+سَرِيرٌ | bed | sarirun | m
+كُرْسِيٌّ | chair | kursiyyun | m
+نَجْمٌ | star | najmun | m
+قَمِيصٌ | shirt | qamisun | m
+طَبِيبٌ | doctor | tabibun | m
+وَلَدٌ | boy | waladun | m
+طَالِبٌ | student | talibun | m
+رَجُلٌ | man | rajulun | m
+تَاجِرٌ | merchant | tajirun | m
+كَلْبٌ | dog | kalbun | m
+قِطٌّ | cat | qittun | m
+حِمَارٌ | donkey | himarun | m
+حِصَانٌ | horse | hisanun | m
+جَمَلٌ | camel | jamalun | m
+دِيكٌ | rooster | dikun | m
+مُدَرِّسٌ | teacher | mudarrisun | m
+مِنْدِيلٌ | kerchief | mindilun | m
+هٰذَا | this | hadha | phrase | | written without the first alif
+مَا هٰذَا؟ | what is this? | ma hadha | phrase | | used for things
+مَنْ هٰذَا؟ | who is this? | man hadha | phrase | | used for people
+أَهٰذَا بَيْتٌ؟ | is this a house? | a hadha baytun | phrase | | the alif turns a statement into a question
+نَعَمْ | yes | naam | phrase
+لَا | no | la | phrase
+هٰذَا كِتَابٌ | this is a book | hadha kitabun | phrase | | no word for "is" and no word for "a"
+لَا، هٰذَا مَسْجِدٌ | no, this is a mosque | la, hadha masjidun | phrase
 `,
   },
   {
@@ -60,15 +62,15 @@ export const SEED_LESSONS: SeedLesson[] = [
     grammarNote:
       'ذٰلِكَ "that", and وَ "and". ذٰلِكَ is pronounced dhalika but written without the alif, same pattern as هٰذَا. The وَ is written joined to the word that follows it.',
     block: `
-إِمَامٌ | imam | m
-حَجَرٌ | stone | m
-سُكَّرٌ | sugar | m
-لَبَنٌ | milk | m
-ذٰلِكَ | that | phrase | | written without the alif, pronounced dhalika
-مَا ذٰلِكَ؟ | what is that? | phrase
-وَ | and | phrase | | written joined to the following word
-هٰذَا بَيْتٌ وَذٰلِكَ مَسْجِدٌ | this is a house and that is a mosque | phrase
-أَذٰلِكَ كَلْبٌ؟ لَا، ذٰلِكَ قِطٌّ | is that a dog? no, that is a cat | phrase
+إِمَامٌ | imam | imamun | m
+حَجَرٌ | stone | hajarun | m
+سُكَّرٌ | sugar | sukkarun | m
+لَبَنٌ | milk | labanun | m
+ذٰلِكَ | that | dhalika | phrase | | written without the alif
+مَا ذٰلِكَ؟ | what is that? | ma dhalika | phrase
+وَ | and | wa | phrase | | written joined to the following word
+هٰذَا بَيْتٌ وَذٰلِكَ مَسْجِدٌ | this is a house and that is a mosque | hadha baytun wa dhalika masjidun | phrase
+أَذٰلِكَ كَلْبٌ؟ لَا، ذٰلِكَ قِطٌّ | is that a dog? no, that is a cat | a dhalika kalbun? la, dhalika qittun | phrase
 `,
   },
   {
@@ -76,39 +78,39 @@ export const SEED_LESSONS: SeedLesson[] = [
     grammarNote:
       "The definite article ال. When ال is prefixed, the tanwin drops: بَيْتٌ becomes البَيْتُ. Of the 28 letters, 14 are Solar and 14 are Lunar. Before a Solar letter the ل assimilates in pronunciation, marked by shadda on the following letter, so الشَّمْسُ is read ash-shamsu. Lunar letters do not assimilate, so القَمَرُ is read al-qamaru. The alif of ال is dropped in pronunciation when preceded by another word, marked with wasla, so وَالبَيْتُ is read wa l-baitu. Adjectives with tanwin are not translated with \"a\", so مَفْتُوحٌ is just \"open\".",
     block: `
-غَنِيٌّ | rich | | | opposite of poor
-فَقِيرٌ | poor | | | opposite of rich
-طَوِيلٌ | tall | | | opposite of short
-قَصِيرٌ | short | | | opposite of tall
-بَارِدٌ | cold | | | opposite of hot
-حَارٌّ | hot | | | opposite of cold
-جَالِسٌ | sitting | | | opposite of standing
-وَاقِفٌ | standing | | | opposite of sitting
-جَدِيدٌ | new | | | opposite of old
-قَدِيمٌ | old | | | opposite of new
-قَرِيبٌ | near | | | opposite of far
-بَعِيدٌ | far away | | | opposite of near
-نَظِيفٌ | clean | | | opposite of dirty
-وَسِخٌ | dirty | | | opposite of clean
-صَغِيرٌ | small | | | opposite of big
-كَبِيرٌ | big | | | opposite of small
-خَفِيفٌ | light | | | opposite of heavy
-ثَقِيلٌ | heavy | | | opposite of light
-جَمِيلٌ | beautiful
-حُلْوٌ | sweet
-مَرِيضٌ | sick
-مَفْتُوحٌ | open | | | adjective, the tanwin here is not "a"
-مَكْسُورٌ | broken | | | adjective, the tanwin here is not "a"
-الوَرَقُ | paper | m
-المَاءُ | water | m
-التُّفَّاحُ | apple | m | | solar letter, read at-tuffahu
-الدُّكَّانُ | shop | m | | solar letter, read ad-dukkanu
-الشَّمْسُ | the sun | f | | solar letter, read ash-shamsu
-القَمَرُ | the moon | m | | lunar letter, read al-qamaru
-البَيْتُ نَظِيفٌ | the house is clean | phrase
-البَابُ مَفْتُوحٌ | the door is open | phrase
-القَلَمُ مَكْسُورٌ | the pen is broken | phrase
-وَالبَيْتُ | and the house | phrase | | read wa l-baitu, the alif of al drops
+غَنِيٌّ | rich | ghaniyyun | | | opposite of poor
+فَقِيرٌ | poor | faqirun | | | opposite of rich
+طَوِيلٌ | tall | tawilun | | | opposite of short
+قَصِيرٌ | short | qasirun | | | opposite of tall
+بَارِدٌ | cold | baridun | | | opposite of hot
+حَارٌّ | hot | harrun | | | opposite of cold
+جَالِسٌ | sitting | jalisun | | | opposite of standing
+وَاقِفٌ | standing | waqifun | | | opposite of sitting
+جَدِيدٌ | new | jadidun | | | opposite of old
+قَدِيمٌ | old | qadimun | | | opposite of new
+قَرِيبٌ | near | qaribun | | | opposite of far
+بَعِيدٌ | far away | baidun | | | opposite of near
+نَظِيفٌ | clean | nazifun | | | opposite of dirty
+وَسِخٌ | dirty | wasikhun | | | opposite of clean
+صَغِيرٌ | small | saghirun | | | opposite of big
+كَبِيرٌ | big | kabirun | | | opposite of small
+خَفِيفٌ | light | khafifun | | | opposite of heavy
+ثَقِيلٌ | heavy | thaqilun | | | opposite of light
+جَمِيلٌ | beautiful | jamilun
+حُلْوٌ | sweet | hulwun
+مَرِيضٌ | sick | maridun
+مَفْتُوحٌ | open | maftuhun | | | adjective, the tanwin here is not "a"
+مَكْسُورٌ | broken | maksurun | | | adjective, the tanwin here is not "a"
+الوَرَقُ | paper | al-waraqu | m
+المَاءُ | water | al-mau | m
+التُّفَّاحُ | apple | at-tuffahu | m | | solar letter
+الدُّكَّانُ | shop | ad-dukkanu | m | | solar letter
+الشَّمْسُ | the sun | ash-shamsu | f | | solar letter
+القَمَرُ | the moon | al-qamaru | m | | lunar letter
+البَيْتُ نَظِيفٌ | the house is clean | al-baytu nazifun | phrase
+البَابُ مَفْتُوحٌ | the door is open | al-babu maftuhun | phrase
+القَلَمُ مَكْسُورٌ | the pen is broken | al-qalamu maksurun | phrase
+وَالبَيْتُ | and the house | wa l-baytu | phrase | | the alif of al drops
 `,
   },
   {
@@ -116,24 +118,24 @@ export const SEED_LESSONS: SeedLesson[] = [
     grammarNote:
       "Prepositions and case. The normal noun ending is -u, called مَرْفُوعٌ (nominative). After a preposition it changes to -i, called مَجْرُورٌ (genitive). So البَيْتُ becomes فِي البَيْتِ. Also the pronouns هُوَ and هِيَ. Every noun is masculine or feminine, and هُوَ or هِيَ is used regardless of whether the noun is a person, animal, or thing. Most feminine nouns end in ة but not all. Proper nouns take no tanwin, and feminine proper nouns never do.",
     block: `
-أَيْنَ | where | phrase
-عَلَى | on | phrase | | preposition, puts the next noun in genitive
-فِي | in | phrase | | preposition, puts the next noun in genitive
-غُرْفَةٌ | room | f | | ends in round ta
-السَّمَاءُ | sky | f | | solar letter, read as-sama'u
-الحَمَّامُ | bathroom | m
-الفَصْلُ | classroom | m
-المَطْبَخُ | kitchen | m
-المِرْحَاضُ | toilet | m
-هُوَ | he, it | phrase | | used for any masculine noun
-هِيَ | she, it | phrase | | used for any feminine noun
-أَيْنَ الوَلَدُ؟ هُوَ فِي المَسْجِدِ | where is the boy? he is in the mosque | phrase
-أَيْنَ الكِتَابُ؟ هُوَ عَلَى المَكْتَبِ | where is the book? it is on the table | phrase
-أَيْنَ آمِنَةُ؟ هِيَ فِي البَيْتِ | where is Aminah? she is in the house | phrase | | feminine proper noun, no tanwin
-أَيْنَ السَّاعَةُ؟ هِيَ عَلَى السَّرِيرِ | where is the watch? it is on the bed | phrase
-البَيْتُ جَدِيدٌ | the house is new | phrase | | al-baitu is marfu
-فِي البَيْتِ | in the house | phrase | | al-baiti is majrur after the preposition
-عَلَى المَكْتَبِ | on the table | phrase
+أَيْنَ | where | ayna | phrase
+عَلَى | on | ala | phrase | | preposition, puts the next noun in genitive
+فِي | in | fi | phrase | | preposition, puts the next noun in genitive
+غُرْفَةٌ | room | ghurfatun | f | | ends in round ta
+السَّمَاءُ | sky | as-samau | f | | solar letter
+الحَمَّامُ | bathroom | al-hammamu | m
+الفَصْلُ | classroom | al-faslu | m
+المَطْبَخُ | kitchen | al-matbakhu | m
+المِرْحَاضُ | toilet | al-mirhadu | m
+هُوَ | he, it | huwa | phrase | | used for any masculine noun
+هِيَ | she, it | hiya | phrase | | used for any feminine noun
+أَيْنَ الوَلَدُ؟ هُوَ فِي المَسْجِدِ | where is the boy? he is in the mosque | ayna l-waladu? huwa fi l-masjidi | phrase
+أَيْنَ الكِتَابُ؟ هُوَ عَلَى المَكْتَبِ | where is the book? it is on the table | ayna l-kitabu? huwa ala l-maktabi | phrase
+أَيْنَ آمِنَةُ؟ هِيَ فِي البَيْتِ | where is Aminah? she is in the house | ayna aminatu? hiya fi l-bayti | phrase | | feminine proper noun, no tanwin
+أَيْنَ السَّاعَةُ؟ هِيَ عَلَى السَّرِيرِ | where is the watch? it is on the bed | ayna s-saatu? hiya ala s-siriri | phrase
+البَيْتُ جَدِيدٌ | the house is new | al-baytu jadidun | phrase | | al-baytu is marfu
+فِي البَيْتِ | in the house | fi l-bayti | phrase | | al-bayti is majrur after the preposition
+عَلَى المَكْتَبِ | on the table | ala l-maktabi | phrase
 `,
   },
 ];

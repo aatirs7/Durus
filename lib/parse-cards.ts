@@ -4,7 +4,7 @@
   parser is already proven against real Arabic.
 
   Format, pipe delimited:
-    arabic | english | gender or the word phrase | plural | note
+    arabic | english | transliteration | gender or the word phrase | plural | note
 
   Trailing fields can be omitted. Empty middle fields are left blank
   between pipes, for example:
@@ -17,6 +17,7 @@ export type ParsedCard = {
   line: number;
   arabic: string;
   english: string;
+  transliteration: string | null;
   type: "vocab" | "phrase";
   gender: "m" | "f" | null;
   plural: string | null;
@@ -55,8 +56,14 @@ export function parseCards(input: string): ParseResult {
     if (isSkippable(raw)) return;
 
     const fields = raw.split("|").map((f) => f.trim());
-    const [arabic = "", english = "", third = "", plural = "", note = ""] =
-      fields;
+    const [
+      arabic = "",
+      english = "",
+      transliteration = "",
+      fourth = "",
+      plural = "",
+      note = "",
+    ] = fields;
 
     if (fields.length < 2) {
       errors.push({
@@ -103,16 +110,16 @@ export function parseCards(input: string): ParseResult {
       return;
     }
 
-    const isPhrase = third.toLowerCase() === "phrase";
+    const isPhrase = fourth.toLowerCase() === "phrase";
     let gender: "m" | "f" | null = null;
 
-    if (!isPhrase && third) {
-      const g = third.toLowerCase();
+    if (!isPhrase && fourth) {
+      const g = fourth.toLowerCase();
       if (g !== "m" && g !== "f") {
         errors.push({
           line: lineNumber,
           raw,
-          message: `line ${lineNumber}: the third field should be m, f, or the word phrase, not "${third}"`,
+          message: `line ${lineNumber}: the fourth field should be m, f, or the word phrase, not "${fourth}"`,
         });
         return;
       }
@@ -130,6 +137,7 @@ export function parseCards(input: string): ParseResult {
       line: lineNumber,
       arabic,
       english,
+      transliteration: transliteration || null,
       type: isPhrase ? "phrase" : "vocab",
       gender,
       plural: plural || null,

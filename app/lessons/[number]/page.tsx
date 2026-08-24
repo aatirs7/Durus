@@ -81,9 +81,6 @@ export default async function LessonPage({
         <ButtonLink href={`/review?lesson=${lesson.number}`}>
           Drill this lesson only
         </ButtonLink>
-        <ButtonLink href={`/add?lesson=${lesson.number}`} variant="quiet">
-          Add words
-        </ButtonLink>
       </div>
 
       <Link href="/lessons" className="text-lapis text-[16px] underline-offset-4">

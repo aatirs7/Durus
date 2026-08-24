@@ -259,14 +259,20 @@ export function ReviewSession({
 
 function CardBack({ item }: { item: QueueItem }) {
   return (
-    <div className="flex flex-col items-center gap-5">
-      <Arabic as="p" className="text-ink text-[40px] leading-[1.8]">
+    <div className="flex flex-col items-center gap-6">
+      <Arabic as="p" className="text-ink text-[52px] leading-[1.8]">
         {item.arabic}
       </Arabic>
 
+      {item.transliteration ? (
+        <p className="text-ink-faint text-[18px] italic">
+          {item.transliteration}
+        </p>
+      ) : null}
+
       <hr className="border-rule w-24 border-t" />
 
-      <p className="text-ink text-[22px] leading-snug">{item.english}</p>
+      <p className="text-ink text-[28px] leading-snug">{item.english}</p>
 
       {item.gender || item.plural ? (
         <div className="flex flex-wrap justify-center gap-2">
@@ -282,7 +288,7 @@ function CardBack({ item }: { item: QueueItem }) {
       ) : null}
 
       {item.note ? (
-        <p className="text-ink-soft max-w-[420px] text-[16px]">{item.note}</p>
+        <p className="text-ink-soft max-w-[440px] text-[18px]">{item.note}</p>
       ) : null}
     </div>
   );

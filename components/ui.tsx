@@ -16,9 +16,16 @@ export function Screen({
   className?: string;
 }) {
   return (
+    /*
+      The top inset keeps the eyebrow clear of the Dynamic Island and
+      the notch. The bottom one keeps buttons off the home indicator.
+    */
     <main
       className={`mx-auto flex w-full max-w-[560px] flex-1 flex-col px-6 ${className}`}
-      style={{ paddingBottom: "max(2rem, env(safe-area-inset-bottom))" }}
+      style={{
+        paddingTop: "max(1rem, env(safe-area-inset-top))",
+        paddingBottom: "max(2rem, env(safe-area-inset-bottom))",
+      }}
     >
       {children}
     </main>
@@ -101,7 +108,7 @@ export function DeadLink({ children }: { children: ReactNode }) {
 
 export function Pill({ children }: { children: ReactNode }) {
   return (
-    <span className="border-rule text-ink-soft inline-flex items-center rounded-[999px] border px-3 py-1 text-[13px]">
+    <span className="border-rule text-ink-soft inline-flex items-center rounded-[999px] border px-4 py-1.5 text-[16px]">
       {children}
     </span>
   );

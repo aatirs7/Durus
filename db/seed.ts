@@ -6,12 +6,18 @@
 
 import { eq, sql } from "drizzle-orm";
 import { db } from "./index";
-import { cardStates, cards, lessons, settings } from "./schema";
+import { cards, lessons, settings } from "./schema";
 import { LESSON_TITLES, SEED_LESSONS } from "./seed-data/lessons-1-4";
 import { parseCards } from "../lib/parse-cards";
 
 const TOTAL_LESSONS = 23;
-const CURRENT_LESSON = 4;
+/*
+  Which lesson the gate starts at. Cards for every lesson in the seed
+  data are inserted regardless, because the queue only ever draws from
+  lessons up to settings.currentLesson. Lessons past the gate sit in the
+  database, seeded and waiting, until Add Lesson N is tapped on Today.
+*/
+const CURRENT_LESSON = 2;
 
 async function main() {
   const now = new Date();
@@ -76,6 +82,7 @@ async function main() {
           type: card.type,
           arabic: card.arabic,
           english: card.english,
+          transliteration: card.transliteration,
           gender: card.gender,
           plural: card.plural,
           note: card.note,
@@ -88,13 +95,11 @@ async function main() {
         continue;
       }
 
-      // Recognition is seeded active and due now. Production is created
-      // lazily, once recognition reaches repetitions >= 2.
-      await db
-        .insert(cardStates)
-        .values({ cardId: rows[0].id, direction: "recognition", dueAt: now })
-        .onConflictDoNothing();
-
+      /*
+        No cardStates row is created here on purpose. A card with no
+        state is what the queue treats as new, so seeded words flow in
+        at newPerDay rather than all landing as due on day one.
+      */
       inserted += 1;
     }
   }

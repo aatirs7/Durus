@@ -2,6 +2,8 @@ import { InstallHint } from "@/components/install-hint";
 import { OfflinePill } from "@/components/offline-pill";
 import { PwaRuntime } from "@/components/pwa-runtime";
 import { ButtonLink, Eyebrow, Numeral, Screen } from "@/components/ui";
+import { UnlockNext } from "@/components/unlock-next";
+import { getNextLesson } from "./unlock-lesson";
 import { TOTAL_LESSONS } from "@/lib/lessons";
 import { countDue, countNewAvailable, getSettings } from "@/lib/queue";
 
@@ -17,11 +19,12 @@ export default async function TodayPage() {
   const due = await countDue(now);
   const newAvailable = await countNewAvailable(config.currentLesson);
   const newToday = Math.min(newAvailable, config.newPerDay);
+  const next = await getNextLesson();
 
   const clear = due === 0 && newToday === 0;
 
   return (
-    <Screen className="justify-between gap-10 py-10">
+    <Screen className="justify-center gap-12 py-10">
       <PwaRuntime dueCount={due} />
 
       <div className="flex flex-col items-center gap-8">
@@ -78,6 +81,7 @@ export default async function TodayPage() {
       </div>
 
       <div className="flex flex-col gap-6">
+        <UnlockNext next={next} />
         <OfflinePill />
         <InstallHint />
         <LessonTicks current={config.currentLesson} />

@@ -8,6 +8,7 @@ export type QueueItem = {
   lessonNumber: number;
   arabic: string;
   english: string;
+  transliteration: string | null;
   type: "vocab" | "phrase";
   gender: "m" | "f" | null;
   plural: string | null;
@@ -86,6 +87,7 @@ export async function buildQueue(
       lessonNumber: lessons.number,
       arabic: cards.arabic,
       english: cards.english,
+      transliteration: cards.transliteration,
       type: cards.type,
       gender: cards.gender,
       plural: cards.plural,
@@ -115,6 +117,7 @@ export async function buildQueue(
       lessonNumber: lessons.number,
       arabic: cards.arabic,
       english: cards.english,
+      transliteration: cards.transliteration,
       type: cards.type,
       gender: cards.gender,
       plural: cards.plural,
@@ -139,6 +142,7 @@ export async function buildQueue(
     lessonNumber: r.lessonNumber,
     arabic: r.arabic,
     english: r.english,
+    transliteration: r.transliteration,
     type: r.type,
     gender: r.gender,
     plural: r.plural,
@@ -156,6 +160,7 @@ export async function buildQueue(
     lessonNumber: r.lessonNumber,
     arabic: r.arabic,
     english: r.english,
+    transliteration: r.transliteration,
     type: r.type,
     gender: r.gender,
     plural: r.plural,
