@@ -1,6 +1,6 @@
 "use server";
 
-import { and, desc, eq, gte, sql } from "drizzle-orm";
+import { and, desc, eq, gte, isNull, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cardStates, cards, lessons, reviews } from "@/db/schema";
 import { getSettingsFor, requireProfileId } from "@/lib/session";
@@ -20,10 +20,30 @@ export type GradePayload = {
 };
 
 /*
-  One card, one call. The session does not block on the response, which
-  keeps the flip instant and makes the offline outbox a small change
-  later rather than a rewrite.
+  The one device that is not a phone.
+
+  Every review this writes has to be foldable, because card_states is a
+  deterministic replay of this table computed independently here and on
+  each device. A row missing any input schedule() consumed cannot be
+  replayed - and "cannot be replayed" does not fail loudly, it produces
+  a different interval on the phone from the one the web just showed.
+
+  So the three inputs that used to be thrown away are now stored:
+
+    capped  depends on currentLesson and currentLessonSince AS THEY WERE
+            at this moment, and that history exists nowhere else
+    fuzz    is sampled HERE and passed in, rather than letting schedule()
+            reach for Math.random, so the value that produced this
+            interval is recoverable
+    practice  records that the answer came from the nothing-is-due
+            fallback, where a correct answer must not move the schedule
+
+  clientId is the idempotency key the sync protocol dedupes on, and
+  deviceId is a constant because the browser is one logical device: the
+  fold breaks ties on it, and every row written here came from the same
+  place.
 */
+const WEB_DEVICE_ID = "web";
 export async function submitGrade(payload: GradePayload) {
   const now = new Date();
   const profileId = await requireProfileId();
@@ -59,14 +79,24 @@ export async function submitGrade(payload: GradePayload) {
     lapses: row.lapses ?? 0,
   };
 
+  const capped = isCurrentLessonCapped(
+    row.lessonNumber,
+    config.currentLesson,
+    config.currentLessonSince,
+    now,
+  );
+
+  /*
+    Sampled here and handed to schedule(), rather than letting it call
+    Math.random itself. That is the whole difference between an interval
+    that can be recomputed and one that can only be believed.
+  */
+  const fuzz = Math.random();
+
   const next = schedule(state, payload.grade, {
     now,
-    capToCurrentLesson: isCurrentLessonCapped(
-      row.lessonNumber,
-      config.currentLesson,
-      config.currentLessonSince,
-      now,
-    ),
+    capToCurrentLesson: capped,
+    random: () => fuzz,
   });
 
   /*
@@ -110,6 +140,11 @@ export async function submitGrade(payload: GradePayload) {
     grade: payload.grade,
     msToAnswer: payload.msToAnswer,
     reviewedAt: now,
+    practice: payload.practice === true,
+    capped,
+    fuzz,
+    clientId: crypto.randomUUID(),
+    deviceId: WEB_DEVICE_ID,
   });
 
   /*
@@ -149,6 +184,11 @@ export async function undoGrade(payload: {
   };
 }) {
   const profileId = await requireProfileId();
+  /*
+    The most recent review that has not already been undone. Without the
+    retractedAt filter, undoing twice in a row would retract the same row
+    twice and leave the one before it standing.
+  */
   const [last] = await db
     .select({ id: reviews.id })
     .from(reviews)
@@ -157,12 +197,26 @@ export async function undoGrade(payload: {
         eq(reviews.profileId, profileId),
         eq(reviews.cardId, payload.cardId),
         eq(reviews.direction, payload.direction),
+        isNull(reviews.retractedAt),
       ),
     )
     .orderBy(desc(reviews.id))
     .limit(1);
 
-  if (last) await db.delete(reviews).where(eq(reviews.id, last.id));
+  /*
+    A tombstone, not a delete.
+
+    An append only log with a tombstone can be replayed; one with a hole in
+    it cannot - the other device never learns the row went away and folds a
+    review the user took back. Retracting is also one way, which is exactly
+    what the UI offers: there is no undoing an undo.
+  */
+  if (last) {
+    await db
+      .update(reviews)
+      .set({ retractedAt: new Date() })
+      .where(eq(reviews.id, last.id));
+  }
 
   if (!payload.previous.existed) {
     await db

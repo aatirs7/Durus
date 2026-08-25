@@ -132,53 +132,48 @@ function ReviewScreen() {
   );
 }
 
-export function AppPreview() {
+/*
+  The App Store call to action.
+
+  Says what is true until there is a listing to point at. A dead Download
+  button is worse than a date, and the URL above is the one thing to
+  change when it exists.
+*/
+export function AppStoreCta() {
+  if (APP_STORE_URL) {
+    return (
+      <a
+        href={APP_STORE_URL}
+        className="bg-lapis text-paper rounded-[12px] px-6 py-3 text-[15px] font-medium"
+      >
+        Download on the App Store
+      </a>
+    );
+  }
   return (
-    <section className="mx-auto flex w-full max-w-[1040px] flex-col items-center gap-10 px-6 py-20 lg:flex-row lg:justify-center lg:gap-16">
-      <div className="flex flex-col items-center gap-5 text-center lg:max-w-[380px] lg:items-start lg:text-left">
-        <p className="text-ink-faint text-[12px] tracking-[0.08em] uppercase">
-          For iPhone
-        </p>
-        <h2 className="text-ink text-[30px] leading-tight font-medium">
-          Durus on the phone you already revise on
-        </h2>
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          The same lessons and the same schedule, as a native app. It opens
-          without a signal, the whole session runs on the device, and your
-          progress follows your account rather than the handset.
-        </p>
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          Sign in on either and it is one account: answer a card on the phone
-          on the bus, and it is waiting for you here.
-        </p>
+    <span className="border-lapis text-lapis rounded-[999px] border px-5 py-2 text-[14px]">
+      Coming to the App Store
+    </span>
+  );
+}
 
-        {APP_STORE_URL ? (
-          <a
-            href={APP_STORE_URL}
-            className="bg-lapis text-paper rounded-[12px] px-6 py-3 text-[15px] font-medium"
-          >
-            Download on the App Store
-          </a>
-        ) : (
-          /* Says what is true. A dead "Download" button is worse than a date. */
-          <span className="border-rule text-ink-soft rounded-[999px] border px-5 py-2 text-[14px]">
-            Coming to the App Store
-          </span>
-        )}
-      </div>
+/*
+  The two screens, side by side.
 
-      <div className="flex shrink-0 gap-4 sm:gap-6">
+  The review screen is the one worth seeing and the first to go when there
+  is no room for both, so it is the one that hides on a narrow phone.
+*/
+export function AppPhones() {
+  return (
+    <div className="flex shrink-0 justify-center gap-4 sm:gap-6">
+      <Phone>
+        <TodayScreen />
+      </Phone>
+      <div className="hidden sm:block">
         <Phone>
-          <TodayScreen />
+          <ReviewScreen />
         </Phone>
-        {/* The second phone is the one worth seeing and the first to go when
-            there is no room for both. */}
-        <div className="hidden sm:block">
-          <Phone>
-            <ReviewScreen />
-          </Phone>
-        </div>
       </div>
-    </section>
+    </div>
   );
 }

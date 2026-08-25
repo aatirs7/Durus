@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { cardStates, cards, lessons, reviews, settings } from "@/db/schema";
@@ -76,6 +76,6 @@ export async function exportAll() {
     reviews: await db
       .select()
       .from(reviews)
-      .where(eq(reviews.profileId, profileId)),
+      .where(and(eq(reviews.profileId, profileId), isNull(reviews.retractedAt))),
   };
 }

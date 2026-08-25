@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Arabic } from "@/components/arabic";
 import { StandaloneRedirect } from "@/components/standalone-redirect";
 import { ButtonLink, Eyebrow } from "@/components/ui";
-import { AppPreview } from "@/components/app-preview";
+import { AppPhones, AppStoreCta } from "@/components/app-preview";
 import { TOTAL_LESSONS } from "@/lib/constants";
 
 /*
@@ -145,53 +145,53 @@ export default function LandingPage() {
         <WordField words={FIELD_NARROW} className="lg:hidden" />
         <WordField words={FIELD} className="hidden lg:block" />
 
-        <div className="relative mx-auto flex w-full max-w-[680px] flex-col items-center gap-8 px-6 py-16 sm:py-24 lg:py-32">
+        <div className="relative mx-auto flex w-full max-w-[680px] flex-col items-center gap-6 px-6 py-10 sm:py-12 lg:py-14">
           <Arabic
             as="p"
             showHarakat={false}
-            className="text-lapis text-[72px] leading-[1.6] lg:text-[112px]"
+            className="text-lapis text-[52px] leading-[1.5] lg:text-[68px]"
           >
             دُرُوس
           </Arabic>
 
           <div className="flex flex-col items-center gap-4">
-            <h1 className="text-ink text-[32px] leading-tight font-medium tracking-tight lg:text-[40px]">
+            <h1 className="text-ink text-[28px] leading-tight font-medium tracking-tight lg:text-[34px]">
               Arabic revision for Madinah Book 1
             </h1>
-            <p className="text-ink-soft max-w-[520px] text-[18px] leading-relaxed">
+            <p className="text-ink-soft max-w-[520px] text-[16px] leading-relaxed">
               {TOTAL_LESSONS} lessons of vocabulary, drilled in the order the
               book teaches them. Nothing appears before you have been taught it.
             </p>
           </div>
 
+          {/*
+            The phones are the first thing on the page, because the iPhone
+            app is the thing being offered and the browser is the fallback
+            for when you are not holding one. Showing the screens beats
+            describing them: this is the whole product in two tiles.
+          */}
+          <AppPhones />
+
           <div className="flex w-full max-w-[360px] flex-col items-center gap-3 sm:max-w-none">
+            <AppStoreCta />
+
             {/*
-              Side by side at every width. The two doors are a pair and
-              reading them as one line is the point, so on a narrow
-              screen they share the row and lose some padding rather
-              than stacking into a list of two things to decide between.
+              The browser, offered second and quietly. It is the same
+              account and the same schedule either way, which is the part
+              worth saying - not that there are two products.
             */}
-            <div className="flex w-full gap-3 sm:w-auto">
-              <ButtonLink
-                href="/unlock?new"
-                className="flex-1 px-4 sm:min-w-[200px] sm:flex-none"
-              >
+            <div className="flex items-center gap-4 pt-1">
+              <ButtonLink href="/unlock?new" variant="text">
                 Create account
               </ButtonLink>
-              <ButtonLink
-                href="/unlock"
-                variant="quiet"
-                className="flex-1 px-4 sm:min-w-[200px] sm:flex-none"
-              >
+              <ButtonLink href="/unlock" variant="text">
                 Sign in
               </ButtonLink>
             </div>
             <p className="text-ink-faint text-[13px]">
-              A name and a four digit PIN. Nothing else is asked for.
+              Or use it in your browser. Same account, same schedule.
             </p>
           </div>
-
-          <Ticks />
         </div>
       </section>
 
@@ -296,8 +296,6 @@ export default function LandingPage() {
           </Point>
         </ul>
       </section>
-
-      <AppPreview />
 
       <footer className="border-rule mx-auto flex w-full max-w-[880px] flex-col items-center gap-4 border-t px-6 py-12">
         <Arabic

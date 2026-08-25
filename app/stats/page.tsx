@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Arabic } from "@/components/arabic";
 import { SpeedRing } from "@/components/speed-ring";
 import { Eyebrow, PageTitle, Rule, Screen } from "@/components/ui";
+import { requireProfileId } from "@/lib/session";
 import { fillDays, getStats } from "@/lib/stats";
 import { SuspendButton } from "./suspend-button";
 
@@ -17,7 +18,7 @@ export const dynamic = "force-dynamic";
   survives being squeezed into a quadrant.
 */
 export default async function StatsPage() {
-  const stats = await getStats();
+  const stats = await getStats(await requireProfileId());
   const days = fillDays(stats.perDay);
 
   return (

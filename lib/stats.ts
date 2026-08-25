@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, sql } from "drizzle-orm";
+import { and, desc, eq, gte, isNull, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cardStates, cards, reviews } from "@/db/schema";
 import { MATURE_DAYS } from "./lessons";
@@ -17,7 +17,21 @@ export type Stats = {
   }[];
 };
 
-export async function getStats(): Promise<Stats> {
+/*
+  Every query here takes profileId, and every one of them filters on it.
+
+  It used to take none and filter on none. That was invisible while a
+  browser session could only ever be one profile, and it stops being
+  invisible the moment two accounts exist - which is now, because sign-in
+  is Clerk and one database serves the web and the phone. Two people
+  would have seen each other's medians, each other's day counts and each
+  other's leeches.
+
+  Retracted reviews are excluded everywhere they are counted. An undo is
+  a tombstone rather than a delete, so without the filter the stats keep
+  counting answers the user explicitly took back.
+*/
+export async function getStats(profileId: number): Promise<Stats> {
   const since30 = new Date(Date.now() - 30 * 86_400_000);
   const since7 = new Date(Date.now() - 7 * 86_400_000);
 
@@ -30,7 +44,12 @@ export async function getStats(): Promise<Stats> {
     })
     .from(reviews)
     .where(
-      and(eq(reviews.direction, "recognition"), gte(reviews.reviewedAt, since7)),
+      and(
+        eq(reviews.profileId, profileId),
+        eq(reviews.direction, "recognition"),
+        gte(reviews.reviewedAt, since7),
+        isNull(reviews.retractedAt),
+      ),
     );
 
   /*
@@ -51,8 +70,10 @@ export async function getStats(): Promise<Stats> {
         .from(reviews)
         .where(
           and(
+            eq(reviews.profileId, profileId),
             eq(reviews.direction, "recognition"),
             gte(reviews.reviewedAt, since30),
+            isNull(reviews.retractedAt),
           ),
         )
         .groupBy(sql`date_trunc('day', ${reviews.reviewedAt})`)
@@ -65,7 +86,13 @@ export async function getStats(): Promise<Stats> {
       count: sql<number>`count(*)::int`,
     })
     .from(reviews)
-    .where(gte(reviews.reviewedAt, since30))
+    .where(
+      and(
+        eq(reviews.profileId, profileId),
+        gte(reviews.reviewedAt, since30),
+        isNull(reviews.retractedAt),
+      ),
+    )
     .groupBy(sql`date_trunc('day', ${reviews.reviewedAt})`)
     .orderBy(sql`date_trunc('day', ${reviews.reviewedAt})`);
 
@@ -81,6 +108,7 @@ export async function getStats(): Promise<Stats> {
       and(
         eq(cardStates.cardId, cards.id),
         eq(cardStates.direction, "recognition"),
+        eq(cardStates.profileId, profileId),
       ),
     );
 
@@ -95,7 +123,11 @@ export async function getStats(): Promise<Stats> {
     .from(cardStates)
     .innerJoin(cards, eq(cardStates.cardId, cards.id))
     .where(
-      and(eq(cardStates.direction, "recognition"), gte(cardStates.lapses, 1)),
+      and(
+        eq(cardStates.profileId, profileId),
+        eq(cardStates.direction, "recognition"),
+        gte(cardStates.lapses, 1),
+      ),
     )
     .orderBy(desc(cardStates.lapses))
     .limit(5);

@@ -1,4 +1,4 @@
-import { and, eq, gte, sql } from "drizzle-orm";
+import { and, eq, gte, isNull, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { cardStates, lessons, profiles, reviews, settings } from "@/db/schema";
@@ -60,6 +60,8 @@ export async function GET(request: Request) {
         and(
           eq(reviews.profileId, profileId),
           gte(reviews.reviewedAt, fourHoursAgo),
+          /* An undone answer is not a session in progress. */
+          isNull(reviews.retractedAt),
         ),
       );
 
