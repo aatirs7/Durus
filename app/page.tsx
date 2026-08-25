@@ -20,9 +20,9 @@ import { TOTAL_LESSONS } from "@/lib/constants";
 */
 
 export const metadata = {
-  title: "Durus, Arabic revision for Madinah Book 1",
+  title: "Durus, Arabic revision for the Madinah Arabic course",
   description:
-    "Spaced repetition, recognition speed, and case endings for the vocabulary of Madinah Book 1.",
+    "Spaced repetition, recognition speed, and case endings for the vocabulary of the Madinah Arabic course.",
 };
 
 /*
@@ -71,7 +71,7 @@ const DRILLS = [
 ];
 
 const FIGURES = [
-  { value: TOTAL_LESSONS, label: "lessons in the book" },
+  { value: TOTAL_LESSONS, label: "lessons in Book 1" },
   { value: 2, label: "directions per card" },
   { value: 4, label: "steps per word" },
 ];
@@ -171,12 +171,12 @@ export default function LandingPage() {
 
             <div className="flex flex-col items-center gap-3 lg:items-start">
               <h1 className="text-ink text-[28px] leading-tight font-medium tracking-tight lg:text-[36px]">
-                Arabic revision for Madinah Book 1
+                Arabic revision for the Madinah books
               </h1>
               <p className="text-ink-soft max-w-[460px] text-[16px] leading-relaxed">
-                {TOTAL_LESSONS} lessons of vocabulary, drilled in the order the
-                book teaches them. Nothing appears before you have been taught
-                it.
+                Vocabulary drilled in the order the books teach it, nothing
+                before you have been taught it. Book 1 in full today, with Book
+                2 and Book 3 to follow.
               </p>
             </div>
 

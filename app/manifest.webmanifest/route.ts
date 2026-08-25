@@ -25,7 +25,7 @@ export async function GET() {
     id: "/",
     name: "Durus",
     short_name: "Durus",
-    description: "Arabic revision for Madinah Book 1",
+    description: "Arabic revision for the Madinah Arabic course",
     start_url: "/today?source=pwa",
     scope: "/",
     display: "standalone",

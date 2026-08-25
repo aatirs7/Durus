@@ -103,7 +103,7 @@ function metadataFor(
 ): Metadata {
   return {
     title: "Durus",
-    description: "Arabic revision for Madinah Book 1",
+    description: "Arabic revision for the Madinah Arabic course",
     appleWebApp: {
       capable: true,
       title: "Durus",

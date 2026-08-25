@@ -23,7 +23,26 @@ const APPLE_MARK =
 const SYSTEM =
   "-apple-system, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-function Badge({ width = 150 }: { width?: number }) {
+/*
+  Apple ships the badge in two colourways and says which ground each belongs
+  on: the black one on light, the white one on dark. Both are official, and
+  picking one and living with it is not an option here - a black badge on
+  #131722 sinks into the page, and a white one on paper is a white rectangle.
+
+  Rendered as two elements toggled by the theme class rather than by reading
+  the theme in React: next-themes flips a class on <html> and never tells the
+  component, so anything that asks React what the theme is renders the wrong
+  one until it hydrates.
+*/
+function Badge({
+  width = 150,
+  ground,
+  ink,
+}: {
+  width?: number;
+  ground: string;
+  ink: string;
+}) {
   return (
     <svg
       width={width}
@@ -38,19 +57,19 @@ function Badge({ width = 150 }: { width?: number }) {
         width="119"
         height="39"
         rx="6.5"
-        fill="#000000"
+        fill={ground}
         stroke="#A6A6A6"
       />
-      <g transform="translate(9.5 8.5) scale(0.96)" fill="#FFFFFF">
+      <g transform="translate(9.5 8.5) scale(0.96)" fill={ink}>
         <path d={APPLE_MARK} />
       </g>
-      <text x="38" y="17" fill="#FFFFFF" fontSize="7.4" fontFamily={SYSTEM}>
+      <text x="38" y="17" fill={ink} fontSize="7.4" fontFamily={SYSTEM}>
         Download on the
       </text>
       <text
         x="37.5"
         y="31"
-        fill="#FFFFFF"
+        fill={ink}
         fontSize="15"
         fontFamily={SYSTEM}
         fontWeight="500"
@@ -58,6 +77,20 @@ function Badge({ width = 150 }: { width?: number }) {
         App Store
       </text>
     </svg>
+  );
+}
+
+/* The pair, one of which is always hidden. */
+function BadgePair() {
+  return (
+    <>
+      <span className="dark:hidden">
+        <Badge ground="#000000" ink="#FFFFFF" />
+      </span>
+      <span className="hidden dark:block">
+        <Badge ground="#FFFFFF" ink="#000000" />
+      </span>
+    </>
   );
 }
 
@@ -69,7 +102,7 @@ export function AppStoreBadge() {
   if (APP_STORE_URL) {
     return (
       <a href={APP_STORE_URL} aria-label="Download Durus on the App Store">
-        <Badge />
+        <BadgePair />
       </a>
     );
   }
@@ -77,8 +110,8 @@ export function AppStoreBadge() {
   return (
     <div className="flex flex-col items-center gap-2">
       {/* Dimmed and not a link, because it does not go anywhere yet. */}
-      <span className="opacity-45" aria-hidden>
-        <Badge />
+      <span className="opacity-50" aria-hidden>
+        <BadgePair />
       </span>
       <span className="text-ink-soft text-[14px]">Coming to the App Store</span>
     </div>

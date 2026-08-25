@@ -45,7 +45,7 @@ export default function PrivacyPage() {
           What Durus stores, and why
         </h1>
         <p className="text-ink-soft text-[16px] leading-relaxed">
-          Durus is a revision app for the vocabulary of Madinah Arabic Book 1. It
+          Durus is a revision app for the vocabulary of the Madinah Arabic course. It
           exists to bring words back just before you forget them, and it collects
           what that takes and nothing else. Last updated {UPDATED}.
         </p>

@@ -28,6 +28,18 @@
   --saffron: #9c6f1e;
 }
 
+/*
+  Tailwind's dark: variant follows the THEME CLASS, not the operating system.
+
+  Without this, v4 defaults it to prefers-color-scheme, which is a different
+  question from the one this site asks: the theme here is a toggle the user
+  set, stored in a cookie and applied as a class on <html>. Leaving the default
+  in place meant a dark: utility fired according to the OS while every colour
+  around it followed the class - a light page with a dark-mode element in the
+  middle of it.
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
 .dark {
   --paper: #131722;
   --surface: #1b2130;
