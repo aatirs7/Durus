@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { Help } from "@/components/help";
 import { ExitDrill } from "@/components/exit-drill";
-import { Button, ButtonLink, Eyebrow, Numeral, Pill } from "@/components/ui";
+import { Button, ButtonLink, Eyebrow, Numeral } from "@/components/ui";
 import { checkAnswer } from "@/lib/answer";
 import { isPlainKey, isTyping, markReviewed, overlayOpen } from "@/lib/keys";
 import { assembledCorrectly, type Tile } from "@/lib/letters";
@@ -223,6 +223,26 @@ export function ReviewSession({
           <Eyebrow>{modeLabel(question.mode, question.direction)}</Eyebrow>
 
           <Prompt question={question} />
+
+          {/*
+            Gender and plural belong under the word they describe, not
+            down beside the verdict where the pills were wide enough to
+            read as buttons and low enough to sit on the tap hint.
+          */}
+          {result?.correct && (question.gender || question.plural) ? (
+            <div className="-mt-4 flex flex-wrap justify-center gap-2">
+              {question.gender ? (
+                <Note>
+                  {question.gender === "m" ? "masculine" : "feminine"}
+                </Note>
+              ) : null}
+              {question.plural ? (
+                <Note>
+                  <Arabic className="text-[17px]">{question.plural}</Arabic>
+                </Note>
+              ) : null}
+            </div>
+          ) : null}
 
           {question.mode === "choice" ? (
             <ChoiceAnswers
@@ -491,6 +511,16 @@ function AssembleAnswer({
   );
 }
 
+/* A footnote sized chip. Pill is sized for a card back and reads as a
+   control at this size. */
+function Note({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="border-rule text-ink-soft inline-flex items-center rounded-[999px] border px-3 py-0.5 text-[13px]">
+      {children}
+    </span>
+  );
+}
+
 /*
   What just happened. On a wrong answer the card itself, because the
   moment right after getting it wrong is the moment worth showing it.
@@ -544,19 +574,6 @@ function Feedback({
         <p className="text-ink-faint text-[15px] italic">
           {question.transliteration}
         </p>
-      ) : null}
-
-      {result.correct && (question.gender || question.plural) ? (
-        <div className="flex flex-wrap justify-center gap-2">
-          {question.gender ? (
-            <Pill>{question.gender === "m" ? "masculine" : "feminine"}</Pill>
-          ) : null}
-          {question.plural ? (
-            <Pill>
-              <Arabic>{question.plural}</Arabic>
-            </Pill>
-          ) : null}
-        </div>
       ) : null}
     </div>
   );

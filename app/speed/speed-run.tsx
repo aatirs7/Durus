@@ -102,7 +102,7 @@ export function SpeedRun({
 
     return (
       <Screen className="items-center justify-center gap-8 py-10">
-      <ExitDrill />
+        <ExitDrill />
 
         <Numeral>{`${accuracy}%`}</Numeral>
         <Eyebrow>knew it</Eyebrow>
@@ -161,6 +161,27 @@ export function SpeedRun({
         <SpeedRing progress={ringProgress} animateMs={windowMs} size={240}>
           <Word arabic={word.arabic} blurred={blurred} desktop />
         </SpeedRing>
+      </div>
+
+      {/*
+        Once the window has closed the word is gone, so the answer goes
+        here. Saying you missed it and then never being told what it was
+        is the one way this drill can waste a rep.
+
+        The block holds its height while the word is still up, so the
+        buttons do not jump when it arrives.
+      */}
+      <div className="flex h-[68px] flex-col items-center justify-start gap-1">
+        {blurred ? (
+          <>
+            <p className="text-ink text-[24px] leading-snug">{word.english}</p>
+            {word.transliteration ? (
+              <p className="text-ink-faint text-[16px] italic">
+                {word.transliteration}
+              </p>
+            ) : null}
+          </>
+        ) : null}
       </div>
 
       <div className="flex w-full gap-3 lg:justify-center lg:gap-4">
