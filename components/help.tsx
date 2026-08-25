@@ -148,10 +148,24 @@ const SLIDES: Record<
         line: "Then it turns around. The same word, from the English, first by choice and then built from its letters.",
         art: (
           <Art>
-            <text x="100" y="24" textAnchor="middle" fill={C.faint} fontSize="11">
+            <text
+              x="100"
+              y="24"
+              textAnchor="middle"
+              fill={C.faint}
+              fontSize="11"
+            >
               house
             </text>
-            <rect x="52" y="34" width="96" height="18" rx="7" fill={C.sunk} stroke={C.rule} />
+            <rect
+              x="52"
+              y="34"
+              width="96"
+              height="18"
+              rx="7"
+              fill={C.sunk}
+              stroke={C.rule}
+            />
             <text
               x="100"
               y="48"
@@ -162,12 +176,63 @@ const SLIDES: Record<
             >
               بَيْت
             </text>
-            <rect x="46" y="64" width="30" height="26" rx="8" fill={C.frame} stroke={C.rule} />
-            <rect x="84" y="64" width="30" height="26" rx="8" fill={C.frame} stroke={C.rule} />
-            <rect x="122" y="64" width="30" height="26" rx="8" fill={C.frame} stroke={C.rule} />
-            <text x="61" y="82" textAnchor="middle" fill={C.ink} fontSize="14" fontFamily="var(--font-amiri), serif">تٌ</text>
-            <text x="99" y="82" textAnchor="middle" fill={C.ink} fontSize="14" fontFamily="var(--font-amiri), serif">بَ</text>
-            <text x="137" y="82" textAnchor="middle" fill={C.ink} fontSize="14" fontFamily="var(--font-amiri), serif">يْ</text>
+            <rect
+              x="46"
+              y="64"
+              width="30"
+              height="26"
+              rx="8"
+              fill={C.frame}
+              stroke={C.rule}
+            />
+            <rect
+              x="84"
+              y="64"
+              width="30"
+              height="26"
+              rx="8"
+              fill={C.frame}
+              stroke={C.rule}
+            />
+            <rect
+              x="122"
+              y="64"
+              width="30"
+              height="26"
+              rx="8"
+              fill={C.frame}
+              stroke={C.rule}
+            />
+            <text
+              x="61"
+              y="82"
+              textAnchor="middle"
+              fill={C.ink}
+              fontSize="14"
+              fontFamily="var(--font-amiri), serif"
+            >
+              تٌ
+            </text>
+            <text
+              x="99"
+              y="82"
+              textAnchor="middle"
+              fill={C.ink}
+              fontSize="14"
+              fontFamily="var(--font-amiri), serif"
+            >
+              بَ
+            </text>
+            <text
+              x="137"
+              y="82"
+              textAnchor="middle"
+              fill={C.ink}
+              fontSize="14"
+              fontFamily="var(--font-amiri), serif"
+            >
+              يْ
+            </text>
           </Art>
         ),
       },
@@ -543,15 +608,18 @@ export function Help({ mode }: { mode: Mode }) {
             className="bg-ink/15 fixed inset-0 z-30 cursor-default"
           />
 
+          {/*
+            Centred on a phone, where hanging it off the corner put the
+            whole panel in the top half of the screen with a field of
+            scrim under it. On desktop it still tucks under the question
+            mark it came from, because there the drill beside it stays
+            visible, which is the point of explaining it in place.
+          */}
           <div
             role="dialog"
             aria-modal="true"
             aria-label={help.title}
-            className="border-rule bg-surface fixed z-40 flex w-[min(360px,calc(100vw-2rem))] flex-col gap-4 rounded-[16px] border px-6 py-6 shadow-lg"
-            style={{
-              top: "max(4.5rem, calc(env(safe-area-inset-top) + 3.75rem))",
-              right: "max(1rem, env(safe-area-inset-right))",
-            }}
+            className="border-rule bg-surface fixed top-1/2 left-1/2 z-40 flex w-[min(360px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col gap-4 rounded-[16px] border px-6 py-6 shadow-lg lg:top-[4.5rem] lg:left-auto lg:right-4 lg:translate-x-0 lg:translate-y-0"
           >
             <div className="flex items-center justify-between">
               <h2 className="text-ink text-[17px] font-medium">{help.title}</h2>
@@ -562,7 +630,13 @@ export function Help({ mode }: { mode: Mode }) {
 
             <div className="bg-paper rounded-[12px] py-2">{current.art}</div>
 
-            <p className="text-ink min-h-[60px] text-center text-[15px] leading-relaxed">
+            {/*
+              A fixed height, not a minimum. The panel is paged through,
+              and a box that grows and shrinks under your thumb as the
+              lines change length makes the dots and the buttons move
+              between taps.
+            */}
+            <p className="text-ink flex h-[96px] items-center justify-center text-center text-[15px] leading-relaxed">
               {current.line}
             </p>
 
