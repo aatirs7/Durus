@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
 /*
   The signature element. A thin circular arc drawn in lapis on a sunk
   track. During the drill it is the timer. On stats it shows the current
@@ -42,6 +46,32 @@ export function SpeedRing({
   const RADIUS = (size - STROKE) / 2;
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
+  const drain = useRef<SVGCircleElement | null>(null);
+
+  /*
+    Driven through the Web Animations API rather than a CSS keyframe.
+    This is why the file is a client component: stats renders the same
+    ring as a still, and passes its own server rendered children in,
+    which is allowed.
+
+    The keyframe version parsed, resolved, and reported itself as
+    running, while getAnimations() on the circle stayed empty and the
+    offset never moved: Chrome would not build an animation for
+    stroke-dashoffset out of a var(). This says exactly what to
+    interpolate, and can be checked from the console.
+  */
+  useEffect(() => {
+    const circle = drain.current;
+    if (!circle || !animateMs) return;
+
+    const animation = circle.animate(
+      [{ strokeDashoffset: 0 }, { strokeDashoffset: CIRCUMFERENCE }],
+      { duration: animateMs, easing: "linear", fill: "forwards" },
+    );
+
+    return () => animation.cancel();
+  }, [animateMs, CIRCUMFERENCE]);
+
   return (
     <div
       className="relative mx-auto"
@@ -73,24 +103,7 @@ export function SpeedRing({
           strokeLinecap="round"
           strokeDasharray={CIRCUMFERENCE}
           strokeDashoffset={CIRCUMFERENCE * (1 - main)}
-          style={
-            animateMs
-              ? {
-                  /*
-                    The keyframe reads the circumference from here, so
-                    the animation does not need to know the radius.
-
-                    In px, not a bare number. stroke-dashoffset accepts
-                    a unitless value as an SVG attribute but not as a
-                    CSS length, so without the unit the keyframe's end
-                    state is invalid and the ring never moves.
-                  */
-                  ["--ring-circumference" as string]: `${CIRCUMFERENCE}px`,
-                  strokeDashoffset: 0,
-                  animation: `durus-ring-drain ${animateMs}ms linear forwards`,
-                }
-              : undefined
-          }
+          ref={drain}
         />
         {secondary === undefined ? null : (
           <circle

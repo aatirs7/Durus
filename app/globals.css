@@ -165,26 +165,6 @@ body {
   }
 }
 
-/*
-  The speed ring draining.
-
-  A keyframe rather than a transition on a React state value. The state
-  version had to set the ring full and then empty on the next frame, and
-  the transition applied to both moves, so the browser never saw a
-  settled full ring to animate away from: the first card drained
-  instantly and every card after it barely moved. An animation restarts
-  cleanly when the element is keyed to the card, with nothing to
-  sequence by hand.
-*/
-@keyframes durus-ring-drain {
-  from {
-    stroke-dashoffset: 0;
-  }
-  to {
-    stroke-dashoffset: var(--ring-circumference);
-  }
-}
-
 /* Numerals never jitter as they tick. */
 .tabular {
   font-family: var(--font-plex-mono), ui-monospace, monospace;
