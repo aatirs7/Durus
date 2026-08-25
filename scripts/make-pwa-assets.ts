@@ -24,7 +24,63 @@ const PAPER_DARK = "#131722";
 const LAPIS_LIGHT = "#2A4A8B";
 const LAPIS_DARK = "#7FA0DC";
 
-const WORD = "دُرُوس";
+/*
+  The two dammas are drawn as separate glyphs at measured offsets, instead of
+  being typed into the word.
+
+  resvg does not apply Amiri's mark positioning: handed the vowelled string
+  "دُرُوس" it lays the harakat out on their own advances, so both float above and
+  to the right of the letters they belong to, and drag the word off its optical
+  centre. Every icon and launch image this script has ever produced carried that
+  artifact. It is a limitation of this PNG pipeline only - the app's own Arabic
+  is laid out by the browser and positions marks correctly - but these are PNGs,
+  so they have to work around it.
+
+  Every offset is a fraction of the font size, so the construction scales. They
+  were measured rather than guessed: the word was rendered once with each letter
+  in its own colour, the letters located by their pixels, and the marks placed a
+  hair above the tops of the dal and the waw.
+
+  The iOS app generates the same mark from the same numbers, in
+  scripts/make-brand-assets.ts in the DurusIOS repo. The two appear side by side
+  on one home screen, so they have to agree: change the geometry here and change
+  it there.
+*/
+const WORD = "دروس";
+const DAMMA = "&#x064F;";
+
+/* Mark offsets from the word's centre and baseline, in multiples of font size. */
+const DAL_DAMMA = { dx: 0.6533, dy: 0.4 };
+const WAW_DAMMA = { dx: -0.25, dy: 0.5 };
+
+/* Ink extents of the composed mark, in multiples of font size, and the visual
+   centre that follows from them - so the whole thing is centred as one piece
+   rather than centred on the word and left top heavy. */
+const INK_ABOVE_BASELINE = 0.7467;
+const INK_BELOW_BASELINE = 0.2267;
+const CENTRE_ABOVE_BASELINE = (INK_ABOVE_BASELINE - INK_BELOW_BASELINE) / 2;
+
+/*
+  The word and its two marks, centred horizontally on cx and sitting on the
+  given baseline. Everything that draws the mark goes through here, so the
+  icons and the launch images cannot drift apart.
+*/
+function markSvg(cx: number, baseline: number, fontSize: number, fill: string): string {
+  const damma = (o: { dx: number; dy: number }) =>
+    `<text x="${cx + o.dx * fontSize}" y="${baseline + o.dy * fontSize}" text-anchor="middle"
+        font-family="Amiri" font-size="${fontSize}" fill="${fill}">${DAMMA}</text>`;
+
+  return `<text x="${cx}" y="${baseline}" text-anchor="middle"
+        direction="rtl" font-family="Amiri" font-size="${fontSize}"
+        fill="${fill}">${WORD}</text>
+  ${damma(DAL_DAMMA)}
+  ${damma(WAW_DAMMA)}`;
+}
+
+/* The baseline that puts the composed mark's visual centre on a canvas's. */
+function centredBaseline(height: number, fontSize: number): number {
+  return Math.round(height / 2 + CENTRE_ABOVE_BASELINE * fontSize);
+}
 
 function iconSvg(
   size: number,
@@ -40,9 +96,7 @@ function iconSvg(
   const mark = opts.invert ? PAPER_LIGHT : LAPIS_LIGHT;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
   <rect width="${size}" height="${size}" fill="${ground}"/>
-  <text x="50%" y="${Math.round(size * 0.5 + fontSize * 0.3)}" text-anchor="middle"
-        direction="rtl" font-family="Amiri" font-size="${fontSize}"
-        fill="${mark}">${WORD}</text>
+  ${markSvg(size / 2, centredBaseline(size, fontSize), fontSize, mark)}
 </svg>`;
 }
 
@@ -50,9 +104,7 @@ function splashSvg(w: number, h: number, dark: boolean): string {
   const fontSize = Math.round(Math.min(w, h) * 0.16);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
   <rect width="${w}" height="${h}" fill="${dark ? PAPER_DARK : PAPER_LIGHT}"/>
-  <text x="50%" y="${Math.round(h * 0.5 + fontSize * 0.3)}" text-anchor="middle"
-        direction="rtl" font-family="Amiri" font-size="${fontSize}"
-        fill="${dark ? LAPIS_DARK : LAPIS_LIGHT}">${WORD}</text>
+  ${markSvg(w / 2, centredBaseline(h, fontSize), fontSize, dark ? LAPIS_DARK : LAPIS_LIGHT)}
 </svg>`;
 }
 
