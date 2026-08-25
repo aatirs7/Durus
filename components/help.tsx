@@ -105,7 +105,7 @@ const SLIDES: Record<
         ),
       },
       {
-        line: "Early on you pick the meaning from four. The right one is always marked afterwards.",
+        line: "A new word gives you four meanings to choose from. The right one is always marked afterwards, whichever you picked.",
         art: (
           <Art>
             <Row y={12} />
@@ -117,7 +117,7 @@ const SLIDES: Record<
         ),
       },
       {
-        line: "Once a word is known it stops offering options and asks you to type the meaning.",
+        line: "Answer a word correctly twice and it stops offering options. From then on it asks you to type the meaning.",
         art: (
           <Art>
             <text
@@ -145,32 +145,63 @@ const SLIDES: Record<
         ),
       },
       {
-        line: "There is no self rating. Being right sets the schedule, and how fast you were sets how far out.",
+        line: "Then it turns around. The same word, from the English, first by choice and then built from its letters.",
         art: (
           <Art>
-            <circle
-              cx="100"
-              cy="60"
-              r="34"
-              fill="none"
-              stroke={C.sunk}
-              strokeWidth="6"
-            />
-            <circle
-              cx="100"
-              cy="60"
-              r="34"
-              fill="none"
-              stroke={C.lapis}
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeDasharray="214"
-              strokeDashoffset="70"
-              transform="rotate(-90 100 60)"
-            />
-            <text x="100" y="66" textAnchor="middle" fill={C.ink} fontSize="16">
-              1.2s
+            <text x="100" y="24" textAnchor="middle" fill={C.faint} fontSize="11">
+              house
             </text>
+            <rect x="52" y="34" width="96" height="18" rx="7" fill={C.sunk} stroke={C.rule} />
+            <text
+              x="100"
+              y="48"
+              textAnchor="middle"
+              fill={C.ink}
+              fontSize="13"
+              fontFamily="var(--font-amiri), serif"
+            >
+              بَيْت
+            </text>
+            <rect x="46" y="64" width="30" height="26" rx="8" fill={C.frame} stroke={C.rule} />
+            <rect x="84" y="64" width="30" height="26" rx="8" fill={C.frame} stroke={C.rule} />
+            <rect x="122" y="64" width="30" height="26" rx="8" fill={C.frame} stroke={C.rule} />
+            <text x="61" y="82" textAnchor="middle" fill={C.ink} fontSize="14" fontFamily="var(--font-amiri), serif">تٌ</text>
+            <text x="99" y="82" textAnchor="middle" fill={C.ink} fontSize="14" fontFamily="var(--font-amiri), serif">بَ</text>
+            <text x="137" y="82" textAnchor="middle" fill={C.ink} fontSize="14" fontFamily="var(--font-amiri), serif">يْ</text>
+          </Art>
+        ),
+      },
+      {
+        line: "Four steps in all, and each one waits for two correct answers. Get one wrong and the word drops back a step.",
+        art: (
+          <Art>
+            {[
+              { y: 8, label: "pick the meaning", on: true },
+              { y: 34, label: "type the meaning", on: true },
+              { y: 60, label: "pick the Arabic", on: false },
+              { y: 86, label: "build the Arabic", on: false },
+            ].map((rung) => (
+              <g key={rung.y}>
+                <rect
+                  x="26"
+                  y={rung.y}
+                  width="148"
+                  height="20"
+                  rx="7"
+                  fill={rung.on ? "var(--lapis-wash)" : C.sunk}
+                  stroke={rung.on ? C.lapis : C.rule}
+                />
+                <text
+                  x="100"
+                  y={rung.y + 14}
+                  textAnchor="middle"
+                  fill={rung.on ? C.lapis : C.faint}
+                  fontSize="10"
+                >
+                  {rung.label}
+                </text>
+              </g>
+            ))}
           </Art>
         ),
       },

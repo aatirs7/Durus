@@ -1,4 +1,4 @@
-import type { CSSProperties, ElementType } from "react";
+import type { CSSProperties, ElementType, ReactNode } from "react";
 import { stripHarakat } from "@/lib/harakat";
 
 /*
@@ -13,7 +13,13 @@ import { stripHarakat } from "@/lib/harakat";
 export { stripHarakat, hasHarakat } from "@/lib/harakat";
 
 type ArabicProps = {
-  children: string;
+  /*
+    A string in almost every case. Nodes are allowed so an Arabic only
+    run can highlight part of itself with a span, which is safe because
+    there is no direction change inside it for bidi to resolve. Harakat
+    can only be stripped from a plain string, so a node keeps them.
+  */
+  children: ReactNode;
   showHarakat?: boolean;
   className?: string;
   as?: ElementType;
@@ -28,7 +34,10 @@ export function Arabic({
   as: Tag = "span",
   style,
 }: ArabicProps) {
-  const text = showHarakat ? children : stripHarakat(children);
+  const text =
+    showHarakat || typeof children !== "string"
+      ? children
+      : stripHarakat(children);
   return (
     <Tag dir="rtl" lang="ar" className={`arabic ${className}`} style={style}>
       {text}

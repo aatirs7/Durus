@@ -8,6 +8,7 @@ export type SpeedWord = {
   cardId: number;
   arabic: string;
   english: string;
+  transliteration: string | null;
 };
 
 export const SPEED_RUN_LENGTH = 20;

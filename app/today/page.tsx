@@ -114,21 +114,36 @@ export default async function TodayPage() {
       <div className="flex flex-col items-center justify-start gap-5 pt-6">
         {clear ? null : <ReviewHint />}
 
-        <div className="flex flex-wrap justify-center gap-x-5">
-          {clear ? null : (
-            <ButtonLink href="/speed" variant="text">
-              Speed drill
-            </ButtonLink>
-          )}
-          <ButtonLink href="/cards" variant="text">
-            Flashcards
-          </ButtonLink>
-          <ButtonLink href="/cases" variant="text">
-            Case drill
-          </ButtonLink>
-          <ButtonLink href={`/lessons/${config.currentLesson}`} variant="text">
-            Browse lesson {config.currentLesson}
-          </ButtonLink>
+        {/*
+          The other ways in, as a fixed two column grid rather than a
+          row of links left to wrap wherever they run out of width. A
+          wrapped row puts a different number of items on each line
+          depending on the lesson number, which is why this read as
+          unfinished: the layout was an accident of the text.
+
+          Bordered and quiet, so the block is clearly secondary to the
+          one button above it.
+        */}
+        <div className="grid w-full grid-cols-2 gap-2">
+          {(clear ? [] : [{ href: "/speed", label: "Speed drill" }])
+            .concat([
+              { href: "/cards", label: "Flashcards" },
+              { href: "/cases", label: "Case drill" },
+              {
+                href: `/lessons/${config.currentLesson}`,
+                label: `Lesson ${config.currentLesson}`,
+              },
+            ])
+            .map((entry) => (
+              <ButtonLink
+                key={entry.href}
+                href={entry.href}
+                variant="quiet"
+                className="w-full px-3 py-3 text-[15px]"
+              >
+                {entry.label}
+              </ButtonLink>
+            ))}
         </div>
 
         <UnlockNext next={next} />

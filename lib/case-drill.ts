@@ -13,11 +13,30 @@
 
 export type CaseEnding = "u" | "i" | "a" | "un";
 
+/*
+  Each mark is shown on a dotted circle, U+25CC, which is the convention
+  for displaying a combining mark on its own.
+
+  Without a base to attach to, a lone harakah is positioned against
+  nothing, so the four of them sit at whatever heights the font happens
+  to give them and the row looks scattered. The dotted circle gives each
+  one the same base and the same baseline.
+*/
+const BASE = "◌";
+
 export const CASE_LABELS: Record<CaseEnding, { ar: string; en: string }> = {
-  u: { ar: "ُ", en: "marfu" },
-  i: { ar: "ِ", en: "majrur" },
-  a: { ar: "َ", en: "mansub" },
-  un: { ar: "ٌ", en: "tanwin" },
+  u: { ar: `${BASE}ُ`, en: "marfu" },
+  i: { ar: `${BASE}ِ`, en: "majrur" },
+  a: { ar: `${BASE}َ`, en: "mansub" },
+  un: { ar: `${BASE}ٌ`, en: "tanwin" },
+};
+
+/* The bare mark, for putting back into the sentence. */
+export const CASE_MARKS: Record<CaseEnding, string> = {
+  u: "ُ",
+  i: "ِ",
+  a: "َ",
+  un: "ٌ",
 };
 
 /* Stands in for the missing harakah. */

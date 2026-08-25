@@ -18,6 +18,7 @@ export async function getSpeedWords(): Promise<SpeedWord[]> {
       cardId: cards.id,
       arabic: cards.arabic,
       english: cards.english,
+      transliteration: cards.transliteration,
     })
     .from(cardStates)
     .innerJoin(cards, eq(cardStates.cardId, cards.id))

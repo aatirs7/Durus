@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { Help } from "@/components/help";
 import { SpeedRing } from "@/components/speed-ring";
+import { ExitDrill } from "@/components/exit-drill";
 import { Button, ButtonLink, Eyebrow, Numeral, Screen } from "@/components/ui";
 import { isPlainKey, isTyping, overlayOpen } from "@/lib/keys";
 import { recordSpeedRun, tightenSpeedWindow } from "./actions";
@@ -101,6 +102,8 @@ export function SpeedRun({
 
     return (
       <Screen className="items-center justify-center gap-8 py-10">
+      <ExitDrill />
+
         <Numeral>{`${accuracy}%`}</Numeral>
         <Eyebrow>knew it</Eyebrow>
         <p className="text-ink-soft text-[16px]">

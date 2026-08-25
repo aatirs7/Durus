@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Arabic } from "@/components/arabic";
+import { ExitDrill } from "@/components/exit-drill";
 import { Button, ButtonLink, Eyebrow, Pill } from "@/components/ui";
 import { isPlainKey, isTyping, overlayOpen } from "@/lib/keys";
 import type { StudyCard } from "@/lib/lessons";
@@ -54,6 +55,8 @@ export function CardsDeck({ cards }: { cards: StudyCard[] }) {
 
   return (
     <div className="flex flex-col" style={{ height: "100dvh" }}>
+      <ExitDrill />
+
       <div className="bg-rule h-[2px] shrink-0">
         <div
           className="bg-lapis h-full transition-[width] duration-200"

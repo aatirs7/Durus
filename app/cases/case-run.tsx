@@ -4,10 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { Help } from "@/components/help";
 import { isPlainKey, isTyping, overlayOpen } from "@/lib/keys";
+import { ExitDrill } from "@/components/exit-drill";
 import { ButtonLink, Eyebrow, Numeral, Screen } from "@/components/ui";
 import {
   BLANK,
   CASE_LABELS,
+  CASE_MARKS,
   CASE_ORDER,
   type CaseEnding,
   type CaseQuestion,
@@ -32,6 +34,8 @@ export function CaseRun({ questions }: { questions: CaseQuestion[] }) {
         : Math.round((correct / questions.length) * 100);
     return (
       <Screen className="items-center justify-center gap-8 py-10">
+      <ExitDrill />
+
         <Numeral>{`${accuracy}%`}</Numeral>
         <Eyebrow>endings correct</Eyebrow>
         <p className="text-ink-soft text-[16px]">
@@ -79,18 +83,31 @@ export function CaseRun({ questions }: { questions: CaseQuestion[] }) {
       </Eyebrow>
 
       {/*
-        The whole sentence stays in one RTL element. Splitting it across
-        elements to style the blank would let bidi reorder the pieces.
+        One RTL element, so bidi cannot reorder the pieces, but the word
+        being asked about is a span inside it. Splitting an Arabic only
+        run is safe: there is no direction change for bidi to resolve.
+
+        Without the highlight the sentence is a wall of script with one
+        mark missing somewhere in it, and you have to hunt for the thing
+        you are answering about before you can answer.
       */}
-      <Arabic as="p" className="text-ink text-[32px] leading-[2]">
-        {[
-          q.before,
-          q.stem + (answered ? CASE_LABELS[q.answer].ar : BLANK) + q.punct,
-          q.after,
-        ]
-          .filter(Boolean)
-          .join(" ")}
-      </Arabic>
+      <p
+        dir="rtl"
+        lang="ar"
+        className="arabic text-ink text-[32px] leading-[2]"
+      >
+        {q.before ? <Arabic>{`${q.before} `}</Arabic> : null}
+        <Arabic
+          className="rounded-[6px] px-1"
+          style={{
+            color: "var(--lapis)",
+            backgroundColor: "var(--lapis-wash)",
+          }}
+        >
+          {q.stem + (answered ? CASE_MARKS[q.answer] : BLANK) + q.punct}
+        </Arabic>
+        {q.after ? <Arabic>{` ${q.after}`}</Arabic> : null}
+      </p>
 
       <p className="text-ink-soft text-[16px]">{q.english}</p>
 
