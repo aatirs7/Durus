@@ -1,8 +1,10 @@
 import { sql } from "drizzle-orm";
 import {
+  bigint,
   boolean,
   date,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   primaryKey,
@@ -111,8 +113,44 @@ export const reviews = pgTable(
     reviewedAt: timestamp("reviewed_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
+    /*
+      card_states is a deterministic fold over this table, computed
+      independently on each device and here. For that to converge, a review has
+      to carry every input schedule() consumed. It carried three of five.
+
+      capped is not a convenience: it depends on settings.currentLesson and
+      currentLessonSince as they were at the moment of the review, and that
+      history exists nowhere else. Recomputing it from present day settings
+      would silently produce different intervals on a replay.
+
+      fuzz is the sampled value applyFuzz consumed, null where it was the
+      identity (interval <= 3 days, and every "again"). practice records that
+      the answer came from the nothing-is-due fallback, where a correct answer
+      must not move the schedule.
+    */
+    practice: boolean("practice").notNull().default(false),
+    capped: boolean("capped").notNull().default(false),
+    fuzz: real("fuzz"),
+    /* Undo stopped being a delete. An append only log with a tombstone can be
+       replayed; one with a hole in it cannot. */
+    retractedAt: timestamp("retracted_at", { withTimezone: true }),
+    /* Client minted, so a retry whose response was lost inserts once. Legacy
+       rows predate it and stay null. */
+    clientId: text("client_id"),
+    deviceId: text("device_id"),
+    /* Per profile gapless sequence, allocated under a row lock at ingest. Not a
+       bigserial: sequence values are handed out before commit, so a client that
+       sees 6 and stores cursor 6 would never see the row that took 5 and
+       committed later. */
+    seq: bigint("seq", { mode: "number" }),
   },
-  (t) => [index("reviews_reviewed_at_idx").on(t.profileId, t.reviewedAt)],
+  (t) => [
+    index("reviews_reviewed_at_idx").on(t.profileId, t.reviewedAt),
+    uniqueIndex("reviews_client_id_idx").on(t.clientId),
+    /* The fold's hot path: every review for one card and direction, in order. */
+    index("reviews_fold_idx").on(t.profileId, t.cardId, t.direction, t.reviewedAt),
+    index("reviews_seq_idx").on(t.profileId, t.seq),
+  ],
 );
 
 /*
@@ -152,6 +190,21 @@ export const settings = pgTable("settings", {
   currentLessonSince: timestamp("current_lesson_since", { withTimezone: true })
     .notNull()
     .defaultNow(),
+  /*
+    Last write wins bookkeeping for the mobile clients.
+
+    Per FIELD rather than per row, and the reason is specific: the speed drill
+    writes speedWindowMs automatically at the end of every run, so with whole
+    row LWW a speed run on the phone would silently revert a currentLesson
+    change made on the web. The user reads that as "the app forgot which lesson
+    I'm on", which breaks the interval cap and is close to undiagnosable from a
+    bug report.
+  */
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  fieldUpdatedAt: jsonb("field_updated_at")
+    .$type<Record<string, number>>()
+    .notNull()
+    .default({}),
 });
 
 /*
@@ -174,13 +227,33 @@ export const profiles = pgTable(
   {
     id: serial("id").primaryKey(),
     name: text("name").notNull(),
-    pinHash: text("pin_hash").notNull(),
-    pinSalt: text("pin_salt").notNull(),
+    /*
+      Nullable now. The iOS client authenticates with Clerk and has no PIN; the
+      web app keeps its PIN login for the accounts that already exist, so one
+      table serves both and neither column can be required.
+    */
+    pinHash: text("pin_hash"),
+    pinSalt: text("pin_salt"),
+    /* Null on the rows that predate Clerk. Those stay reachable from the web
+       app's unlock route and are invisible to the mobile API. */
+    clerkUserId: text("clerk_user_id"),
+    /* Per profile gapless sync sequence. See reviews.seq. */
+    syncSeq: bigint("sync_seq", { mode: "number" }).notNull().default(0),
+    /* Soft delete, set by the Clerk user.deleted webhook. The hard delete runs
+       on a delay, because a deletion webhook that fires on a mis-click is
+       otherwise unrecoverable. */
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
   },
-  (t) => [uniqueIndex("profile_name_idx").on(sql`lower(${t.name})`)],
+  /*
+    The unique index on lower(name) is gone. It existed because name plus PIN
+    *was* the credential. Clerk owns sign in now, and two people legitimately
+    called "Aatir" are two accounts; keeping it would reject the second one's
+    provisioning with what looks like a server error. name is a display field.
+  */
+  (t) => [uniqueIndex("profile_clerk_user_idx").on(t.clerkUserId)],
 );
 
 /* Not used until push lands, but in the schema now so there is no
@@ -224,10 +297,53 @@ export const cardHearts = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
+    /* Same reconcile path as card_suspensions: last write wins per key, over
+       {present, deleted}. */
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    deviceId: text("device_id"),
+    seq: bigint("seq", { mode: "number" }),
   },
   (t) => [
     primaryKey({ columns: [t.profileId, t.cardId] }),
     index("card_hearts_profile_idx").on(t.profileId),
+  ],
+);
+
+/*
+  Suspension, moved off card_states.
+
+  card_states is a deterministic fold over reviews and nothing else. Suspension
+  is a hand set mark that no algorithm derives, so leaving it there would make
+  that table *mostly* derived, which is worse than either extreme: every rebuild
+  would have to preserve one column across a delete and recreate, and eventually
+  someone forgets. card_hearts already makes this argument in its own comment.
+
+  Set semantics, like card_hearts: a row exists or it does not. deletedAt is the
+  tombstone that lets an un-suspend propagate rather than being lost to a naive
+  set union.
+*/
+export const cardSuspensions = pgTable(
+  "card_suspensions",
+  {
+    profileId: integer("profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    cardId: integer("card_id")
+      .notNull()
+      .references(() => cards.id, { onDelete: "cascade" }),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    deviceId: text("device_id"),
+    seq: bigint("seq", { mode: "number" }),
+  },
+  (t) => [
+    primaryKey({ columns: [t.profileId, t.cardId] }),
+    index("card_suspensions_profile_idx").on(t.profileId),
   ],
 );
 
@@ -237,3 +353,4 @@ export type CardState = typeof cardStates.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type Settings = typeof settings.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
+export type CardSuspension = typeof cardSuspensions.$inferSelect;

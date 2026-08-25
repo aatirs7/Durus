@@ -1,0 +1,2 @@
+ALTER TABLE "settings" ADD COLUMN "updated_at" timestamp with time zone DEFAULT now() NOT NULL;--> statement-breakpoint
+ALTER TABLE "settings" ADD COLUMN "field_updated_at" jsonb DEFAULT '{}'::jsonb NOT NULL;

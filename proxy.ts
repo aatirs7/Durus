@@ -35,10 +35,16 @@ export const config = {
   matcher: [
     /*
       Everything except the unlock screen itself, the push endpoints the
-      service worker talks to, the cron, and static assets. The cron
-      carries its own bearer secret and the push routes are keyed by an
-      endpoint only the browser knows.
+      service worker talks to, the cron, the mobile API, and static assets.
+      The cron carries its own bearer secret, the push routes are keyed by an
+      endpoint only the browser knows, and api/v1 authenticates every request
+      with a Clerk bearer token.
+
+      api/v1 MUST be excluded. This gate redirects anything unauthenticated to
+      /unlock, so without the exclusion every request from the phone would come
+      back as a 307 to an HTML sign-in page - which the sync client would read
+      as a malformed response rather than as an auth failure.
     */
-    "/((?!unlock|api/push|api/cron|_next/static|_next/image|favicon.ico|icon-|apple-touch-icon|splash-|sw.js|manifest.webmanifest).*)",
+    "/((?!unlock|api/push|api/cron|api/v1|api/webhooks|_next/static|_next/image|favicon.ico|icon-|apple-touch-icon|splash-|sw.js|manifest.webmanifest).*)",
   ],
 };

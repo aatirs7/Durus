@@ -94,7 +94,20 @@ export async function signIn(name: string, pin: string): Promise<AuthResult> {
     No attempt limit and no lockout, by choice. One message covers both
     a wrong name and a wrong PIN, so this does not confirm who exists.
   */
-  if (!row || !isValidPin(pin) || !pinMatches(pin, row.pinHash, row.pinSalt)) {
+  /*
+    pinHash and pinSalt are nullable now, because a Clerk account on the phone
+    has no PIN. A profile without one simply cannot sign in through this route,
+    and it must fall into the same single failure message as a wrong PIN rather
+    than a distinguishable error, or the route would confirm which accounts are
+    Clerk backed.
+  */
+  if (
+    !row ||
+    row.pinHash === null ||
+    row.pinSalt === null ||
+    !isValidPin(pin) ||
+    !pinMatches(pin, row.pinHash, row.pinSalt)
+  ) {
     return { ok: false, error: "That name and PIN did not match." };
   }
 
