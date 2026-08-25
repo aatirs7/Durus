@@ -103,7 +103,6 @@ function metadataFor(
   return {
     title: "Durus",
     description: "Arabic revision for Madinah Book 1",
-    manifest: "/manifest.webmanifest",
     appleWebApp: {
       capable: true,
       title: "Durus",
@@ -181,6 +180,23 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       }`}
       style={theme ? { colorScheme: theme } : undefined}
     >
+      {/*
+        The manifest is rendered here rather than through metadata,
+        because it needs crossorigin="use-credentials" and the metadata
+        field cannot set it.
+
+        A manifest is fetched without credentials by default. Ours is
+        generated per request and reads the theme cookie to decide its
+        background colour, so without this it was always handed the
+        light fallback, and that colour is what iOS paints when no
+        launch image matches the device.
+      */}
+      <link
+        rel="manifest"
+        href="/manifest.webmanifest"
+        crossOrigin="use-credentials"
+      />
+
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
           <ThemeCookie />

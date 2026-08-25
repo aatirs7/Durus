@@ -105,4 +105,21 @@ for (const device of DEVICES) {
   }
 }
 
+/*
+  The original two filenames, kept as real files.
+
+  iOS caches the launch image tags from when the app was added to the
+  home screen, so a phone installed before the per device set existed is
+  still asking for these. Renaming them out from under it does not fall
+  back to anything: the request 404s and the launch screen is black.
+
+  Sized for the 14 Pro class panel, which is what they were.
+*/
+for (const dark of [false, true]) {
+  write(
+    `splash-${dark ? "dark" : "light"}.png`,
+    render(splashSvg(1179, 2556, dark), 1179),
+  );
+}
+
 console.log("done");

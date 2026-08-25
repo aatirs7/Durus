@@ -194,7 +194,15 @@ export function ReviewSession({
 
   return (
     <div className="flex flex-col" style={{ height: "100dvh" }}>
-      <div className="bg-rule h-[2px] shrink-0">
+      {/*
+        Below the safe area, not at the very top of the viewport. The
+        status bar is transparent in standalone, so a bar at y=0 sits
+        behind the clock and cannot be seen on a phone at all.
+      */}
+      <div
+        className="bg-rule h-[3px] shrink-0"
+        style={{ marginTop: "env(safe-area-inset-top)" }}
+      >
         <div
           className="bg-lapis h-full transition-[width] duration-200"
           style={{ width: `${progress * 100}%` }}
@@ -217,12 +225,25 @@ export function ReviewSession({
         when the content is taller than the frame and centring would
         clip the top of it on a short screen.
       */}
-      <div className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col overflow-y-auto px-6 pb-8 lg:max-w-[680px]">
+      <div
+        /*
+          The continue line is fixed to the bottom, so the scrolling
+          column has to stop short of it. Without this reservation the
+          feedback runs underneath the hint and the last line of it is
+          clipped off the bottom of the screen.
+        */
+        className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col overflow-y-auto px-6 lg:max-w-[680px]"
+        style={{
+          paddingBottom: result
+            ? "calc(max(1.5rem, env(safe-area-inset-bottom)) + 2.5rem)"
+            : "2rem",
+        }}
+      >
         <div className="my-auto flex flex-col gap-9 pt-[156px]">
           {/* Which rung this card is on, so the format is never a surprise. */}
           <Eyebrow>{modeLabel(question.mode, question.direction)}</Eyebrow>
 
-          <Prompt question={question} />
+          <Prompt question={question} revealed={Boolean(result)} />
 
           {/*
             Gender and plural belong under the word they describe, not
@@ -313,7 +334,14 @@ export function ReviewSession({
   Recognition shows the Arabic and nothing else, because anything else
   on screen is something the eye can cheat with.
 */
-function Prompt({ question }: { question: Question }) {
+function Prompt({
+  question,
+  revealed,
+}: {
+  question: Question;
+  /* Answered, so the reading may be shown under the word. */
+  revealed: boolean;
+}) {
   if (question.direction === "production") {
     return (
       <p className="text-ink text-center text-[32px] leading-snug">
@@ -322,13 +350,29 @@ function Prompt({ question }: { question: Question }) {
     );
   }
 
+  /*
+    The reading sits under the word once it has been answered. Down in
+    the feedback block it was competing with the continue line for the
+    same few pixels, and it belongs beside the thing it is a reading of
+    anyway.
+  */
   return (
-    <Arabic
-      as="p"
-      className="text-ink text-center text-[64px] leading-[1.8] md:text-[88px]"
-    >
-      {question.arabic}
-    </Arabic>
+    <div className="flex flex-col items-center gap-1">
+      <Arabic
+        as="p"
+        className="text-ink text-center text-[64px] leading-[1.8] md:text-[88px]"
+      >
+        {question.arabic}
+      </Arabic>
+
+      <p
+        className="text-ink-faint text-[18px] italic transition-opacity duration-200"
+        style={{ opacity: revealed && question.transliteration ? 1 : 0 }}
+        aria-hidden={!revealed}
+      >
+        {question.transliteration ?? " "}
+      </p>
+    </div>
   );
 }
 
@@ -534,12 +578,12 @@ function Feedback({
   question: Question;
   result: Result | null;
 }) {
-  if (!result) return <div className="h-[132px]" aria-hidden />;
+  if (!result) return <div className="h-[104px]" aria-hidden />;
 
   const tone = result.correct ? "var(--verdigris)" : "var(--clay)";
 
   return (
-    <div className="flex h-[132px] flex-col items-center justify-start gap-3">
+    <div className="flex h-[104px] flex-col items-center justify-start gap-3">
       {/*
         The verdict is the point of this screen, so it is a badge in its
         own colour rather than a line of small text that has to compete
@@ -565,16 +609,6 @@ function Feedback({
         <p className="text-ink text-[22px]">{question.english}</p>
       )}
 
-      {/*
-        The transliteration shows either way. Being right about the
-        meaning says nothing about whether you were reading it
-        correctly, which is the whole reason it is on the card.
-      */}
-      {question.transliteration ? (
-        <p className="text-ink-faint text-[15px] italic">
-          {question.transliteration}
-        </p>
-      ) : null}
     </div>
   );
 }
