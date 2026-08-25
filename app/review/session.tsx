@@ -211,6 +211,9 @@ export function ReviewSession({
         matters more here than balance does.
       */}
       <div className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col justify-start gap-9 overflow-y-auto px-6 pt-[14dvh] pb-8 lg:max-w-[680px]">
+        {/* Which rung this card is on, so the format is never a surprise. */}
+        <Eyebrow>{modeLabel(question.mode, question.direction)}</Eyebrow>
+
         <Prompt question={question} />
 
         {question.mode === "choice" ? (
