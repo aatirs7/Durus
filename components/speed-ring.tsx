@@ -65,7 +65,13 @@ export function SpeedRing({
     if (!circle || !animateMs) return;
 
     const animation = circle.animate(
-      [{ strokeDashoffset: 0 }, { strokeDashoffset: CIRCUMFERENCE }],
+      /*
+        In px, as strings. A bare number here is stringified to "672.3",
+        which is not a valid CSS length, and the interpolation silently
+        does nothing: the animation exists, reports its duration, and
+        moves the offset not at all.
+      */
+      [{ strokeDashoffset: "0px" }, { strokeDashoffset: `${CIRCUMFERENCE}px` }],
       { duration: animateMs, easing: "linear", fill: "forwards" },
     );
 
