@@ -39,7 +39,14 @@ export function DesktopShell({
     The rail is the app's own furniture. The public landing page and the
     lock screen are outside it, so they get the plain document.
   */
-  if (pathname === "/" || pathname.startsWith("/unlock")) {
+  /* The rail is for someone who is signed in and inside the app. The
+     landing page and the auth screens are neither. */
+  if (
+    pathname === "/" ||
+    pathname === "/privacy" ||
+    pathname.startsWith("/sign-in") ||
+    pathname.startsWith("/sign-up")
+  ) {
     return <>{children}</>;
   }
 

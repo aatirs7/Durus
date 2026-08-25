@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { Suspense } from "react";
 import { Amiri, IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { DesktopShell } from "@/components/desktop-shell";
@@ -166,6 +167,12 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const theme = await chosenTheme();
 
   return (
+    /*
+      The whole document, so Clerk's session is available to every server
+      component and every client component alike. Same instance as the iOS app,
+      which is what makes one account cover both.
+    */
+    <ClerkProvider>
     <html
       lang="en"
       dir="ltr"
@@ -217,5 +224,6 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </ThemeProvider>
       </body>
     </html>
+    </ClerkProvider>
   );
 }

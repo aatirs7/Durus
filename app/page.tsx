@@ -124,13 +124,13 @@ export default function LandingPage() {
         */}
         <div className="hidden items-center gap-5 lg:flex">
           <Link
-            href="/unlock"
+            href="/sign-in"
             className="text-ink-soft hover:text-ink text-[15px] transition-colors"
           >
             Sign in
           </Link>
           <ButtonLink
-            href="/unlock?new"
+            href="/sign-up"
             variant="quiet"
             className="px-4 py-2 text-[15px]"
           >
@@ -181,10 +181,10 @@ export default function LandingPage() {
               worth saying - not that there are two products.
             */}
             <div className="flex items-center gap-4 pt-1">
-              <ButtonLink href="/unlock?new" variant="text">
+              <ButtonLink href="/sign-up" variant="text">
                 Create account
               </ButtonLink>
-              <ButtonLink href="/unlock" variant="text">
+              <ButtonLink href="/sign-in" variant="text">
                 Sign in
               </ButtonLink>
             </div>
@@ -311,13 +311,13 @@ export default function LandingPage() {
         */}
         <div className="hidden items-center gap-5 lg:flex">
           <Link
-            href="/unlock?new"
+            href="/sign-up"
             className="text-lapis text-[16px] underline-offset-4 hover:underline"
           >
             Create account
           </Link>
           <Link
-            href="/unlock"
+            href="/sign-in"
             className="text-ink-soft text-[16px] underline-offset-4 hover:underline"
           >
             Sign in
