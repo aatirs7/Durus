@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Arabic } from "@/components/arabic";
 import { StandaloneRedirect } from "@/components/standalone-redirect";
 import { ButtonLink, Eyebrow } from "@/components/ui";
+import { AppPreview } from "@/components/app-preview";
 import { TOTAL_LESSONS } from "@/lib/constants";
 
 /*
@@ -295,6 +296,8 @@ export default function LandingPage() {
           </Point>
         </ul>
       </section>
+
+      <AppPreview />
 
       <footer className="border-rule mx-auto flex w-full max-w-[880px] flex-col items-center gap-4 border-t px-6 py-12">
         <Arabic
