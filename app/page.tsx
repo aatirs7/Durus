@@ -3,6 +3,7 @@ import { Arabic } from "@/components/arabic";
 import { StandaloneRedirect } from "@/components/standalone-redirect";
 import { ButtonLink, Eyebrow } from "@/components/ui";
 import { AppPhones } from "@/components/app-preview";
+import { LearnerSwitch } from "@/components/learner-switch";
 import { AppStoreBadge } from "@/components/app-store-badge";
 import { TOTAL_LESSONS } from "@/lib/constants";
 
@@ -169,16 +170,12 @@ export default function LandingPage() {
               دُرُوس
             </Arabic>
 
-            <div className="flex flex-col items-center gap-3 lg:items-start">
-              <h1 className="text-ink text-[28px] leading-tight font-medium tracking-tight lg:text-[36px]">
-                Arabic revision for the Madinah books
-              </h1>
-              <p className="text-ink-soft max-w-[460px] text-[16px] leading-relaxed">
-                Vocabulary drilled in the order the books teach it, nothing
-                before you have been taught it. Book 1 in full today, with Book
-                2 and Book 3 to follow.
-              </p>
-            </div>
+            {/*
+              The headline is a switch, because two people arrive here wanting
+              different things and one sentence cannot be true for both. See
+              components/learner-switch.tsx.
+            */}
+            <LearnerSwitch />
 
             <div className="flex w-full max-w-[360px] flex-col items-center gap-3 sm:max-w-none lg:items-start">
               <div className="flex w-full gap-3 sm:w-auto">
