@@ -79,8 +79,13 @@ export function SpeedRing({
                   /*
                     The keyframe reads the circumference from here, so
                     the animation does not need to know the radius.
+
+                    In px, not a bare number. stroke-dashoffset accepts
+                    a unitless value as an SVG attribute but not as a
+                    CSS length, so without the unit the keyframe's end
+                    state is invalid and the ring never moves.
                   */
-                  ["--ring-circumference" as string]: `${CIRCUMFERENCE}`,
+                  ["--ring-circumference" as string]: `${CIRCUMFERENCE}px`,
                   strokeDashoffset: 0,
                   animation: `durus-ring-drain ${animateMs}ms linear forwards`,
                 }
