@@ -1,25 +1,27 @@
 import { cookies } from "next/headers";
-import type { MetadataRoute } from "next";
 import { PAPER, THEME_COOKIE, isResolvedTheme } from "@/lib/theme";
 
 /*
-  background_color matches --paper in the light palette. Without it iOS
-  paints white behind the splash on a cold launch, and pure white is
-  against the rules.
-*/
-/*
-  Read per request, so background_color tracks the theme. It is the
-  colour iOS paints when no launch image matches, and on Android it is
-  the whole splash, so a static light value here undoes the rest.
+  A route handler rather than app/manifest.ts.
+
+  The file convention makes Next emit its own <link rel="manifest">,
+  which cannot carry crossorigin="use-credentials". Without that
+  attribute the manifest is fetched without cookies, the theme cookie
+  never arrives, and the background colour is always the light fallback.
+  Since that colour is what iOS paints when no launch image matches the
+  device, the splash could never follow the theme.
+
+  Serving it here means the only manifest link is the one in the layout,
+  and that one asks for credentials.
 */
 export const dynamic = "force-dynamic";
 
-export default async function manifest(): Promise<MetadataRoute.Manifest> {
+export async function GET() {
   const jar = await cookies();
   const value = jar.get(THEME_COOKIE)?.value;
   const paper = isResolvedTheme(value) ? PAPER[value] : PAPER.light;
 
-  return {
+  const manifest = {
     id: "/",
     name: "Durus",
     short_name: "Durus",
@@ -41,4 +43,12 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       },
     ],
   };
+
+  return new Response(JSON.stringify(manifest), {
+    headers: {
+      "content-type": "application/manifest+json",
+      // Per account, so it must never be shared by a CDN.
+      "cache-control": "private, no-store",
+    },
+  });
 }
