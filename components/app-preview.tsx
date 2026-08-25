@@ -14,10 +14,6 @@ import { TOTAL_LESSONS } from "@/lib/constants";
   point is the shape of the thing, not a pixel copy.
 */
 
-/* The link goes live when the listing does. One constant, so there is exactly
-   one thing to change. */
-const APP_STORE_URL: string | null = null;
-
 function Phone({ children }: { children: React.ReactNode }) {
   return (
     <div className="border-rule bg-paper relative w-[220px] shrink-0 overflow-hidden rounded-[34px] border-[6px] shadow-sm sm:w-[240px]">
@@ -129,31 +125,6 @@ function ReviewScreen() {
         <span className="text-ink-faint text-[8px]">Tap anywhere to continue</span>
       </div>
     </>
-  );
-}
-
-/*
-  The App Store call to action.
-
-  Says what is true until there is a listing to point at. A dead Download
-  button is worse than a date, and the URL above is the one thing to
-  change when it exists.
-*/
-export function AppStoreCta() {
-  if (APP_STORE_URL) {
-    return (
-      <a
-        href={APP_STORE_URL}
-        className="bg-lapis text-paper rounded-[12px] px-6 py-3 text-[15px] font-medium"
-      >
-        Download on the App Store
-      </a>
-    );
-  }
-  return (
-    <span className="border-lapis text-lapis rounded-[999px] border px-5 py-2 text-[14px]">
-      Coming to the App Store
-    </span>
   );
 }
 

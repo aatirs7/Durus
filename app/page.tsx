@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Arabic } from "@/components/arabic";
 import { StandaloneRedirect } from "@/components/standalone-redirect";
 import { ButtonLink, Eyebrow } from "@/components/ui";
-import { AppPhones, AppStoreCta } from "@/components/app-preview";
+import { AppPhones } from "@/components/app-preview";
+import { AppStoreBadge } from "@/components/app-store-badge";
 import { TOTAL_LESSONS } from "@/lib/constants";
 
 /*
@@ -145,52 +146,68 @@ export default function LandingPage() {
         <WordField words={FIELD_NARROW} className="lg:hidden" />
         <WordField words={FIELD} className="hidden lg:block" />
 
-        <div className="relative mx-auto flex w-full max-w-[680px] flex-col items-center gap-6 px-6 py-10 sm:py-12 lg:py-14">
-          <Arabic
-            as="p"
-            showHarakat={false}
-            className="text-lapis text-[52px] leading-[1.5] lg:text-[68px]"
-          >
-            دُرُوس
-          </Arabic>
+        {/*
+          Two halves, and they are two different offers.
 
-          <div className="flex flex-col items-center gap-4">
-            <h1 className="text-ink text-[28px] leading-tight font-medium tracking-tight lg:text-[34px]">
-              Arabic revision for Madinah Book 1
-            </h1>
-            <p className="text-ink-soft max-w-[520px] text-[16px] leading-relaxed">
-              {TOTAL_LESSONS} lessons of vocabulary, drilled in the order the
-              book teaches them. Nothing appears before you have been taught it.
-            </p>
+          Left is the site as it always was: the mark, what it is, and the way
+          in through the browser. Right is the iPhone app. Splitting them means
+          neither has to be the subordinate paragraph of the other, and both
+          land above the fold instead of the phones sitting under a column of
+          centred text.
+
+          It stacks on a narrow screen with the app SECOND, because someone
+          reading this on the phone can act on the browser links immediately
+          and the badge is not tappable yet.
+        */}
+        <div className="relative mx-auto grid w-full max-w-[1120px] items-center gap-10 px-6 py-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16 lg:py-10">
+          <div className="flex flex-col items-center gap-5 text-center lg:items-start lg:text-left">
+            <Arabic
+              as="p"
+              showHarakat={false}
+              className="text-lapis text-[48px] leading-[1.4] lg:text-[64px]"
+            >
+              دُرُوس
+            </Arabic>
+
+            <div className="flex flex-col items-center gap-3 lg:items-start">
+              <h1 className="text-ink text-[28px] leading-tight font-medium tracking-tight lg:text-[36px]">
+                Arabic revision for Madinah Book 1
+              </h1>
+              <p className="text-ink-soft max-w-[460px] text-[16px] leading-relaxed">
+                {TOTAL_LESSONS} lessons of vocabulary, drilled in the order the
+                book teaches them. Nothing appears before you have been taught
+                it.
+              </p>
+            </div>
+
+            <div className="flex w-full max-w-[360px] flex-col items-center gap-3 sm:max-w-none lg:items-start">
+              <div className="flex w-full gap-3 sm:w-auto">
+                <ButtonLink
+                  href="/sign-up"
+                  className="flex-1 px-4 sm:min-w-[180px] sm:flex-none"
+                >
+                  Create account
+                </ButtonLink>
+                <ButtonLink
+                  href="/sign-in"
+                  variant="quiet"
+                  className="flex-1 px-4 sm:min-w-[140px] sm:flex-none"
+                >
+                  Sign in
+                </ButtonLink>
+              </div>
+              <p className="text-ink-faint text-[13px]">
+                Use it in your browser, or on your phone. Same account either
+                way.
+              </p>
+            </div>
+
+            <Ticks />
           </div>
 
-          {/*
-            The phones are the first thing on the page, because the iPhone
-            app is the thing being offered and the browser is the fallback
-            for when you are not holding one. Showing the screens beats
-            describing them: this is the whole product in two tiles.
-          */}
-          <AppPhones />
-
-          <div className="flex w-full max-w-[360px] flex-col items-center gap-3 sm:max-w-none">
-            <AppStoreCta />
-
-            {/*
-              The browser, offered second and quietly. It is the same
-              account and the same schedule either way, which is the part
-              worth saying - not that there are two products.
-            */}
-            <div className="flex items-center gap-4 pt-1">
-              <ButtonLink href="/sign-up" variant="text">
-                Create account
-              </ButtonLink>
-              <ButtonLink href="/sign-in" variant="text">
-                Sign in
-              </ButtonLink>
-            </div>
-            <p className="text-ink-faint text-[13px]">
-              Or use it in your browser. Same account, same schedule.
-            </p>
+          <div className="flex flex-col items-center gap-6">
+            <AppPhones />
+            <AppStoreBadge />
           </div>
         </div>
       </section>

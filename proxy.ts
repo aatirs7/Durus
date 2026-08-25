@@ -49,7 +49,20 @@ export default clerkMiddleware(async (auth, request) => {
     return NextResponse.redirect(home);
   }
 
-  if (!isPublic(request)) await auth.protect();
+  /*
+    An explicit redirect rather than auth.protect().
+
+    protect() answers 404 when it cannot work out where the sign-in page is,
+    which is what a signed-out visit to /today did: not "sign in", but "this
+    does not exist". Naming the destination here means it cannot depend on
+    environment variables being set somewhere else.
+  */
+  if (!isPublic(request) && !userId) {
+    const signIn = request.nextUrl.clone();
+    signIn.pathname = "/sign-in";
+    signIn.search = "";
+    return NextResponse.redirect(signIn);
+  }
 });
 
 export const config = {
