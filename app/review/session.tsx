@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { Help } from "@/components/help";
-import { Button, ButtonLink, Numeral, Pill } from "@/components/ui";
+import { Button, ButtonLink, Eyebrow, Numeral, Pill } from "@/components/ui";
 import { checkAnswer } from "@/lib/answer";
 import { isPlainKey, isTyping, markReviewed, overlayOpen } from "@/lib/keys";
-import { feedbackFor, gradeFor } from "@/lib/modes";
+import { assembledCorrectly, type Tile } from "@/lib/letters";
+import { feedbackFor, gradeFor, modeLabel } from "@/lib/modes";
 import { enqueue } from "@/lib/outbox";
 import type { Question } from "@/lib/queue";
 import type { Grade } from "@/lib/srs";
@@ -221,6 +222,15 @@ export function ReviewSession({
               answer({ correct: english === question.english })
             }
           />
+        ) : question.mode === "assemble" ? (
+          <AssembleAnswer
+            key={`${question.cardId}-${index}`}
+            question={question}
+            locked={Boolean(result)}
+            onSubmit={(built) =>
+              answer({ correct: assembledCorrectly(built, question.arabic) })
+            }
+          />
         ) : (
           <WrittenAnswer
             question={question}
@@ -393,6 +403,83 @@ function WrittenAnswer({
 }
 
 /*
+  Build the word by tapping its letters in order.
+
+  Typing Arabic would mean an Arabic keyboard with correct harakat,
+  which is a bigger ask than the recall being tested. Tapping letters
+  asks the same question, that you know the shape of the word, without
+  asking anyone to install anything.
+
+  It checks itself on the last tile, the way the PIN pad does.
+*/
+function AssembleAnswer({
+  question,
+  locked,
+  onSubmit,
+}: {
+  question: Question;
+  locked: boolean;
+  onSubmit: (built: Tile[]) => void;
+}) {
+  const [built, setBuilt] = useState<Tile[]>([]);
+  const used = new Set(built.map((t) => t.id));
+
+  function place(tile: Tile) {
+    if (locked || used.has(tile.id)) return;
+    const next = [...built, tile];
+    setBuilt(next);
+    if (next.length === question.tiles.length) onSubmit(next);
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      {/*
+        The word so far, right to left, on a sunk well so an empty slot
+        reads as somewhere a letter goes rather than as blank space.
+      */}
+      <div
+        dir="rtl"
+        className="border-rule bg-surface-sunk flex min-h-[76px] flex-wrap items-center justify-center gap-1 rounded-[12px] border px-4 py-3"
+      >
+        {built.length === 0 ? (
+          <span className="text-ink-faint text-[15px]">
+            Tap the letters in order
+          </span>
+        ) : (
+          <Arabic className="text-ink text-[40px] leading-[1.6]">
+            {built.map((t) => t.letter).join("")}
+          </Arabic>
+        )}
+      </div>
+
+      <div dir="rtl" className="flex flex-wrap justify-center gap-2">
+        {question.tiles.map((tile) => (
+          <button
+            key={tile.id}
+            type="button"
+            disabled={locked || used.has(tile.id)}
+            onClick={() => place(tile)}
+            className="border-rule bg-surface active:bg-surface-sunk min-w-[60px] rounded-[12px] border px-3 py-3 transition-opacity disabled:opacity-25"
+          >
+            <Arabic className="text-ink text-[30px] leading-[1.6]">
+              {tile.letter}
+            </Arabic>
+          </button>
+        ))}
+      </div>
+
+      <Button
+        variant="quiet"
+        disabled={locked || built.length === 0}
+        onClick={() => setBuilt((b) => b.slice(0, -1))}
+      >
+        Undo a letter
+      </Button>
+    </div>
+  );
+}
+
+/*
   What just happened. On a wrong answer the card itself, because the
   moment right after getting it wrong is the moment worth showing it.
 
@@ -423,8 +510,16 @@ function Feedback({
         {result.message}
       </p>
 
-      {/* The meaning only needs restating when it was not the one given. */}
-      {result.correct ? null : (
+      {/*
+        On a wrong answer, show the side that was being asked for. The
+        other side is the prompt, still on screen, so repeating it would
+        tell you nothing.
+      */}
+      {result.correct ? null : question.direction === "production" ? (
+        <Arabic as="p" className="text-ink text-[36px] leading-[1.7]">
+          {question.arabic}
+        </Arabic>
+      ) : (
         <p className="text-ink text-[22px]">{question.english}</p>
       )}
 

@@ -17,6 +17,7 @@ import { Arabic } from "@/components/arabic";
 
 const NAV = [
   { href: "/today", label: "Today", icon: TodayIcon },
+  { href: "/cards", label: "Cards", icon: CardsIcon },
   { href: "/review", label: "Review", icon: ReviewIcon },
   { href: "/speed", label: "Speed", icon: SpeedIcon },
   { href: "/cases", label: "Cases", icon: CasesIcon },
@@ -145,6 +146,25 @@ function TodayIcon() {
       <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
       <path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" />
     </Glyph>
+  );
+}
+
+function CardsIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <rect x="3" y="7" width="14" height="12" rx="2" />
+      <path d="M7 4h12a2 2 0 0 1 2 2v10" />
+    </svg>
   );
 }
 

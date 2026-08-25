@@ -26,8 +26,31 @@ describe("modeFor", () => {
     );
   });
 
-  it("asks production by choice, since typing Arabic is the harder ask", () => {
-    expect(modeFor({ type: "vocab", repetitions: 9 }, "production")).toBe(
+  it("starts production on choice as well", () => {
+    expect(modeFor({ type: "vocab", repetitions: 0 }, "production")).toBe(
+      "choice",
+    );
+    expect(modeFor({ type: "vocab", repetitions: 1 }, "production")).toBe(
+      "choice",
+    );
+  });
+
+  /*
+    The fourth rung. Producing the script is asked by building the word
+    from its letters rather than by typing, because an Arabic keyboard
+    with correct harakat is a bigger ask than the recall is.
+  */
+  it("escalates production to assembling the letters", () => {
+    expect(modeFor({ type: "vocab", repetitions: 2 }, "production")).toBe(
+      "assemble",
+    );
+  });
+
+  it("keeps phrases on choice in both directions", () => {
+    expect(modeFor({ type: "phrase", repetitions: 9 }, "production")).toBe(
+      "choice",
+    );
+    expect(modeFor({ type: "phrase", repetitions: 9 }, "recognition")).toBe(
       "choice",
     );
   });

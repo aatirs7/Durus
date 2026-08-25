@@ -1,6 +1,7 @@
 import { and, asc, eq, inArray, isNull, lte, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cardStates, cards, lessons } from "@/db/schema";
+import { tilesFor, type Tile } from "./letters";
 import { modeFor, type Mode } from "./modes";
 import { getSettingsFor, requireProfileId } from "./session";
 
@@ -31,8 +32,10 @@ export type QueueItem = {
 export type Question = QueueItem & {
   mode: Mode;
   /* Four options for choice mode, already shuffled, one of them right.
-     Empty for written mode. */
+     Empty for the other modes. */
   options: { arabic: string; english: string }[];
+  /* Shuffled letters for assemble mode. Empty otherwise. */
+  tiles: Tile[];
 };
 
 /* Settings for whoever is signed in. */
@@ -223,7 +226,11 @@ export async function buildQuestions(
       item.direction,
     );
 
-    if (mode !== "choice") return { ...item, mode, options: [] };
+    if (mode === "assemble") {
+      return { ...item, mode, options: [], tiles: tilesFor(item.arabic) };
+    }
+
+    if (mode !== "choice") return { ...item, mode, options: [], tiles: [] };
 
     /*
       Distractors match the card's own type. Offering a single word
@@ -247,6 +254,6 @@ export async function buildQuestions(
       ...picked.map((c) => ({ arabic: c.arabic, english: c.english })),
     ]);
 
-    return { ...item, mode, options };
+    return { ...item, mode, options, tiles: [] };
   });
 }

@@ -120,6 +120,9 @@ export default async function TodayPage() {
               Speed drill
             </ButtonLink>
           )}
+          <ButtonLink href="/cards" variant="text">
+            Flashcards
+          </ButtonLink>
           <ButtonLink href="/cases" variant="text">
             Case drill
           </ButtonLink>

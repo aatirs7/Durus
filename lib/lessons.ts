@@ -1,4 +1,4 @@
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, lte, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cardStates, cards, lessons } from "@/db/schema";
 import { MATURE_DAYS, maturityOf, type Maturity } from "./constants";
@@ -96,3 +96,50 @@ export async function getLesson(number: number) {
   return { lesson, cards: items };
 }
 
+
+export type StudyCard = {
+  id: number;
+  arabic: string;
+  english: string;
+  transliteration: string | null;
+  type: "vocab" | "phrase";
+  gender: "m" | "f" | null;
+  plural: string | null;
+  note: string | null;
+  lessonNumber: number;
+};
+
+/*
+  Cards to page through, in book order.
+
+  Deliberately not the review queue. This is first exposure, before a
+  word has any schedule attached, so it draws every card in the lessons
+  that are open rather than only what happens to be due.
+*/
+export async function getStudyDeck(
+  currentLesson: number,
+  lessonNumber?: number,
+): Promise<StudyCard[]> {
+  const rows = await db
+    .select({
+      id: cards.id,
+      arabic: cards.arabic,
+      english: cards.english,
+      transliteration: cards.transliteration,
+      type: cards.type,
+      gender: cards.gender,
+      plural: cards.plural,
+      note: cards.note,
+      lessonNumber: lessons.number,
+    })
+    .from(cards)
+    .innerJoin(lessons, eq(cards.lessonId, lessons.id))
+    .where(
+      lessonNumber
+        ? eq(lessons.number, lessonNumber)
+        : lte(lessons.number, currentLesson),
+    )
+    .orderBy(asc(lessons.number), asc(cards.id));
+
+  return rows;
+}
