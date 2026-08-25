@@ -90,10 +90,8 @@ export default async function TodayPage() {
         )}
 
         <div className="flex flex-col items-center gap-1">
-          <div className="flex items-baseline gap-3">
-            <Numeral className="lg:text-[64px]">{due}</Numeral>
-            <span className="eyebrow">due</span>
-          </div>
+          <Numeral className="lg:text-[64px]">{due}</Numeral>
+          <span className="eyebrow">due</span>
 
           {newToday > 0 ? (
             <p className="text-ink-soft text-[16px]">{newToday} new to learn</p>

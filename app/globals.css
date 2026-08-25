@@ -239,9 +239,11 @@ body {
   edge widens as it comes round, not so much that the far edge collapses
   into a wedge.
 
-  520ms is slower than a UI transition on purpose. This one is meant to
-  be watched, because the turn is what tells you the two faces are the
-  same object, and at 280ms it reads as a swap.
+  700ms is much slower than a UI transition, on purpose. This one is
+  meant to be watched: the turn is what tells you the two faces are the
+  same object, and anything quick enough to feel responsive reads as a
+  swap instead. The easing is nearly all ease out, so the card leaves
+  briskly and settles rather than stopping dead.
 */
 .flip-scene {
   perspective: 1200px;
@@ -250,7 +252,7 @@ body {
 .flip-inner {
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 520ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition: transform 700ms cubic-bezier(0.16, 0.84, 0.28, 1);
   /* Kept on for the life of the card. The turn can happen at any
      moment and promoting the layer at the moment of the tap is what
      produces the one dropped frame at the start. */
