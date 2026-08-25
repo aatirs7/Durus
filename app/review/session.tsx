@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Arabic } from "@/components/arabic";
 import { Help } from "@/components/help";
+import { ExitDrill } from "@/components/exit-drill";
 import { Button, ButtonLink, Eyebrow, Numeral, Pill } from "@/components/ui";
 import { checkAnswer } from "@/lib/answer";
 import { isPlainKey, isTyping, markReviewed, overlayOpen } from "@/lib/keys";
@@ -200,57 +201,65 @@ export function ReviewSession({
         />
       </div>
 
+      <ExitDrill />
       <Help mode="review" />
 
       {/*
-        Anchored a seventh of the way down rather than centred. Centring
-        counted the reserved feedback box as part of the stack, so the
-        part you actually look at floated above the middle with a screen
-        of nothing under it. Starting from a fixed fraction of the
-        viewport puts the prompt in the same place on every card, which
-        matters more here than balance does.
+        The feedback box holds its height whether or not there is a
+        result in it, so a plainly centred stack is centred around a
+        block you cannot see, and everything you can see floats above
+        the middle. The lead-in above the prompt is that box's height
+        plus a nudge, which puts the visible part on the centre line and
+        a little below it.
+
+        The centring is my-auto on the inner column rather than
+        justify-center on the scroller, because auto margins collapse
+        when the content is taller than the frame and centring would
+        clip the top of it on a short screen.
       */}
-      <div className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col justify-start gap-9 overflow-y-auto px-6 pt-[14dvh] pb-8 lg:max-w-[680px]">
-        {/* Which rung this card is on, so the format is never a surprise. */}
-        <Eyebrow>{modeLabel(question.mode, question.direction)}</Eyebrow>
+      <div className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col overflow-y-auto px-6 pb-8 lg:max-w-[680px]">
+        <div className="my-auto flex flex-col gap-9 pt-[156px]">
+          {/* Which rung this card is on, so the format is never a surprise. */}
+          <Eyebrow>{modeLabel(question.mode, question.direction)}</Eyebrow>
 
-        <Prompt question={question} />
+          <Prompt question={question} />
 
-        {question.mode === "choice" ? (
-          <ChoiceAnswers
-            key={`${question.cardId}-${question.direction}-${index}`}
-            question={question}
-            answered={Boolean(result)}
-            onPick={(english) =>
-              answer({ correct: english === question.english })
-            }
-          />
-        ) : question.mode === "assemble" ? (
-          <AssembleAnswer
-            key={`${question.cardId}-${index}`}
-            question={question}
-            locked={Boolean(result)}
-            onSubmit={(built) =>
-              answer({ correct: assembledCorrectly(built, question.arabic) })
-            }
-          />
-        ) : (
-          <WrittenAnswer
-            question={question}
-            typed={typed}
-            setTyped={setTyped}
-            locked={Boolean(result)}
-            onSubmit={() => {
-              const match = checkAnswer(typed, question.english);
-              answer({
-                correct: match.kind !== "wrong",
-                close: match.kind === "close",
-              });
-            }}
-          />
-        )}
+          {question.mode === "choice" ? (
+            <ChoiceAnswers
+              key={`${question.cardId}-${question.direction}-${index}`}
+              question={question}
+              answered={Boolean(result)}
+              onPick={(english) =>
+                answer({ correct: english === question.english })
+              }
+            />
+          ) : question.mode === "assemble" ? (
+            <AssembleAnswer
+              key={`${question.cardId}-${index}`}
+              question={question}
+              locked={Boolean(result)}
+              onSubmit={(built) =>
+                answer({ correct: assembledCorrectly(built, question.arabic) })
+              }
+            />
+          ) : (
+            <WrittenAnswer
+              question={question}
+              typed={typed}
+              setTyped={setTyped}
+              locked={Boolean(result)}
+              onSubmit={() => {
+                const match = checkAnswer(typed, question.english);
+                answer({
+                  correct: match.kind !== "wrong",
+                  close: match.kind === "close",
+                });
+              }}
+            />
+          )}
 
-        <Feedback question={question} result={result} />
+          <Feedback question={question} result={result} />
+        </div>
       </div>
 
       {/*
