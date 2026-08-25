@@ -49,9 +49,17 @@ const LAPIS_DARK = "#7FA0DC";
 const WORD = "دروس";
 const DAMMA = "&#x064F;";
 
-/* Mark offsets from the word's centre and baseline, in multiples of font size. */
-const DAL_DAMMA = { dx: 0.6533, dy: 0.4 };
-const WAW_DAMMA = { dx: -0.25, dy: 0.5 };
+/*
+  Mark offsets from the word's centre and baseline, in multiples of font size.
+
+  The dammas belong on the DAL and the RA, not on the waw: the word is
+  du-ru-s, and the waw is the long vowel the ra's damma is already spelling.
+  Placing the second mark over the waw is wrong Arabic, and it is an easy
+  mistake to make from the rendered shape alone, because the ra and the waw sit
+  side by side with no gap between their ink.
+*/
+const DAL_DAMMA = { dx: 0.65, dy: 0.4 };
+const RA_DAMMA = { dx: 0.15, dy: 0.5067 };
 
 /* Ink extents of the composed mark, in multiples of font size, and the visual
    centre that follows from them - so the whole thing is centred as one piece
@@ -74,7 +82,7 @@ function markSvg(cx: number, baseline: number, fontSize: number, fill: string): 
         direction="rtl" font-family="Amiri" font-size="${fontSize}"
         fill="${fill}">${WORD}</text>
   ${damma(DAL_DAMMA)}
-  ${damma(WAW_DAMMA)}`;
+  ${damma(RA_DAMMA)}`;
 }
 
 /* The baseline that puts the composed mark's visual centre on a canvas's. */

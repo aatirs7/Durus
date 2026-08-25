@@ -44,7 +44,13 @@ export const config = {
       /unlock, so without the exclusion every request from the phone would come
       back as a 307 to an HTML sign-in page - which the sync client would read
       as a malformed response rather than as an auth failure.
+
+      /privacy MUST be excluded for the same shape of reason. It is the URL
+      given to App Store Connect, and Apple fetches it signed out: behind the
+      gate it answers with a redirect to a sign-in screen, which reads as an app
+      whose privacy policy cannot be read. It is also the one page someone
+      deciding whether to sign up is entitled to read before they do.
     */
-    "/((?!unlock|api/push|api/cron|api/v1|api/webhooks|_next/static|_next/image|favicon.ico|icon-|apple-touch-icon|splash-|sw.js|manifest.webmanifest).*)",
+    "/((?!unlock|privacy|api/push|api/cron|api/v1|api/webhooks|_next/static|_next/image|favicon.ico|icon-|apple-touch-icon|splash-|sw.js|manifest.webmanifest).*)",
   ],
 };

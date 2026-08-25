@@ -18,11 +18,10 @@ import { submitGrade, undoGrade } from "./actions";
 /*
   The session grades itself.
 
-  There is no Again / Hard / Good / Easy row any more. Whether an answer
-  was right is decided by the answer, and how well it was known is
-  decided by how long it took, which is the thing this app set out to
-  train. Rating yourself was the one place the drill asked you to be
-  honest about something you had just got wrong.
+  Whether an answer was right is decided by the answer, and how well it
+  was known is decided by how long it took - which is the thing this app
+  set out to train. Answering IS the whole interaction, and there is
+  nothing to set afterwards.
 */
 
 type Answered = {

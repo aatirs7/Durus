@@ -71,14 +71,26 @@ const DRILLS = [
 const FIGURES = [
   { value: TOTAL_LESSONS, label: "lessons in the book" },
   { value: 2, label: "directions per card" },
-  { value: 4, label: "grades, no more" },
+  { value: 4, label: "steps per word" },
 ];
 
-const GRADES = [
-  { label: "Again", interval: "10m", color: "var(--clay)" },
-  { label: "Hard", interval: "1d", color: "var(--saffron)" },
-  { label: "Good", interval: "3d", color: "var(--verdigris)" },
-  { label: "Easy", interval: "6d", color: "var(--lapis)" },
+/*
+  The ladder, which is what the card actually sits on.
+
+  This row used to show four grade buttons with the interval each would
+  produce. Nothing in the app has asked anyone to rate themselves for a
+  long time - the answer decides whether it was right and the time taken
+  decides how well it was known - so a row of grades on the landing page
+  was advertising a screen that does not exist.
+
+  Four rungs, the first two done, which is the shape a word is usually
+  caught in.
+*/
+const STEPS = [
+  { label: "pick", done: true },
+  { label: "type", done: true },
+  { label: "choose", done: false },
+  { label: "build", done: false },
 ];
 
 export default function LandingPage() {
@@ -197,8 +209,9 @@ export default function LandingPage() {
             decks to build and nothing to configure before you start.
           </p>
           <p className="text-ink-soft text-[16px] leading-relaxed">
-            Grade it and the next one is already there. At a keyboard the whole
-            session runs on the space bar and the number row.
+            Answer it and the next one is already there. Whether you were right
+            comes from the answer, and how well you knew it from how long you
+            took.
           </p>
         </div>
       </section>
@@ -273,11 +286,11 @@ export default function LandingPage() {
             session, which is the whole point of learning to read the script.
           </Point>
           <Point title="Offline, and on your phone">
-            Install it to the home screen. Grades made without a signal go to an
-            outbox and settle the next time you have one.
+            Install it to the home screen. Answers given without a signal go to
+            an outbox and settle the next time you have one.
           </Point>
           <Point title="A keyboard, if you have one">
-            Space reveals, one to four grade, u undoes. A session at a desk is a
+            Space reveals, u undoes, escape ends. A session at a desk is a
             session you never touch the mouse for.
           </Point>
         </ul>
@@ -312,6 +325,17 @@ export default function LandingPage() {
         <p className="text-ink-faint text-[13px]">
           Everyone gets their own progress through the book.
         </p>
+        {/*
+          Reachable from the site's front door, which is what the App Store
+          requires of the policy URL it is given - and what anyone deciding
+          whether to sign up is entitled to read first.
+        */}
+        <Link
+          href="/privacy"
+          className="text-ink-faint text-[13px] underline-offset-4 hover:underline"
+        >
+          Privacy
+        </Link>
       </footer>
     </main>
   );
@@ -426,19 +450,20 @@ function Specimen() {
       <p className="text-ink text-[24px] leading-snug">key</p>
 
       <div className="grid w-full grid-cols-4 gap-2 pt-2">
-        {GRADES.map((grade) => (
+        {STEPS.map((step) => (
           <div
-            key={grade.label}
-            className="border-rule flex flex-col items-center gap-1 rounded-[12px] border py-2"
+            key={step.label}
+            className="flex flex-col items-center gap-1 rounded-[12px] border py-2"
+            style={{
+              borderColor: step.done ? "var(--lapis)" : "var(--rule)",
+              backgroundColor: step.done ? "var(--lapis-wash)" : "transparent",
+            }}
           >
-            <span className="tabular text-ink-soft text-[11px]">
-              {grade.interval}
-            </span>
             <span
               className="text-[13px] font-medium"
-              style={{ color: grade.color }}
+              style={{ color: step.done ? "var(--lapis)" : "var(--ink-faint)" }}
             >
-              {grade.label}
+              {step.label}
             </span>
           </div>
         ))}

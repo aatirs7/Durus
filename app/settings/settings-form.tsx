@@ -125,9 +125,9 @@ export function SettingsForm({
       </Field>
 
       {/*
-        Desktop only. The review screen carries the four grade numerals
-        under its buttons and nothing else, so the full map has to live
-        somewhere, and Settings is where you look for it once.
+        Desktop only, and the only place the full map lives - the drills
+        themselves show no shortcuts, so this is where you look it up
+        once.
       */}
       <div className="hidden lg:block">
         <Rule className="mb-10" />
@@ -165,14 +165,24 @@ export function SettingsForm({
   Pairs, not a table. The key column is monospace so the glyphs line up
   against each other rather than against the words.
 */
+/*
+  Only keys that are actually bound.
+
+  This list had drifted into fiction: it advertised four grade numerals
+  for a row the review screen no longer has, plus an r and an h that
+  nothing has ever listened for. A keyboard map that lies is worse than
+  no keyboard map, because the one thing it is for is being trusted
+  without checking.
+
+  Bound in app/review/session.tsx, app/cards/deck.tsx,
+  app/cases/case-run.tsx, app/speed/speed-run.tsx and components/help.tsx.
+*/
 const KEYS = [
-  { key: "r", action: "Start a review" },
-  { key: "space", action: "Reveal" },
-  { key: "1 2 3 4", action: "Again, hard, good, easy" },
-  { key: "u", action: "Undo the last grade" },
-  { key: "h", action: "Toggle harakat" },
+  { key: "space", action: "Reveal, or turn a card" },
+  { key: "u", action: "Undo the last answer" },
   { key: "esc", action: "End the session" },
   { key: "← →", action: "Missed it, knew it" },
+  { key: "m", action: "Mark a word for more work" },
   { key: "?", action: "What this drill is for" },
 ] as const;
 
