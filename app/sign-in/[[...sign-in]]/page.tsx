@@ -1,4 +1,5 @@
 import { SignIn } from "@clerk/nextjs";
+import { ReturningNotice } from "@/components/returning-notice";
 import { clerkAppearance } from "@/lib/clerk-appearance";
 
 export const dynamic = "force-dynamic";
@@ -19,8 +20,9 @@ export const dynamic = "force-dynamic";
 */
 export default function SignInPage() {
   return (
-    <main className="flex w-full flex-1 items-center justify-center px-6 py-16">
+    <main className="flex w-full flex-1 flex-col items-center justify-center gap-6 px-6 py-16">
       <SignIn appearance={clerkAppearance} />
+      <ReturningNotice />
     </main>
   );
 }
