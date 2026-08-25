@@ -1,5 +1,6 @@
 import { ButtonLink, Screen } from "@/components/ui";
 import { getStudyDeck } from "@/lib/lessons";
+import { requireProfileId } from "@/lib/session";
 import { getSettings } from "@/lib/queue";
 import { CardsDeck } from "./deck";
 
@@ -16,7 +17,8 @@ export default async function LearnPage({ searchParams }: PageProps<"/cards">) {
       ? asked
       : undefined;
 
-  const cards = await getStudyDeck(config.currentLesson, lessonNumber);
+  const profileId = await requireProfileId();
+  const cards = await getStudyDeck(config.currentLesson, lessonNumber, profileId);
 
   if (cards.length === 0) {
     return (

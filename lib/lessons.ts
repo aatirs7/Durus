@@ -1,6 +1,6 @@
 import { and, asc, eq, lte, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { cardStates, cards, lessons } from "@/db/schema";
+import { cardHearts, cardStates, cards, lessons } from "@/db/schema";
 import { MATURE_DAYS, maturityOf, type Maturity } from "./constants";
 import { requireProfileId } from "./session";
 
@@ -107,6 +107,7 @@ export type StudyCard = {
   plural: string | null;
   note: string | null;
   lessonNumber: number;
+  hearted: boolean;
 };
 
 /*
@@ -119,6 +120,7 @@ export type StudyCard = {
 export async function getStudyDeck(
   currentLesson: number,
   lessonNumber?: number,
+  profileId?: number,
 ): Promise<StudyCard[]> {
   const rows = await db
     .select({
@@ -131,9 +133,21 @@ export async function getStudyDeck(
       plural: cards.plural,
       note: cards.note,
       lessonNumber: lessons.number,
+      /*
+        A heart is a row or no row, so this is a left join and a null
+        test rather than a column to keep in step.
+      */
+      hearted: sql<boolean>`${cardHearts.cardId} is not null`,
     })
     .from(cards)
     .innerJoin(lessons, eq(cards.lessonId, lessons.id))
+    .leftJoin(
+      cardHearts,
+      and(
+        eq(cardHearts.cardId, cards.id),
+        eq(cardHearts.profileId, profileId ?? -1),
+      ),
+    )
     .where(
       lessonNumber
         ? eq(lessons.number, lessonNumber)

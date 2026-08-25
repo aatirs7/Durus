@@ -313,7 +313,12 @@ export function ReviewSession({
           />
 
           <div
-            className="pointer-events-none fixed inset-x-0 z-10 flex flex-col items-center gap-2 px-6"
+            /*
+              Fixed elements ignore the rail, so without the offset this
+              centres on the viewport and sits left of the column it
+              belongs to.
+            */
+            className="pointer-events-none fixed inset-x-0 z-10 flex flex-col items-center gap-2 px-6 lg:pl-[220px]"
             style={{ bottom: "max(1rem, env(safe-area-inset-bottom))" }}
           >
             <Feedback question={question} result={result} />

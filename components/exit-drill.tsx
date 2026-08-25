@@ -13,13 +13,16 @@ import Link from "next/link";
 
   Top left, mirroring the question mark and the theme switch on the
   right, and clear of the safe area so it is not under the notch.
+
+  Hidden on desktop, where the rail is already the way out and this sat
+  on top of the wordmark.
 */
 export function ExitDrill({ label = "Today" }: { label?: string }) {
   return (
     <Link
       href="/today"
       aria-label={`Leave this drill and go back to ${label}`}
-      className="text-ink-soft hover:text-ink active:text-ink fixed left-4 z-20 flex h-10 items-center gap-1.5 rounded-[999px] pr-3 pl-2 text-[15px] opacity-70 transition-opacity hover:opacity-100"
+      className="text-ink-soft hover:text-ink active:text-ink fixed left-4 z-20 flex h-10 items-center gap-1.5 rounded-[999px] pr-3 pl-2 text-[15px] opacity-70 transition-opacity hover:opacity-100 lg:hidden"
       style={{ top: "max(1rem, calc(env(safe-area-inset-top) + 0.25rem))" }}
     >
       <svg
