@@ -34,6 +34,12 @@ type Answered = {
 
 type Result = { grade: Grade; correct: boolean; message: string };
 
+/*
+  How much room the result band takes at the bottom. The column reserves
+  exactly this, so an answer can never end up underneath it.
+*/
+const BAND = "calc(max(1rem, env(safe-area-inset-bottom)) + 7rem)";
+
 export function ReviewSession({
   initialQueue,
   weekMedianMs,
@@ -214,33 +220,18 @@ export function ReviewSession({
       <Help mode="review" />
 
       {/*
-        The feedback box holds its height whether or not there is a
-        result in it, so a plainly centred stack is centred around a
-        block you cannot see, and everything you can see floats above
-        the middle. The lead-in above the prompt is that box's height
-        plus a nudge, which puts the visible part on the centre line and
-        a little below it.
-
-        The centring is my-auto on the inner column rather than
-        justify-center on the scroller, because auto margins collapse
-        when the content is taller than the frame and centring would
-        clip the top of it on a short screen.
+        The verdict now lives in a fixed band at the bottom rather than
+        in the flow, so nothing above it has to leave a gap for a box
+        that is empty most of the time. That lead-in was pushing the
+        four options past the bottom of a phone, which is why the
+        verdict was clipped and the tap hint was landing on the last
+        answer.
       */}
       <div
-        /*
-          The continue line is fixed to the bottom, so the scrolling
-          column has to stop short of it. Without this reservation the
-          feedback runs underneath the hint and the last line of it is
-          clipped off the bottom of the screen.
-        */
-        className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col overflow-y-auto px-6 lg:max-w-[680px]"
-        style={{
-          paddingBottom: result
-            ? "calc(max(1.5rem, env(safe-area-inset-bottom)) + 2.5rem)"
-            : "2rem",
-        }}
+        className="mx-auto flex min-h-0 w-full max-w-[560px] flex-1 flex-col justify-center overflow-y-auto px-6 py-4 lg:max-w-[680px]"
+        style={{ paddingBottom: result ? BAND : "1rem" }}
       >
-        <div className="my-auto flex flex-col gap-9 pt-[156px]">
+        <div className="flex flex-col gap-6">
           {/* Which rung this card is on, so the format is never a surprise. */}
           <Eyebrow>{modeLabel(question.mode, question.direction)}</Eyebrow>
 
@@ -299,16 +290,18 @@ export function ReviewSession({
               }}
             />
           )}
-
-          <Feedback question={question} result={result} />
         </div>
       </div>
 
       {/*
-        Once the result is up the whole screen carries it forward. It
-        sits under the corner glyphs, so help and the theme are still
-        reachable, and the line is fixed to the bottom rather than in
-        the flow so the card does not jump as it appears.
+        One band at the bottom holds everything about the result: the
+        verdict, the answer you missed, and how to move on. Three
+        separate things all reaching for the last inch of the screen is
+        what had the hint painted across the fourth option and the
+        verdict cut off below the fold.
+
+        Fixed rather than in the flow, so the card above does not jump
+        when it appears, and the column reserves exactly this height.
       */}
       {result ? (
         <>
@@ -318,13 +311,18 @@ export function ReviewSession({
             onClick={advance}
             className="fixed inset-0 z-10 cursor-pointer"
           />
-          <p
-            className="text-ink-faint pointer-events-none fixed inset-x-0 z-10 text-center text-[14px]"
-            style={{ bottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
+
+          <div
+            className="pointer-events-none fixed inset-x-0 z-10 flex flex-col items-center gap-2 px-6"
+            style={{ bottom: "max(1rem, env(safe-area-inset-bottom))" }}
           >
-            <span className="lg:hidden">Tap anywhere to continue</span>
-            <span className="hidden lg:inline">Space to continue</span>
-          </p>
+            <Feedback question={question} result={result} />
+
+            <p className="text-ink-faint text-center text-[14px]">
+              <span className="lg:hidden">Tap anywhere to continue</span>
+              <span className="hidden lg:inline">Space to continue</span>
+            </p>
+          </div>
         </>
       ) : null}
     </div>
@@ -577,39 +575,36 @@ function Feedback({
   result,
 }: {
   question: Question;
-  result: Result | null;
+  result: Result;
 }) {
-  if (!result) return <div className="h-[104px]" aria-hidden />;
-
   const tone = result.correct ? "var(--verdigris)" : "var(--clay)";
 
   return (
-    <div className="flex h-[104px] flex-col items-center justify-start gap-3">
+    <div className="flex flex-col items-center gap-2">
       {/*
-        The verdict is the point of this screen, so it is a badge in its
-        own colour rather than a line of small text that has to compete
-        with four answer buttons for your eye.
+        On a wrong answer, the side that was being asked for. The other
+        side is the prompt, still on screen, so repeating it would say
+        nothing. Above the verdict, because it is the part worth
+        reading.
+      */}
+      {result.correct ? null : question.direction === "production" ? (
+        <Arabic as="p" className="text-ink text-[30px] leading-[1.6]">
+          {question.arabic}
+        </Arabic>
+      ) : (
+        <p className="text-ink text-[20px]">{question.english}</p>
+      )}
+
+      {/*
+        The verdict is a badge in its own colour rather than a line of
+        small text that has to compete with four answer buttons.
       */}
       <p
-        className="inline-flex items-center rounded-[999px] border px-4 py-1.5 text-[19px] font-medium"
+        className="inline-flex items-center rounded-[999px] border px-4 py-1.5 text-[18px] font-medium"
         style={{ color: tone, borderColor: tone }}
       >
         {result.message}
       </p>
-
-      {/*
-        On a wrong answer, show the side that was being asked for. The
-        other side is the prompt, still on screen, so repeating it would
-        tell you nothing.
-      */}
-      {result.correct ? null : question.direction === "production" ? (
-        <Arabic as="p" className="text-ink text-[36px] leading-[1.7]">
-          {question.arabic}
-        </Arabic>
-      ) : (
-        <p className="text-ink text-[22px]">{question.english}</p>
-      )}
-
     </div>
   );
 }

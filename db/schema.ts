@@ -203,6 +203,34 @@ export const pushSubscriptions = pgTable("push_subscriptions", {
   failCount: integer("fail_count").notNull().default(0),
 });
 
+/*
+  Words you have marked as needing more work, one row per profile and
+  card. A row exists or it does not, so the toggle is an insert or a
+  delete and there is no state to keep in step.
+
+  Separate from cardStates on purpose. That table is the scheduler's,
+  keyed by direction and rewritten on every answer, and a hand made
+  mark should not live somewhere an algorithm is editing.
+*/
+export const cardHearts = pgTable(
+  "card_hearts",
+  {
+    profileId: integer("profile_id")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+    cardId: integer("card_id")
+      .notNull()
+      .references(() => cards.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.profileId, t.cardId] }),
+    index("card_hearts_profile_idx").on(t.profileId),
+  ],
+);
+
 export type Lesson = typeof lessons.$inferSelect;
 export type Card = typeof cards.$inferSelect;
 export type CardState = typeof cardStates.$inferSelect;

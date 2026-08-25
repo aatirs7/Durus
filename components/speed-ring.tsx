@@ -23,7 +23,12 @@ export function SpeedRing({
   /* Optional second arc, drawn inside the first. */
   secondary?: number;
   children?: React.ReactNode;
-  /* When set, the arc drains over this many milliseconds via CSS. */
+  /*
+    When set, the arc drains from full to empty over this many
+    milliseconds. Driven by a keyframe rather than a transition on
+    progress, so it restarts cleanly for each card. Give the ring a
+    React key that changes per card to make it restart.
+  */
   animateMs?: number;
   /*
     Diameter in pixels. 220 everywhere on a phone. Desktop passes a
@@ -71,7 +76,13 @@ export function SpeedRing({
           style={
             animateMs
               ? {
-                  transition: `stroke-dashoffset ${animateMs}ms linear`,
+                  /*
+                    The keyframe reads the circumference from here, so
+                    the animation does not need to know the radius.
+                  */
+                  ["--ring-circumference" as string]: `${CIRCUMFERENCE}`,
+                  strokeDashoffset: 0,
+                  animation: `durus-ring-drain ${animateMs}ms linear forwards`,
                 }
               : undefined
           }

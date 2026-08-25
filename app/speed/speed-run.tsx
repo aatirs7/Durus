@@ -28,7 +28,6 @@ export function SpeedRun({
   const [index, setIndex] = useState(0);
   const [blurred, setBlurred] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
-  const [ringProgress, setRingProgress] = useState(1);
   const [suggested, setSuggested] = useState<number | null>(null);
   const [newWindow, setNewWindow] = useState<number | null>(null);
 
@@ -36,19 +35,22 @@ export function SpeedRun({
   const done = !word;
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // The exposure window. When it closes the word blurs out and the
-  // self report buttons take over.
+  /*
+    The exposure window. When it closes the word blurs out and the self
+    report buttons take over.
+
+    The ring is a keyframe restarted by keying it to the card, so there
+    is no frame sequencing to get wrong here. The old version set the
+    ring full and emptied it on the next frame, and the same transition
+    applied to both moves, which is why the first word drained instantly
+    and the rest barely moved at all.
+  */
   useEffect(() => {
     if (!word) return;
     setBlurred(false);
-    setRingProgress(1);
 
-    // Next frame, so the transition has a value to animate from.
-    const raf = requestAnimationFrame(() => setRingProgress(0));
     timer.current = setTimeout(() => setBlurred(true), windowMs);
-
     return () => {
-      cancelAnimationFrame(raf);
       if (timer.current) clearTimeout(timer.current);
     };
   }, [word, windowMs]);
@@ -84,8 +86,13 @@ export function SpeedRun({
     return () => window.removeEventListener("keydown", onKey);
   }, [answer, blurred]);
 
+  const submitted = useRef(false);
+
   useEffect(() => {
-    if (!done || results.length === 0) return;
+    if (!done || results.length === 0 || submitted.current) return;
+    // The effect re-runs on every dependency change once the run is
+    // over, and each run should be written exactly once.
+    submitted.current = true;
     void recordSpeedRun(results);
 
     const accuracy = results.filter((r) => r.knew).length / results.length;
@@ -153,12 +160,12 @@ export function SpeedRun({
         and only one of the two is ever displayed.
       */}
       <div className="lg:hidden">
-        <SpeedRing progress={ringProgress} animateMs={windowMs}>
+        <SpeedRing key={index} progress={1} animateMs={windowMs}>
           <Word arabic={word.arabic} blurred={blurred} />
         </SpeedRing>
       </div>
       <div className="hidden lg:block">
-        <SpeedRing progress={ringProgress} animateMs={windowMs} size={240}>
+        <SpeedRing key={index} progress={1} animateMs={windowMs} size={240}>
           <Word arabic={word.arabic} blurred={blurred} desktop />
         </SpeedRing>
       </div>

@@ -165,6 +165,26 @@ body {
   }
 }
 
+/*
+  The speed ring draining.
+
+  A keyframe rather than a transition on a React state value. The state
+  version had to set the ring full and then empty on the next frame, and
+  the transition applied to both moves, so the browser never saw a
+  settled full ring to animate away from: the first card drained
+  instantly and every card after it barely moved. An animation restarts
+  cleanly when the element is keyed to the card, with nothing to
+  sequence by hand.
+*/
+@keyframes durus-ring-drain {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: var(--ring-circumference);
+  }
+}
+
 /* Numerals never jitter as they tick. */
 .tabular {
   font-family: var(--font-plex-mono), ui-monospace, monospace;
@@ -230,13 +250,31 @@ body {
   animation: durus-advance 180ms cubic-bezier(0.2, 0, 0.1, 1);
 }
 
+/*
+  The card turn.
+
+  perspective sits on the scene rather than the card, so the vanishing
+  point belongs to the frame and the card rotates inside it. 1200px on
+  a 340px card is about a foot away in real terms: enough that the near
+  edge widens as it comes round, not so much that the far edge collapses
+  into a wedge.
+
+  520ms is slower than a UI transition on purpose. This one is meant to
+  be watched, because the turn is what tells you the two faces are the
+  same object, and at 280ms it reads as a swap.
+*/
 .flip-scene {
-  perspective: 1600px;
+  perspective: 1200px;
 }
 
 .flip-inner {
+  position: relative;
   transform-style: preserve-3d;
-  transition: transform 280ms cubic-bezier(0.2, 0, 0.1, 1);
+  transition: transform 520ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* Kept on for the life of the card. The turn can happen at any
+     moment and promoting the layer at the moment of the tap is what
+     produces the one dropped frame at the start. */
+  will-change: transform;
 }
 
 .flip-inner.is-flipped {
@@ -244,8 +282,13 @@ body {
 }
 
 .flip-face {
+  position: absolute;
+  inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  /* Safari draws a hairline of the far face along the edge mid turn
+     without its own transform to rasterise against. */
+  transform: rotateY(0deg);
 }
 
 .flip-face-back {
