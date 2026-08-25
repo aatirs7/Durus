@@ -348,12 +348,20 @@ export default function LandingPage() {
           requires of the policy URL it is given - and what anyone deciding
           whether to sign up is entitled to read first.
         */}
-        <Link
-          href="/privacy"
-          className="text-ink-faint text-[13px] underline-offset-4 hover:underline"
-        >
-          Privacy
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/support"
+            className="text-ink-faint text-[13px] underline-offset-4 hover:underline"
+          >
+            Support
+          </Link>
+          <Link
+            href="/privacy"
+            className="text-ink-faint text-[13px] underline-offset-4 hover:underline"
+          >
+            Privacy
+          </Link>
+        </div>
       </footer>
     </main>
   );

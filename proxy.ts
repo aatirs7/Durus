@@ -10,9 +10,10 @@ import { NextResponse } from "next/server";
 /*
   Everything that is reachable signed out.
 
-  /privacy MUST be here. It is the URL given to App Store Connect and Apple
-  fetches it signed out; behind the gate it answers with a redirect to a sign-in
-  screen, which reads as an app whose privacy policy cannot be read.
+  /privacy and /support MUST be here. They are the two URLs given to App Store
+  Connect and Apple fetches both signed out; behind the gate they answer with a
+  redirect to a sign-in screen, which reads as an app whose privacy policy and
+  support page cannot be read.
 
   api/v1 MUST be here too, though for the opposite reason: those routes
   authenticate themselves with a Clerk bearer token from the phone. Left inside
@@ -26,6 +27,7 @@ import { NextResponse } from "next/server";
 const isPublic = createRouteMatcher([
   "/",
   "/privacy",
+  "/support",
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/unlock(.*)",

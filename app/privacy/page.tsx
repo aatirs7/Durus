@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CONTACT_EMAIL } from "@/lib/contact";
 
 /*
   The privacy policy.
@@ -16,8 +17,6 @@ import Link from "next/link";
   Not a Screen: this is a document, read at whatever width the browser gives it,
   and it is linked from outside the app by people who have never signed in.
 */
-
-const CONTACT = "privacy@durus.space";
 
 /* Bump when the substance changes, not when the wording is tidied. */
 const UPDATED = "25 August 2026";
@@ -110,8 +109,8 @@ export default function PrivacyPage() {
         </p>
         <p className="text-ink-soft text-[16px] leading-relaxed">
           If you cannot reach the app for any reason, email{" "}
-          <a className="text-lapis underline underline-offset-4" href={`mailto:${CONTACT}`}>
-            {CONTACT}
+          <a className="text-lapis underline underline-offset-4" href={`mailto:${CONTACT_EMAIL}`}>
+            {CONTACT_EMAIL}
           </a>{" "}
           from the address on the account and it will be done for you.
         </p>
@@ -129,16 +128,22 @@ export default function PrivacyPage() {
         <p className="text-ink-soft text-[16px] leading-relaxed">
           If what is collected changes, this page changes with it and the date at
           the top moves. Questions go to{" "}
-          <a className="text-lapis underline underline-offset-4" href={`mailto:${CONTACT}`}>
-            {CONTACT}
+          <a className="text-lapis underline underline-offset-4" href={`mailto:${CONTACT_EMAIL}`}>
+            {CONTACT_EMAIL}
           </a>
           .
         </p>
       </Section>
 
-      <footer className="border-rule border-t pt-6">
+      <footer className="border-rule flex flex-col gap-3 border-t pt-6">
         <Link className="text-ink-soft text-[15px] underline underline-offset-4" href="/">
           Back to Durus
+        </Link>
+        <Link
+          className="text-ink-soft text-[15px] underline underline-offset-4"
+          href="/support"
+        >
+          Support
         </Link>
       </footer>
     </main>
