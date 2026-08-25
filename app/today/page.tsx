@@ -33,6 +33,12 @@ export default async function TodayPage() {
   const lessons = await listLessons();
   const current = lessons.find((l) => l.number === config.currentLesson);
 
+  /*
+    Nothing scheduled. The screen does not change shape for it: the same
+    count, the same button, the same links. Finishing what is loaded is
+    not a different mode, it just means review goes over the lessons you
+    have rather than a queue the scheduler picked.
+  */
   const clear = due === 0 && newToday === 0;
 
   return (
@@ -84,35 +90,32 @@ export default async function TodayPage() {
         )}
 
         <div className="flex flex-col items-center gap-1">
-          {clear ? (
-            <Numeral className="lg:text-[64px]">Clear</Numeral>
-          ) : (
-            <div className="flex items-baseline gap-3">
-              <Numeral className="lg:text-[64px]">{due}</Numeral>
-              <span className="eyebrow">due</span>
-            </div>
-          )}
+          <div className="flex items-baseline gap-3">
+            <Numeral className="lg:text-[64px]">{due}</Numeral>
+            <span className="eyebrow">due</span>
+          </div>
 
           {newToday > 0 ? (
             <p className="text-ink-soft text-[16px]">{newToday} new to learn</p>
+          ) : null}
+
+          {clear ? (
+            <p className="text-ink-faint text-[15px]">
+              Nothing scheduled. Review goes over Lessons 1 to{" "}
+              {config.currentLesson}.
+            </p>
           ) : null}
         </div>
       </div>
 
       {/* The centre line. */}
-      {clear ? (
-        <ButtonLink href="/speed" className="w-full">
-          Speed drill
-        </ButtonLink>
-      ) : (
-        <ButtonLink href="/review" className="w-full">
-          Start review
-        </ButtonLink>
-      )}
+      <ButtonLink href="/review" className="w-full">
+        Start review
+      </ButtonLink>
 
       {/* Below the centre line. */}
       <div className="flex flex-col items-center justify-start gap-5 pt-6">
-        {clear ? null : <ReviewHint />}
+        <ReviewHint />
 
         {/*
           The other ways in, as a fixed two column grid rather than a
@@ -127,7 +130,7 @@ export default async function TodayPage() {
           still.
         */}
         <div className="grid w-full grid-cols-2 gap-x-6 gap-y-1">
-          {(clear ? [] : [{ href: "/speed", label: "Speed drill" }])
+          {[{ href: "/speed", label: "Speed drill" }]
             .concat([
               { href: "/cards", label: "Flashcards" },
               { href: "/cases", label: "Case drill" },

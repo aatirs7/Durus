@@ -21,6 +21,11 @@ export type QueueItem = {
   repetitions: number;
   lapses: number;
   isNew: boolean;
+  /*
+    Drawn because nothing was due, rather than because it was. A correct
+    answer on one of these does not move the schedule.
+  */
+  practice: boolean;
 };
 
 /*
@@ -181,6 +186,7 @@ export async function buildQueue(
     repetitions: r.repetitions,
     lapses: r.lapses,
     isNew: false,
+    practice: false,
   }));
 
   const fresh: QueueItem[] = newRows.map((r) => ({
@@ -199,9 +205,67 @@ export async function buildQueue(
     repetitions: 0,
     lapses: 0,
     isNew: true,
+    practice: false,
   }));
 
-  return [...shuffle(due), ...shuffle(fresh)];
+  if (due.length > 0 || fresh.length > 0) {
+    return [...shuffle(due), ...shuffle(fresh)];
+  }
+
+  /*
+    Nothing is due and there is nothing new left, so fall back to going
+    over the lessons already open.
+
+    This is practice, not the schedule running early. A correct answer
+    here leaves the card's interval alone, because acing a word you were
+    not asked for should not push it a month further out. A wrong one
+    still counts, since a word you have just failed does need to come
+    back sooner whenever you found that out.
+  */
+  const practiceRows = await db
+    .select({
+      cardId: cards.id,
+      direction: cardStates.direction,
+      lessonNumber: lessons.number,
+      arabic: cards.arabic,
+      english: cards.english,
+      transliteration: cards.transliteration,
+      type: cards.type,
+      gender: cards.gender,
+      plural: cards.plural,
+      note: cards.note,
+      ease: cardStates.ease,
+      intervalDays: cardStates.intervalDays,
+      repetitions: cardStates.repetitions,
+      lapses: cardStates.lapses,
+    })
+    .from(cardStates)
+    .innerJoin(cards, eq(cardStates.cardId, cards.id))
+    .innerJoin(lessons, eq(cards.lessonId, lessons.id))
+    .where(and(eq(cardStates.profileId, profileId), eq(cardStates.suspended, false), lessonFilter))
+    .orderBy(asc(cardStates.dueAt))
+    .limit(config.maxReviews);
+
+  return shuffle(
+    practiceRows.map((r) => ({
+      cardId: r.cardId,
+      direction: r.direction,
+      lessonNumber: r.lessonNumber,
+      arabic: r.arabic,
+      english: r.english,
+      transliteration: r.transliteration,
+      type: r.type,
+      gender: r.gender,
+      plural: r.plural,
+      note: r.note,
+      ease: r.ease,
+      intervalDays: r.intervalDays,
+      repetitions: r.repetitions,
+      lapses: r.lapses,
+      isNew: false,
+      practice: true,
+    })),
+  );
 }
 
 /*

@@ -11,6 +11,12 @@ export type GradePayload = {
   direction: "recognition" | "production";
   grade: Grade;
   msToAnswer: number;
+  /*
+    Answered in a practice session, drawn because nothing was due. The
+    review is still logged, so speed and accuracy remain honest, but a
+    correct answer leaves the schedule where it was.
+  */
+  practice?: boolean;
 };
 
 /*
@@ -63,6 +69,16 @@ export async function submitGrade(payload: GradePayload) {
     ),
   });
 
+  /*
+    Practice never extends an interval. Acing a word the scheduler did
+    not ask for should not push it a month further out, or a quiet
+    evening of revision would empty the next fortnight. Getting one
+    wrong still counts, because a word you have just failed needs to
+    come back sooner however you found that out.
+  */
+  const skipSchedule = payload.practice === true && payload.grade !== "again";
+
+  if (!skipSchedule) {
   await db
     .insert(cardStates)
     .values({
@@ -85,6 +101,7 @@ export async function submitGrade(payload: GradePayload) {
         dueAt: next.dueAt,
       },
     });
+  }
 
   await db.insert(reviews).values({
     profileId,
@@ -100,7 +117,7 @@ export async function submitGrade(payload: GradePayload) {
     reaches repetitions >= 2. Otherwise production drills swamp the first
     week of every new lesson.
   */
-  if (payload.direction === "recognition" && next.repetitions >= 2) {
+  if (!skipSchedule && payload.direction === "recognition" && next.repetitions >= 2) {
     await db
       .insert(cardStates)
       .values({

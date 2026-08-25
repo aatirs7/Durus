@@ -80,6 +80,7 @@ export function ReviewSession({
         direction: question.direction,
         grade,
         msToAnswer: ms,
+        practice: question.practice,
       }).catch(() =>
         enqueue({
           cardId: question.cardId,
