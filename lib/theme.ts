@@ -30,7 +30,3 @@ export const PAPER: Record<ResolvedTheme, string> = {
   dark: "#131722",
 };
 
-export const SPLASH: Record<ResolvedTheme, string> = {
-  light: "/splash-light.png",
-  dark: "/splash-dark.png",
-};

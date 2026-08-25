@@ -8,7 +8,8 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { DesktopShell } from "@/components/desktop-shell";
 import { RailDue } from "@/components/rail-due";
 import { ThemeCookie } from "@/components/theme-cookie";
-import { PAPER, SPLASH, THEME_COOKIE, isResolvedTheme } from "@/lib/theme";
+import { DEVICES, splashFile, splashMedia } from "@/lib/splash";
+import { PAPER, THEME_COOKIE, isResolvedTheme } from "@/lib/theme";
 import "./globals.css";
 
 /*
@@ -54,16 +55,27 @@ export async function generateMetadata(): Promise<Metadata> {
   /*
     iOS reads the startup image out of the markup, so a splash can only
     follow the in app theme toggle if the server already knows about it.
-    Once a theme has been chosen there is one splash and no media query,
-    because the phone being in light mode says nothing about what the
-    app was last set to.
+
+    The size still has to come from a media query, because iOS only uses
+    an image whose device dimensions match exactly and paints the
+    manifest background colour when none does. So there is one link per
+    device, and the theme decides which file each of them points at
+    rather than adding a colour scheme query on top.
   */
-  const startupImage = theme
-    ? [{ url: SPLASH[theme] }]
-    : [
-        { url: SPLASH.light, media: "(prefers-color-scheme: light)" },
-        { url: SPLASH.dark, media: "(prefers-color-scheme: dark)" },
-      ];
+  const startupImage = DEVICES.flatMap((device) =>
+    theme
+      ? [{ url: splashFile(device, theme), media: splashMedia(device) }]
+      : [
+          {
+            url: splashFile(device, "light"),
+            media: `${splashMedia(device)} and (prefers-color-scheme: light)`,
+          },
+          {
+            url: splashFile(device, "dark"),
+            media: `${splashMedia(device)} and (prefers-color-scheme: dark)`,
+          },
+        ],
+  );
 
   return metadataFor(startupImage);
 }

@@ -121,10 +121,12 @@ export default async function TodayPage() {
           depending on the lesson number, which is why this read as
           unfinished: the layout was an accident of the text.
 
-          Bordered and quiet, so the block is clearly secondary to the
-          one button above it.
+          Plain links, not tiles. Four bordered boxes under the primary
+          button turned a quiet list of alternatives into a second menu
+          competing with it. The grid is only there to hold the columns
+          still.
         */}
-        <div className="grid w-full grid-cols-2 gap-2">
+        <div className="grid w-full grid-cols-2 gap-x-6 gap-y-1">
           {(clear ? [] : [{ href: "/speed", label: "Speed drill" }])
             .concat([
               { href: "/cards", label: "Flashcards" },
@@ -138,8 +140,8 @@ export default async function TodayPage() {
               <ButtonLink
                 key={entry.href}
                 href={entry.href}
-                variant="quiet"
-                className="w-full px-3 py-3 text-[15px]"
+                variant="text"
+                className="w-full"
               >
                 {entry.label}
               </ButtonLink>

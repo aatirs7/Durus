@@ -12,6 +12,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { Resvg } from "@resvg/resvg-js";
+import { DEVICES, splashPixels } from "../lib/splash";
 
 const FONT = join(import.meta.dirname, "assets", "Amiri-Regular.ttf");
 const OUT = join(import.meta.dirname, "..", "public");
@@ -87,14 +88,21 @@ write("icon-32-dark.png", render(iconSvg(128, { scale: 0.46, invert: true }), 32
 write("icon-192-dark.png", render(iconSvg(192, { invert: true }), 192));
 
 /*
-  iOS picks a splash by exact media query match. Covering every device
-  is a losing game, so these are the two the spec asks for at a common
-  modern size. A device with no match simply shows the background color
-  from the manifest, which is the same paper, so the worst case is a
-  plain paper screen rather than a white flash.
+  One launch image per device, per theme.
+
+  iOS only uses an apple-touch-startup-image whose media query matches
+  the device exactly, and paints the manifest background colour when
+  nothing does. Shipping two sizes meant almost every phone fell back to
+  that colour, which is why a dark app was launching behind a light
+  splash.
 */
 console.log("splash:");
-write("splash-light.png", render(splashSvg(1179, 2556, false), 1179));
-write("splash-dark.png", render(splashSvg(1179, 2556, true), 1179));
+for (const device of DEVICES) {
+  const { w, h } = splashPixels(device);
+  for (const dark of [false, true]) {
+    const name = `splash-${device.name}-${dark ? "dark" : "light"}.png`;
+    write(name, render(splashSvg(w, h, dark), w));
+  }
+}
 
 console.log("done");
