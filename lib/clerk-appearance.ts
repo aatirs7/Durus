@@ -13,6 +13,23 @@
 /* Untyped on purpose: @clerk/types is not a direct dependency and the shape is
    checked structurally where it is passed to the component anyway. */
 export const clerkAppearance = {
+  /*
+    Stacked, full-width social buttons - the shape the iOS app uses.
+
+    Clerk's default is a row of small pills with just the provider's name on
+    them, which reads as a footnote under the email field. blockButton gives
+    "Continue with Apple" and "Continue with Google" as full-width rows, which
+    is both the app's design and the one Apple's guidelines are written about:
+    Sign in with Apple has to appear at least as prominently as any other
+    option, and a row of equal pills is a weaker claim than a stack.
+
+    Order comes from the Clerk dashboard's provider list, so Apple has to be
+    first THERE for it to be first here.
+  */
+  layout: {
+    socialButtonsPlacement: "top" as const,
+    socialButtonsVariant: "blockButton" as const,
+  },
   variables: {
     colorPrimary: "var(--lapis)",
     colorBackground: "var(--surface)",
@@ -37,5 +54,11 @@ export const clerkAppearance = {
     },
     /* "Secured by Clerk" is a badge about the plumbing. */
     footer: { display: "none" },
+    /* The same bordered surface the app draws these on. */
+    socialButtonsBlockButton: {
+      border: "1px solid var(--rule)",
+      backgroundColor: "var(--surface)",
+      minHeight: "52px",
+    },
   },
 };

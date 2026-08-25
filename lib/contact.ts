@@ -9,5 +9,9 @@
   It is a real requirement rather than a courtesy: App Store Connect asks for a
   support URL, and a support page with no way to reach anyone is the sort of
   thing App Review sends back.
+
+  A personal address for now, deliberately, because a durus.space mailbox does
+  not exist yet and an address that bounces is worse than one that is plain.
+  Changing it is this one line.
 */
-export const CONTACT_EMAIL = "hello@durus.space";
+export const CONTACT_EMAIL = "aatirsiddiqui1@gmail.com";
