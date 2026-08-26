@@ -19,6 +19,21 @@ import {
 export const cardTypeEnum = pgEnum("card_type", ["vocab", "phrase"]);
 export const genderEnum = pgEnum("gender", ["m", "f"]);
 
+/*
+  Which deck a lesson belongs to.
+
+  The numbers trainer's stages are lessons: ordered, gated, taught once, and
+  full of cards. Making them lesson rows means one scheduler, one fold and one
+  sync path, and every query that joins through lesson_id keeps working
+  unchanged.
+
+  What they must not do is turn up in the book. This column is what keeps them
+  out, and it is on LESSONS rather than on cards because a card's deck is
+  simply its lesson's - denormalising it invites the two to disagree, and every
+  query that needs the filter is already joining lessons to read its number.
+*/
+export const deckEnum = pgEnum("deck", ["book", "numbers"]);
+
 /* cardStates has two directions. reviews has three, because speed runs
    are logged but never scheduled. Two separate enums on purpose. */
 export const stateDirectionEnum = pgEnum("state_direction", [
@@ -38,6 +53,9 @@ export const lessons = pgTable("lessons", {
   titleAr: text("title_ar").notNull(),
   titleEn: text("title_en").notNull(),
   grammarNote: text("grammar_note"),
+  /* Defaults to book, so every existing row is a book lesson without a
+     backfill and every existing query means what it meant before. */
+  deck: deckEnum("deck").notNull().default("book"),
   // Null means the lesson has not been covered in class yet.
   unlockedAt: timestamp("unlocked_at", { withTimezone: true }),
 });
