@@ -1,0 +1,1 @@
+ALTER TABLE "settings" ADD COLUMN "current_book" integer DEFAULT 1 NOT NULL;

@@ -180,6 +180,16 @@ export const settings = pgTable("settings", {
   profileId: integer("profile_id")
     .primaryKey()
     .references(() => profiles.id, { onDelete: "cascade" }),
+  /*
+    Which book the learner is on. Mirrors the SQLite column exactly.
+
+    It was added on the device for the book picker and never added here, so a
+    book choice has never reached the server - and the settings merge iterates
+    whatever keys arrive, so it was writing to a column that did not exist. The
+    schema lockstep test found it on its first run, which is what that test is
+    for.
+  */
+  currentBook: integer("current_book").notNull().default(1),
   currentLesson: integer("current_lesson").notNull().default(1),
   newPerDay: integer("new_per_day").notNull().default(12),
   maxReviews: integer("max_reviews").notNull().default(120),
