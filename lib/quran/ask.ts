@@ -80,7 +80,7 @@ async function groq(q: string, key: string, model: string): Promise<AskAnswer> {
       model,
       temperature: 0.2,
       max_completion_tokens: 900,
-      response_format: { type: "json_object" },
+      reasoning_effort: "medium",
       messages: [
         { role: "system", content: SYSTEM },
         { role: "user", content: q },
