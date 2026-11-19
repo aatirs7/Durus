@@ -1,1 +1,1 @@
-ALTER TYPE "public"."deck" ADD VALUE 'words';
+ALTER TYPE "public"."deck" ADD VALUE IF NOT EXISTS 'words';
