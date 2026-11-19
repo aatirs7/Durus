@@ -32,7 +32,7 @@ export const genderEnum = pgEnum("gender", ["m", "f"]);
   simply its lesson's - denormalising it invites the two to disagree, and every
   query that needs the filter is already joining lessons to read its number.
 */
-export const deckEnum = pgEnum("deck", ["book", "numbers"]);
+export const deckEnum = pgEnum("deck", ["book", "numbers", "words"]);
 
 /* cardStates has two directions. reviews has three, because speed runs
    are logged but never scheduled. Two separate enums on purpose. */

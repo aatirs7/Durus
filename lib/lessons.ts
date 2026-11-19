@@ -34,6 +34,9 @@ export async function listLessons(): Promise<LessonRow[]> {
     })
     .from(lessons)
     .leftJoin(cards, eq(cards.lessonId, lessons.id))
+    /* The book only: the numbers trainer and the app's Quranic Words track
+       are lessons too, but not ones to list or step through here. */
+    .where(eq(lessons.deck, "book"))
     .groupBy(lessons.number, lessons.titleAr, lessons.titleEn)
     .orderBy(asc(lessons.number));
 

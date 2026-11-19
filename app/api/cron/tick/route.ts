@@ -116,7 +116,8 @@ export async function GET(request: Request) {
 async function nextLessonNumber(current: number): Promise<number> {
   const [{ max }] = await db
     .select({ max: sql<number>`max(${lessons.number})::int` })
-    .from(lessons);
+    .from(lessons)
+    .where(eq(lessons.deck, "book"));
   return Math.min(current + 1, max ?? current + 1);
 }
 

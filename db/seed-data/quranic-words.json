@@ -1,0 +1,3446 @@
+{
+"version": 1,
+"attribution": "Quran data provided by Quran Foundation",
+"stages": [
+{
+"stage": 0,
+"lessonId": 1000,
+"number": 200,
+"titleEn": "Al-Fatiha"
+},
+{
+"stage": 1,
+"lessonId": 1001,
+"number": 201,
+"titleEn": "Glue I: where and who"
+},
+{
+"stage": 2,
+"lessonId": 1002,
+"number": 202,
+"titleEn": "Words of salah"
+},
+{
+"stage": 3,
+"lessonId": 1003,
+"number": 203,
+"titleEn": "Glue II: not, if, then"
+},
+{
+"stage": 4,
+"lessonId": 1004,
+"number": 204,
+"titleEn": "Core verbs I"
+},
+{
+"stage": 5,
+"lessonId": 1005,
+"number": 205,
+"titleEn": "Allah and His attributes"
+},
+{
+"stage": 6,
+"lessonId": 1006,
+"number": 206,
+"titleEn": "The unseen and the hereafter"
+},
+{
+"stage": 7,
+"lessonId": 1007,
+"number": 207,
+"titleEn": "Belief, guidance and deeds"
+},
+{
+"stage": 8,
+"lessonId": 1008,
+"number": 208,
+"titleEn": "Messengers and peoples"
+},
+{
+"stage": 9,
+"lessonId": 1009,
+"number": 209,
+"titleEn": "Creation and signs"
+},
+{
+"stage": 10,
+"lessonId": 1010,
+"number": 210,
+"titleEn": "People and society"
+},
+{
+"stage": 11,
+"lessonId": 1011,
+"number": 211,
+"titleEn": "Core verbs II"
+},
+{
+"stage": 12,
+"lessonId": 1012,
+"number": 212,
+"titleEn": "To 80%"
+}
+],
+"lemmas": [
+{
+"cardId": 100002,
+"stage": 0,
+"face": "ٱللَّهِ",
+"gloss": "Allah"
+},
+{
+"cardId": 100004,
+"stage": 0,
+"face": "لَا",
+"gloss": "not"
+},
+{
+"cardId": 100008,
+"stage": 0,
+"face": "ٱلَّذِينَ",
+"gloss": "those who"
+},
+{
+"cardId": 100009,
+"stage": 0,
+"face": "عَلَىٰ",
+"gloss": "on"
+},
+{
+"cardId": 100012,
+"stage": 0,
+"face": "رَبِّ",
+"gloss": "(the) Lord"
+},
+{
+"cardId": 100020,
+"stage": 0,
+"face": "يَوْمَ",
+"gloss": "(on the) Day"
+},
+{
+"cardId": 100073,
+"stage": 0,
+"face": "غَيْرَ",
+"gloss": "not"
+},
+{
+"cardId": 100077,
+"stage": 0,
+"face": "يَهْدِى",
+"gloss": "guide"
+},
+{
+"cardId": 100094,
+"stage": 0,
+"face": "يَعْبُدُ",
+"gloss": "worship"
+},
+{
+"cardId": 100097,
+"stage": 0,
+"face": "رَّحِيمٌۭ",
+"gloss": "Most Merciful"
+},
+{
+"cardId": 100112,
+"stage": 0,
+"face": "ٱلدِّينِ",
+"gloss": "the religion"
+},
+{
+"cardId": 100154,
+"stage": 0,
+"face": "ٱلْعَـٰلَمِينَ",
+"gloss": "(of) the worlds"
+},
+{
+"cardId": 100200,
+"stage": 0,
+"face": "ٱلرَّحْمَـٰنُ",
+"gloss": "the Most Gracious"
+},
+{
+"cardId": 100248,
+"stage": 0,
+"face": "صِرَٰطٍۢ",
+"gloss": "a path"
+},
+{
+"cardId": 100261,
+"stage": 0,
+"face": "ٱلْحَمْدُ",
+"gloss": "All praises"
+},
+{
+"cardId": 100290,
+"stage": 0,
+"face": "ٱسْمَ",
+"gloss": "(the) name"
+},
+{
+"cardId": 100304,
+"stage": 0,
+"face": "مُّسْتَقِيمٍۢ",
+"gloss": "straight"
+},
+{
+"cardId": 100425,
+"stage": 0,
+"face": "إِيَّاهُ",
+"gloss": "Him Alone"
+},
+{
+"cardId": 100545,
+"stage": 0,
+"face": "أَنْعَمَ",
+"gloss": "has bestowed (His) Favor"
+},
+{
+"cardId": 100629,
+"stage": 0,
+"face": "ضَآلِّينَ",
+"gloss": "astray"
+},
+{
+"cardId": 101433,
+"stage": 0,
+"face": "مَـٰلِكِ",
+"gloss": "(The) Master"
+},
+{
+"cardId": 101434,
+"stage": 0,
+"face": "نَسْتَعِينُ",
+"gloss": "we ask for help"
+},
+{
+"cardId": 102819,
+"stage": 0,
+"face": "ٱلْمَغْضُوبِ",
+"gloss": "those who earned (Your) wrath"
+},
+{
+"cardId": 100001,
+"stage": 1,
+"face": "مِن",
+"gloss": "from"
+},
+{
+"cardId": 100003,
+"stage": 1,
+"face": "مَا",
+"gloss": "what"
+},
+{
+"cardId": 100005,
+"stage": 1,
+"face": "فِى",
+"gloss": "in"
+},
+{
+"cardId": 100006,
+"stage": 1,
+"face": "إِنَّ",
+"gloss": "Indeed"
+},
+{
+"cardId": 100011,
+"stage": 1,
+"face": "ذَٰلِكَ",
+"gloss": "that"
+},
+{
+"cardId": 100013,
+"stage": 1,
+"face": "مَن",
+"gloss": "whom"
+},
+{
+"cardId": 100014,
+"stage": 1,
+"face": "إِلَىٰ",
+"gloss": "to"
+},
+{
+"cardId": 100019,
+"stage": 1,
+"face": "هُوَ",
+"gloss": "He"
+},
+{
+"cardId": 100021,
+"stage": 1,
+"face": "عَن",
+"gloss": "from"
+},
+{
+"cardId": 100023,
+"stage": 1,
+"face": "هُمْ",
+"gloss": "they"
+},
+{
+"cardId": 100084,
+"stage": 1,
+"face": "أَنتُمْ",
+"gloss": "you"
+},
+{
+"cardId": 100121,
+"stage": 1,
+"face": "نَحْنُ",
+"gloss": "We"
+},
+{
+"cardId": 100133,
+"stage": 1,
+"face": "أَنتَ",
+"gloss": "you"
+},
+{
+"cardId": 100172,
+"stage": 1,
+"face": "أَنَا۠",
+"gloss": "I am"
+},
+{
+"cardId": 100179,
+"stage": 1,
+"face": "هِىَ",
+"gloss": "it"
+},
+{
+"cardId": 101031,
+"stage": 1,
+"face": "هُنَّ",
+"gloss": "they"
+},
+{
+"cardId": 102370,
+"stage": 1,
+"face": "هُمَا",
+"gloss": "they both"
+},
+{
+"cardId": 100007,
+"stage": 2,
+"face": "قَالَ",
+"gloss": "He said"
+},
+{
+"cardId": 100010,
+"stage": 2,
+"face": "كَانَ",
+"gloss": "is"
+},
+{
+"cardId": 100016,
+"stage": 2,
+"face": "إِلَّا",
+"gloss": "except"
+},
+{
+"cardId": 100018,
+"stage": 2,
+"face": "ءَامَنُوا۟",
+"gloss": "believe"
+},
+{
+"cardId": 100024,
+"stage": 2,
+"face": "إِذَا",
+"gloss": "when"
+},
+{
+"cardId": 100031,
+"stage": 2,
+"face": "لَمْ",
+"gloss": "not"
+},
+{
+"cardId": 100042,
+"stage": 2,
+"face": "جَآءَ",
+"gloss": "came"
+},
+{
+"cardId": 100043,
+"stage": 2,
+"face": "تَعْمَلُونَ",
+"gloss": "you do"
+},
+{
+"cardId": 100045,
+"stage": 2,
+"face": "تَرَ",
+"gloss": "you see"
+},
+{
+"cardId": 100049,
+"stage": 2,
+"face": "بِٱلْحَقِّ",
+"gloss": "in truth"
+},
+{
+"cardId": 100051,
+"stage": 2,
+"face": "ٱلنَّاسِ",
+"gloss": "the people"
+},
+{
+"cardId": 100058,
+"stage": 2,
+"face": "خَلَقَ",
+"gloss": "created"
+},
+{
+"cardId": 100075,
+"stage": 2,
+"face": "إِلَـٰهَ",
+"gloss": "god"
+},
+{
+"cardId": 100143,
+"stage": 2,
+"face": "ٱدْخُلُوا۟",
+"gloss": "Enter"
+},
+{
+"cardId": 100153,
+"stage": 2,
+"face": "أَحَدًۭا",
+"gloss": "anyone"
+},
+{
+"cardId": 100160,
+"stage": 2,
+"face": "ٱلْإِنسَـٰنَ",
+"gloss": "man"
+},
+{
+"cardId": 100189,
+"stage": 2,
+"face": "ٱلصَّـٰلِحَـٰتِ",
+"gloss": "righteous deeds"
+},
+{
+"cardId": 100258,
+"stage": 2,
+"face": "ٱلصُّدُورِ",
+"gloss": "(is in) the breasts"
+},
+{
+"cardId": 100265,
+"stage": 2,
+"face": "يُسَبِّحُ",
+"gloss": "Glorifies"
+},
+{
+"cardId": 100286,
+"stage": 2,
+"face": "تَسْتَغْفِرْ",
+"gloss": "ask forgiveness"
+},
+{
+"cardId": 100362,
+"stage": 2,
+"face": "شَرٌّۭ",
+"gloss": "(is) bad"
+},
+{
+"cardId": 100457,
+"stage": 2,
+"face": "نَصْرُ",
+"gloss": "[will] (the) help"
+},
+{
+"cardId": 100602,
+"stage": 2,
+"face": "صَبْرًۭا",
+"gloss": "(to have) patience"
+},
+{
+"cardId": 100613,
+"stage": 2,
+"face": "ٱلْمَلِكُ",
+"gloss": "the king"
+},
+{
+"cardId": 100695,
+"stage": 2,
+"face": "تَوَّابًۭا",
+"gloss": "Oft-Forgiving"
+},
+{
+"cardId": 100714,
+"stage": 2,
+"face": "يُصَلِّى",
+"gloss": "praying"
+},
+{
+"cardId": 100726,
+"stage": 2,
+"face": "فَتْحًۭا",
+"gloss": "a victory"
+},
+{
+"cardId": 100806,
+"stage": 2,
+"face": "أَعُوذُ",
+"gloss": "I seek refuge"
+},
+{
+"cardId": 100850,
+"stage": 2,
+"face": "جِنَّةٌۭ",
+"gloss": "(is) madness"
+},
+{
+"cardId": 100920,
+"stage": 2,
+"face": "وَلَدَ",
+"gloss": "he begot"
+},
+{
+"cardId": 100993,
+"stage": 2,
+"face": "أَعْطَىٰ",
+"gloss": "gave"
+},
+{
+"cardId": 101428,
+"stage": 2,
+"face": "فَوْجٌۭ",
+"gloss": "(is) a company"
+},
+{
+"cardId": 101432,
+"stage": 2,
+"face": "وَتَوَاصَوْا۟",
+"gloss": "and enjoin (each other)"
+},
+{
+"cardId": 101471,
+"stage": 2,
+"face": "عُقْدَةَ",
+"gloss": "the knot"
+},
+{
+"cardId": 101559,
+"stage": 2,
+"face": "تُوَسْوِسُ",
+"gloss": "whispers"
+},
+{
+"cardId": 101805,
+"stage": 2,
+"face": "حَسَدَ",
+"gloss": "he envies"
+},
+{
+"cardId": 102778,
+"stage": 2,
+"face": "خُسْرًا",
+"gloss": "loss"
+},
+{
+"cardId": 104757,
+"stage": 2,
+"face": "وَٱلْعَصْرِ",
+"gloss": "By the time"
+},
+{
+"cardId": 104772,
+"stage": 2,
+"face": "ٱلْكَوْثَرَ",
+"gloss": "Al-Kauthar"
+},
+{
+"cardId": 104773,
+"stage": 2,
+"face": "وَٱنْحَرْ",
+"gloss": "and sacrifice"
+},
+{
+"cardId": 104774,
+"stage": 2,
+"face": "شَانِئَكَ",
+"gloss": "your enemy "
+},
+{
+"cardId": 104775,
+"stage": 2,
+"face": "ٱلْأَبْتَرُ",
+"gloss": "the one cut off"
+},
+{
+"cardId": 104779,
+"stage": 2,
+"face": "ٱلصَّمَدُ",
+"gloss": "the Eternal, the Absolute"
+},
+{
+"cardId": 104780,
+"stage": 2,
+"face": "كُفُوًا",
+"gloss": "equivalent"
+},
+{
+"cardId": 104781,
+"stage": 2,
+"face": "ٱلْفَلَقِ",
+"gloss": "(of) the dawn"
+},
+{
+"cardId": 104782,
+"stage": 2,
+"face": "غَاسِقٍ",
+"gloss": "(of) darkness"
+},
+{
+"cardId": 104783,
+"stage": 2,
+"face": "وَقَبَ",
+"gloss": "it spreads"
+},
+{
+"cardId": 104784,
+"stage": 2,
+"face": "ٱلنَّفَّـٰثَـٰتِ",
+"gloss": "(of) the blowers"
+},
+{
+"cardId": 104785,
+"stage": 2,
+"face": "حَاسِدٍ",
+"gloss": "(of) an envier"
+},
+{
+"cardId": 104786,
+"stage": 2,
+"face": "ٱلْوَسْوَاسِ",
+"gloss": "(of) the whisperer"
+},
+{
+"cardId": 104787,
+"stage": 2,
+"face": "ٱلْخَنَّاسِ",
+"gloss": "the one who withdraws"
+},
+{
+"cardId": 100015,
+"stage": 3,
+"face": "إِن",
+"gloss": "if"
+},
+{
+"cardId": 100025,
+"stage": 3,
+"face": "قَدْ",
+"gloss": "Verily"
+},
+{
+"cardId": 100033,
+"stage": 3,
+"face": "ثُمَّ",
+"gloss": "then"
+},
+{
+"cardId": 100037,
+"stage": 3,
+"face": "إِذْ",
+"gloss": "when"
+},
+{
+"cardId": 100041,
+"stage": 3,
+"face": "أَوْ",
+"gloss": "or"
+},
+{
+"cardId": 100055,
+"stage": 3,
+"face": "لَوْ",
+"gloss": "If"
+},
+{
+"cardId": 100091,
+"stage": 3,
+"face": "بَلْ",
+"gloss": "Nay"
+},
+{
+"cardId": 100102,
+"stage": 3,
+"face": "لَن",
+"gloss": "Never"
+},
+{
+"cardId": 100017,
+"stage": 4,
+"face": "أَن",
+"gloss": "that"
+},
+{
+"cardId": 100022,
+"stage": 4,
+"face": "ٱلْأَرْضِ",
+"gloss": "the earth"
+},
+{
+"cardId": 100026,
+"stage": 4,
+"face": "قَوْمًۭا",
+"gloss": "a people"
+},
+{
+"cardId": 100027,
+"stage": 4,
+"face": "يَعْلَمُ",
+"gloss": "knows"
+},
+{
+"cardId": 100028,
+"stage": 4,
+"face": "ءَايَـٰتِ",
+"gloss": "(the) Verses"
+},
+{
+"cardId": 100029,
+"stage": 4,
+"face": "أَنَّ",
+"gloss": "that"
+},
+{
+"cardId": 100030,
+"stage": 4,
+"face": "كُلِّ",
+"gloss": "every"
+},
+{
+"cardId": 100032,
+"stage": 4,
+"face": "جَعَلَ",
+"gloss": "made"
+},
+{
+"cardId": 100034,
+"stage": 4,
+"face": "رَسُولًۭا",
+"gloss": "a Messenger"
+},
+{
+"cardId": 100035,
+"stage": 4,
+"face": "عَذَابٌ",
+"gloss": "(is) a punishment"
+},
+{
+"cardId": 100036,
+"stage": 4,
+"face": "ٱلسَّمَـٰوَٰتِ",
+"gloss": "the heavens"
+},
+{
+"cardId": 100038,
+"stage": 4,
+"face": "نَفْسٍۢ",
+"gloss": "soul"
+},
+{
+"cardId": 100039,
+"stage": 4,
+"face": "كَفَرُوا۟",
+"gloss": "disbelieved"
+},
+{
+"cardId": 100040,
+"stage": 4,
+"face": "شَىْءٍۢ",
+"gloss": "thing"
+},
+{
+"cardId": 100044,
+"stage": 4,
+"face": "أُوتِىَ",
+"gloss": "was given"
+},
+{
+"cardId": 100046,
+"stage": 4,
+"face": "بَيْنَ",
+"gloss": "between"
+},
+{
+"cardId": 100047,
+"stage": 4,
+"face": "يَأْتِىَ",
+"gloss": "comes"
+},
+{
+"cardId": 100048,
+"stage": 4,
+"face": "ٱلْكِتَـٰبَ",
+"gloss": "the Book"
+},
+{
+"cardId": 100050,
+"stage": 4,
+"face": "قَبْلُ",
+"gloss": "before"
+},
+{
+"cardId": 100052,
+"stage": 4,
+"face": "يَشَآءُ",
+"gloss": "He wills"
+},
+{
+"cardId": 100053,
+"stage": 4,
+"face": "يَـٰٓأَيُّهَا",
+"gloss": "O you"
+},
+{
+"cardId": 100054,
+"stage": 4,
+"face": "مُّؤْمِنِينَ",
+"gloss": "believers"
+},
+{
+"cardId": 100056,
+"stage": 4,
+"face": "بَعْدِ",
+"gloss": "after"
+},
+{
+"cardId": 100057,
+"stage": 4,
+"face": "عِندَ",
+"gloss": "near"
+},
+{
+"cardId": 100059,
+"stage": 4,
+"face": "أُنزِلَ",
+"gloss": "was revealed"
+},
+{
+"cardId": 100060,
+"stage": 4,
+"face": "خَيْرٌۭ",
+"gloss": "(is) better"
+},
+{
+"cardId": 100061,
+"stage": 5,
+"face": "كَذَّبَ",
+"gloss": "denied"
+},
+{
+"cardId": 100062,
+"stage": 5,
+"face": "سَبِيلِ",
+"gloss": "(the) way"
+},
+{
+"cardId": 100063,
+"stage": 5,
+"face": "ٱدْعُ",
+"gloss": "Pray"
+},
+{
+"cardId": 100064,
+"stage": 5,
+"face": "وَٱتَّقُوا۟",
+"gloss": "And fear"
+},
+{
+"cardId": 100065,
+"stage": 5,
+"face": "أَمْرُ",
+"gloss": "(the) Command"
+},
+{
+"cardId": 100066,
+"stage": 5,
+"face": "لَمَّا",
+"gloss": "when"
+},
+{
+"cardId": 100067,
+"stage": 5,
+"face": "مَعَ",
+"gloss": "with"
+},
+{
+"cardId": 100068,
+"stage": 5,
+"face": "عَلِيمٌۭ",
+"gloss": "All-Knowing"
+},
+{
+"cardId": 100069,
+"stage": 5,
+"face": "بَعْضٍۢ",
+"gloss": "others"
+},
+{
+"cardId": 100070,
+"stage": 5,
+"face": "كَـٰفِرُونَ",
+"gloss": "(are) disbelievers"
+},
+{
+"cardId": 100071,
+"stage": 5,
+"face": "ذُو",
+"gloss": "(is the) Possessor"
+},
+{
+"cardId": 100072,
+"stage": 5,
+"face": "ٱلْـَٔاخِرَةِ",
+"gloss": "the Hereafter"
+},
+{
+"cardId": 100074,
+"stage": 5,
+"face": "جَنَّـٰتٍۢ",
+"gloss": "(to) Gardens"
+},
+{
+"cardId": 100076,
+"stage": 5,
+"face": "نَارًۭا",
+"gloss": "a fire"
+},
+{
+"cardId": 100078,
+"stage": 5,
+"face": "دُونِ",
+"gloss": "besides"
+},
+{
+"cardId": 100079,
+"stage": 5,
+"face": "حَتَّىٰ",
+"gloss": "until"
+},
+{
+"cardId": 100080,
+"stage": 5,
+"face": "يُرِيدُ",
+"gloss": "He intends"
+},
+{
+"cardId": 100081,
+"stage": 5,
+"face": "أَمْ",
+"gloss": "Or"
+},
+{
+"cardId": 100107,
+"stage": 5,
+"face": "عَزِيزٌ",
+"gloss": "(is) All-Mighty"
+},
+{
+"cardId": 100109,
+"stage": 5,
+"face": "حَكِيمٌۭ",
+"gloss": "All-Wise"
+},
+{
+"cardId": 100114,
+"stage": 5,
+"face": "غَفُورٌۭ",
+"gloss": "(is) Oft-Forgiving"
+},
+{
+"cardId": 100224,
+"stage": 5,
+"face": "بَصِيرٌۭ",
+"gloss": "(is) All-Seer"
+},
+{
+"cardId": 100244,
+"stage": 5,
+"face": "سَمِيعٌ",
+"gloss": "(is) All-Hearing"
+},
+{
+"cardId": 100249,
+"stage": 5,
+"face": "قَدِيرٌۭ",
+"gloss": "All-Powerful"
+},
+{
+"cardId": 100253,
+"stage": 5,
+"face": "خَبِيرٌۭ",
+"gloss": "(is) All-Aware"
+},
+{
+"cardId": 100082,
+"stage": 6,
+"face": "مُوسَىٰ",
+"gloss": "Musa"
+},
+{
+"cardId": 100083,
+"stage": 6,
+"face": "ٱتَّبَعَ",
+"gloss": "follows"
+},
+{
+"cardId": 100085,
+"stage": 6,
+"face": "قُلُوبِ",
+"gloss": "(the) hearts"
+},
+{
+"cardId": 100086,
+"stage": 6,
+"face": "عِبَادَ",
+"gloss": "(the) slaves"
+},
+{
+"cardId": 100087,
+"stage": 6,
+"face": "أَرْسَلْنَا",
+"gloss": "We sent"
+},
+{
+"cardId": 100088,
+"stage": 6,
+"face": "لَعَلَّكُمْ",
+"gloss": "so that you may"
+},
+{
+"cardId": 100089,
+"stage": 6,
+"face": "ٱلظَّـٰلِمِينَ",
+"gloss": "the wrongdoers"
+},
+{
+"cardId": 100090,
+"stage": 6,
+"face": "أَخَذَ",
+"gloss": "took"
+},
+{
+"cardId": 100092,
+"stage": 6,
+"face": "أَهْلِ",
+"gloss": "(the) People"
+},
+{
+"cardId": 100093,
+"stage": 6,
+"face": "ٱتَّخَذَ",
+"gloss": "has taken"
+},
+{
+"cardId": 100095,
+"stage": 6,
+"face": "يَدَىْ",
+"gloss": "before"
+},
+{
+"cardId": 100096,
+"stage": 6,
+"face": "مُّبِينٌۭ",
+"gloss": "clear"
+},
+{
+"cardId": 100098,
+"stage": 6,
+"face": "ٱلدُّنْيَا",
+"gloss": "(of) the world"
+},
+{
+"cardId": 100099,
+"stage": 6,
+"face": "رَحْمَةًۭ",
+"gloss": "mercy"
+},
+{
+"cardId": 100100,
+"stage": 6,
+"face": "ظَلَمُوا۟",
+"gloss": "wronged"
+},
+{
+"cardId": 100101,
+"stage": 6,
+"face": "عَظِيمٌۭ",
+"gloss": "great"
+},
+{
+"cardId": 100103,
+"stage": 6,
+"face": "يُسْـَٔلُ",
+"gloss": "He (can) be questioned"
+},
+{
+"cardId": 100104,
+"stage": 6,
+"face": "تَجِدَ",
+"gloss": "you will find"
+},
+{
+"cardId": 100105,
+"stage": 6,
+"face": "عِلْمٍۢ",
+"gloss": "knowledge"
+},
+{
+"cardId": 100106,
+"stage": 6,
+"face": "أَجْرًا",
+"gloss": "a reward"
+},
+{
+"cardId": 100108,
+"stage": 6,
+"face": "أَخْرَجَ",
+"gloss": "he drove out"
+},
+{
+"cardId": 100110,
+"stage": 6,
+"face": "يَأْكُلُ",
+"gloss": "eat"
+},
+{
+"cardId": 100111,
+"stage": 6,
+"face": "هَلْ",
+"gloss": "Is"
+},
+{
+"cardId": 100113,
+"stage": 6,
+"face": "قَوْلًۭا",
+"gloss": "a word"
+},
+{
+"cardId": 100115,
+"stage": 6,
+"face": "لَيْسَ",
+"gloss": "not"
+},
+{
+"cardId": 100116,
+"stage": 6,
+"face": "ٱلشَّيْطَـٰنُ",
+"gloss": "the Shaitaan"
+},
+{
+"cardId": 100117,
+"stage": 6,
+"face": "مَثَلًۭا",
+"gloss": "an example"
+},
+{
+"cardId": 100118,
+"stage": 6,
+"face": "يَفْعَلُ",
+"gloss": "does"
+},
+{
+"cardId": 100119,
+"stage": 6,
+"face": "ٱلْمَلَـٰٓئِكَةُ",
+"gloss": "the Angels"
+},
+{
+"cardId": 100120,
+"stage": 6,
+"face": "ٱنظُرْ",
+"gloss": "See"
+},
+{
+"cardId": 100122,
+"stage": 6,
+"face": "أَوْلِيَآءَ",
+"gloss": "(as) allies"
+},
+{
+"cardId": 100123,
+"stage": 6,
+"face": "مَالًۭا",
+"gloss": "wealth"
+},
+{
+"cardId": 100141,
+"stage": 6,
+"face": "جَهَنَّمَ",
+"gloss": "Hell"
+},
+{
+"cardId": 100166,
+"stage": 6,
+"face": "ٱلْقِيَـٰمَةِ",
+"gloss": "(of) the Resurrection"
+},
+{
+"cardId": 100296,
+"stage": 6,
+"face": "حِسَابٍۢ",
+"gloss": "measure"
+},
+{
+"cardId": 100124,
+"stage": 7,
+"face": "هُدًۭى",
+"gloss": "guidance"
+},
+{
+"cardId": 100125,
+"stage": 7,
+"face": "ذُكِرَ",
+"gloss": "is mentioned"
+},
+{
+"cardId": 100126,
+"stage": 7,
+"face": "فَضْلُ",
+"gloss": "(for the) Grace"
+},
+{
+"cardId": 100127,
+"stage": 7,
+"face": "ٱلَّيْلِ",
+"gloss": "the night"
+},
+{
+"cardId": 100128,
+"stage": 7,
+"face": "ٱلصَّلَوٰةَ",
+"gloss": "the prayer"
+},
+{
+"cardId": 100129,
+"stage": 7,
+"face": "كَيْفَ",
+"gloss": "how"
+},
+{
+"cardId": 100130,
+"stage": 7,
+"face": "قُتِلَ",
+"gloss": "is slain"
+},
+{
+"cardId": 100131,
+"stage": 7,
+"face": "أَخَافُ",
+"gloss": "[I] fear"
+},
+{
+"cardId": 100132,
+"stage": 7,
+"face": "أَوَّلَ",
+"gloss": "(the) first"
+},
+{
+"cardId": 100134,
+"stage": 7,
+"face": "بَنِىٓ",
+"gloss": "(the) Children"
+},
+{
+"cardId": 100135,
+"stage": 7,
+"face": "أَكْثَرَ",
+"gloss": "most"
+},
+{
+"cardId": 100136,
+"stage": 7,
+"face": "تُرْجَعُ",
+"gloss": "return"
+},
+{
+"cardId": 100137,
+"stage": 7,
+"face": "أَصْحَـٰبُ",
+"gloss": "(are the) companions"
+},
+{
+"cardId": 100138,
+"stage": 7,
+"face": "تَوَلَّىٰ",
+"gloss": "turns away"
+},
+{
+"cardId": 100139,
+"stage": 7,
+"face": "يَسْمَعُ",
+"gloss": "hears"
+},
+{
+"cardId": 100140,
+"stage": 7,
+"face": "أَمَرَ",
+"gloss": "(has been) commanded"
+},
+{
+"cardId": 100142,
+"stage": 7,
+"face": "أَزْوَٰجًۭا",
+"gloss": "wives"
+},
+{
+"cardId": 100144,
+"stage": 7,
+"face": "ٱلْحَيَوٰةِ",
+"gloss": "the life"
+},
+{
+"cardId": 100145,
+"stage": 7,
+"face": "ذِكْرِ",
+"gloss": "(the) remembrance"
+},
+{
+"cardId": 100146,
+"stage": 7,
+"face": "مِثْلَ",
+"gloss": "like"
+},
+{
+"cardId": 100147,
+"stage": 7,
+"face": "ٱلنَّبِىُّ",
+"gloss": "Prophet"
+},
+{
+"cardId": 100148,
+"stage": 7,
+"face": "لَوْلَآ",
+"gloss": "Why not"
+},
+{
+"cardId": 100149,
+"stage": 7,
+"face": "أَخِيهِ",
+"gloss": "his brother"
+},
+{
+"cardId": 100150,
+"stage": 7,
+"face": "خَـٰلِدِينَ",
+"gloss": "abiding forever"
+},
+{
+"cardId": 100151,
+"stage": 7,
+"face": "فِرْعَوْنَ",
+"gloss": "Firaun"
+},
+{
+"cardId": 100152,
+"stage": 7,
+"face": "صَـٰلِحًۭا",
+"gloss": "righteous (deeds)"
+},
+{
+"cardId": 100155,
+"stage": 7,
+"face": "نَجْزِى",
+"gloss": "We recompense"
+},
+{
+"cardId": 100156,
+"stage": 7,
+"face": "أَلِيمٌۭ",
+"gloss": "painful"
+},
+{
+"cardId": 100157,
+"stage": 7,
+"face": "وُجُوهٌۭ",
+"gloss": "Faces"
+},
+{
+"cardId": 100158,
+"stage": 7,
+"face": "يُطِعِ",
+"gloss": "obeys"
+},
+{
+"cardId": 100159,
+"stage": 7,
+"face": "يُوحَىٰٓ",
+"gloss": "is revealed"
+},
+{
+"cardId": 100161,
+"stage": 7,
+"face": "بَيِّنَـٰتٍۢ",
+"gloss": "clear"
+},
+{
+"cardId": 100162,
+"stage": 7,
+"face": "يُشْرِكْ",
+"gloss": "associates partners"
+},
+{
+"cardId": 100163,
+"stage": 7,
+"face": "عَمَلًۭا",
+"gloss": "a deed"
+},
+{
+"cardId": 100250,
+"stage": 7,
+"face": "إِيمَـٰنًۭا",
+"gloss": "(in) faith"
+},
+{
+"cardId": 100303,
+"stage": 7,
+"face": "ضَلَـٰلٍۢ",
+"gloss": "error"
+},
+{
+"cardId": 100309,
+"stage": 7,
+"face": "كُفْرًۭا",
+"gloss": "(in) disbelief"
+},
+{
+"cardId": 100342,
+"stage": 7,
+"face": "ٱلزَّكَوٰةَ",
+"gloss": "the zakah"
+},
+{
+"cardId": 100500,
+"stage": 7,
+"face": "ظُلْمًۭا",
+"gloss": "injustice"
+},
+{
+"cardId": 100558,
+"stage": 7,
+"face": "ٱلتَّقْوَىٰ",
+"gloss": "(of) [the] righteousness "
+},
+{
+"cardId": 100164,
+"stage": 8,
+"face": "أَلْقَى",
+"gloss": "threw"
+},
+{
+"cardId": 100165,
+"stage": 8,
+"face": "قَلِيلًۭا",
+"gloss": "a little"
+},
+{
+"cardId": 100167,
+"stage": 8,
+"face": "أُخْرَىٰ",
+"gloss": "another"
+},
+{
+"cardId": 100168,
+"stage": 8,
+"face": "قُرْءَانًا",
+"gloss": "a Quran"
+},
+{
+"cardId": 100169,
+"stage": 8,
+"face": "وَعَدَ",
+"gloss": "promised"
+},
+{
+"cardId": 100170,
+"stage": 8,
+"face": "إِبْرَٰهِيمَ",
+"gloss": "Ibrahim"
+},
+{
+"cardId": 100171,
+"stage": 8,
+"face": "يُنفِقُ",
+"gloss": "spends"
+},
+{
+"cardId": 100173,
+"stage": 8,
+"face": "وَلَـٰكِن",
+"gloss": "but"
+},
+{
+"cardId": 100174,
+"stage": 8,
+"face": "يَغْفِرُ",
+"gloss": "He forgives"
+},
+{
+"cardId": 100175,
+"stage": 8,
+"face": "وَلَـٰكِنَّ",
+"gloss": "but"
+},
+{
+"cardId": 100176,
+"stage": 8,
+"face": "بُيُوتِ",
+"gloss": "houses"
+},
+{
+"cardId": 100177,
+"stage": 8,
+"face": "ٱلْيَمِينِ",
+"gloss": "the right"
+},
+{
+"cardId": 100178,
+"stage": 8,
+"face": "يُضْلِلِ",
+"gloss": "is let astray"
+},
+{
+"cardId": 100180,
+"stage": 8,
+"face": "أُمَّةًۭ",
+"gloss": "a community"
+},
+{
+"cardId": 100181,
+"stage": 8,
+"face": "ءَابَآءَنَا",
+"gloss": "our forefathers"
+},
+{
+"cardId": 100182,
+"stage": 8,
+"face": "أَصَابَ",
+"gloss": "strikes"
+},
+{
+"cardId": 100183,
+"stage": 8,
+"face": "يُحِبُّ",
+"gloss": "love"
+},
+{
+"cardId": 100184,
+"stage": 8,
+"face": "مَآءًۭ",
+"gloss": "water"
+},
+{
+"cardId": 100185,
+"stage": 8,
+"face": "كَثِيرًۭا",
+"gloss": "many"
+},
+{
+"cardId": 100186,
+"stage": 8,
+"face": "تَابَ",
+"gloss": "repents"
+},
+{
+"cardId": 100187,
+"stage": 8,
+"face": "ٱبْنُ",
+"gloss": "son"
+},
+{
+"cardId": 100188,
+"stage": 8,
+"face": "نَزَّلَ",
+"gloss": "revealed"
+},
+{
+"cardId": 100190,
+"stage": 8,
+"face": "كَسَبَتْ",
+"gloss": "it earned"
+},
+{
+"cardId": 100191,
+"stage": 8,
+"face": "يَرْزُقُ",
+"gloss": "provides"
+},
+{
+"cardId": 100192,
+"stage": 8,
+"face": "تُتْلَىٰ",
+"gloss": "are recited"
+},
+{
+"cardId": 100193,
+"stage": 8,
+"face": "صَـٰدِقِينَ",
+"gloss": "truthful"
+},
+{
+"cardId": 100194,
+"stage": 8,
+"face": "يُنصَرُونَ",
+"gloss": "will be helped"
+},
+{
+"cardId": 100195,
+"stage": 8,
+"face": "ٱلنِّسَآءَ",
+"gloss": "[the] women"
+},
+{
+"cardId": 100196,
+"stage": 8,
+"face": "قُضِىَ",
+"gloss": "has been decided"
+},
+{
+"cardId": 100197,
+"stage": 8,
+"face": "فَٱصْبِرْ",
+"gloss": "So be patient"
+},
+{
+"cardId": 100198,
+"stage": 8,
+"face": "سَيِّـَٔاتُ",
+"gloss": "(the) evils"
+},
+{
+"cardId": 100199,
+"stage": 8,
+"face": "نَذِيرٌۭ",
+"gloss": "a warner"
+},
+{
+"cardId": 100201,
+"stage": 8,
+"face": "تَجْرِى",
+"gloss": "flow"
+},
+{
+"cardId": 100202,
+"stage": 8,
+"face": "قَرْيَةٍ",
+"gloss": "town"
+},
+{
+"cardId": 100263,
+"stage": 8,
+"face": "إِسْرَٰٓءِيلَ",
+"gloss": "(of) Israel"
+},
+{
+"cardId": 100203,
+"stage": 9,
+"face": "عَيْنًۭا",
+"gloss": "A spring"
+},
+{
+"cardId": 100204,
+"stage": 9,
+"face": "ٱلنَّهَارِ",
+"gloss": "the day"
+},
+{
+"cardId": 100205,
+"stage": 9,
+"face": "شَهِيدًۭا",
+"gloss": "a witness"
+},
+{
+"cardId": 100206,
+"stage": 9,
+"face": "مَسَّ",
+"gloss": "touches"
+},
+{
+"cardId": 100207,
+"stage": 9,
+"face": "وَلَدًۭا",
+"gloss": "a son"
+},
+{
+"cardId": 100208,
+"stage": 9,
+"face": "شَدِيدُ",
+"gloss": "(is) severe"
+},
+{
+"cardId": 100209,
+"stage": 9,
+"face": "رِزْقًۭا",
+"gloss": "any provision"
+},
+{
+"cardId": 100210,
+"stage": 9,
+"face": "ضَرَبَ",
+"gloss": "He sets forth"
+},
+{
+"cardId": 100211,
+"stage": 9,
+"face": "وَأَمَّا",
+"gloss": "But as for"
+},
+{
+"cardId": 100212,
+"stage": 9,
+"face": "وَأَقِيمُوا۟",
+"gloss": "and establish"
+},
+{
+"cardId": 100213,
+"stage": 9,
+"face": "ٱلْأَنْهَـٰرُ",
+"gloss": "the rivers"
+},
+{
+"cardId": 100214,
+"stage": 9,
+"face": "يُقَـٰتِلُوكُمْ",
+"gloss": "they fight you"
+},
+{
+"cardId": 100215,
+"stage": 9,
+"face": "جَمِيعًۭا",
+"gloss": "all"
+},
+{
+"cardId": 100216,
+"stage": 9,
+"face": "يَخْرُجُ",
+"gloss": "comes forth"
+},
+{
+"cardId": 100217,
+"stage": 9,
+"face": "ضَلَّ",
+"gloss": "goes astray"
+},
+{
+"cardId": 100218,
+"stage": 9,
+"face": "بَعَثَ",
+"gloss": "raised"
+},
+{
+"cardId": 100219,
+"stage": 9,
+"face": "خَلْقٍۢ",
+"gloss": "a creation"
+},
+{
+"cardId": 100220,
+"stage": 9,
+"face": "أَجَلٍۢ",
+"gloss": "a term"
+},
+{
+"cardId": 100221,
+"stage": 9,
+"face": "مُّجْرِمِينَ",
+"gloss": "criminal"
+},
+{
+"cardId": 100222,
+"stage": 9,
+"face": "تَحْتِهَا",
+"gloss": "underneath it"
+},
+{
+"cardId": 100223,
+"stage": 9,
+"face": "يُحْىِۦ",
+"gloss": "gives life"
+},
+{
+"cardId": 100225,
+"stage": 9,
+"face": "أَهْلَكْنَا",
+"gloss": "We destroyed"
+},
+{
+"cardId": 100226,
+"stage": 9,
+"face": "يَتَذَكَّرُ",
+"gloss": "will remember"
+},
+{
+"cardId": 100227,
+"stage": 9,
+"face": "ٱلْمَوْتُ",
+"gloss": "[the] death"
+},
+{
+"cardId": 100228,
+"stage": 9,
+"face": "عَدُوٌّۭ",
+"gloss": "an enemy"
+},
+{
+"cardId": 100229,
+"stage": 9,
+"face": "نِعْمَتَ",
+"gloss": "(the) Favor"
+},
+{
+"cardId": 100230,
+"stage": 9,
+"face": "سُوٓءُ",
+"gloss": "(the) evil"
+},
+{
+"cardId": 100231,
+"stage": 9,
+"face": "ٱفْتَرَىٰ",
+"gloss": "invents"
+},
+{
+"cardId": 100232,
+"stage": 9,
+"face": "ٱلْمُتَّقِينَ",
+"gloss": "the righteous"
+},
+{
+"cardId": 100233,
+"stage": 9,
+"face": "ٱلْغَيْبِ",
+"gloss": "(of) the unseen"
+},
+{
+"cardId": 100234,
+"stage": 9,
+"face": "يَزِيدُ",
+"gloss": "increase"
+},
+{
+"cardId": 100235,
+"stage": 9,
+"face": "تَعْقِلُونَ",
+"gloss": "you use reason"
+},
+{
+"cardId": 100236,
+"stage": 9,
+"face": "كُتِبَ",
+"gloss": "Prescribed"
+},
+{
+"cardId": 100237,
+"stage": 9,
+"face": "أَعْلَمُ",
+"gloss": "(is) most knowing"
+},
+{
+"cardId": 100238,
+"stage": 9,
+"face": "وَعْدَ",
+"gloss": "(the) Promise"
+},
+{
+"cardId": 100239,
+"stage": 9,
+"face": "ٱلْأَبْصَـٰرُ",
+"gloss": "the eyes"
+},
+{
+"cardId": 100275,
+"stage": 9,
+"face": "ٱلْبَحْرِ",
+"gloss": "the sea"
+},
+{
+"cardId": 100297,
+"stage": 9,
+"face": "جَبَلٍۢ",
+"gloss": "a mountain"
+},
+{
+"cardId": 100338,
+"stage": 9,
+"face": "ٱلشَّمْسَ",
+"gloss": "the sun"
+},
+{
+"cardId": 100398,
+"stage": 9,
+"face": "ٱلْقَمَرَ",
+"gloss": "the moon"
+},
+{
+"cardId": 100240,
+"stage": 10,
+"face": "دَارُ",
+"gloss": "(is the) home"
+},
+{
+"cardId": 100241,
+"stage": 10,
+"face": "مُلْكُ",
+"gloss": "(is the) dominion"
+},
+{
+"cardId": 100242,
+"stage": 10,
+"face": "سَاعَةًۭ",
+"gloss": "an hour"
+},
+{
+"cardId": 100243,
+"stage": 10,
+"face": "ظَنَّ",
+"gloss": "he thought"
+},
+{
+"cardId": 100245,
+"stage": 10,
+"face": "تَشْكُرُونَ",
+"gloss": "(be) grateful"
+},
+{
+"cardId": 100246,
+"stage": 10,
+"face": "فَيُنَبِّئُكُم",
+"gloss": "then He will inform you"
+},
+{
+"cardId": 100247,
+"stage": 10,
+"face": "لِأَبِيهِ",
+"gloss": "to his father"
+},
+{
+"cardId": 100251,
+"stage": 10,
+"face": "يَحْكُمُ",
+"gloss": "will judge"
+},
+{
+"cardId": 100252,
+"stage": 10,
+"face": "تَذَرُ",
+"gloss": "it left"
+},
+{
+"cardId": 100254,
+"stage": 10,
+"face": "تُنذِرُ",
+"gloss": "you can warn"
+},
+{
+"cardId": 100255,
+"stage": 10,
+"face": "شَهِدَ",
+"gloss": "witnesses"
+},
+{
+"cardId": 100256,
+"stage": 10,
+"face": "ٱلْمُشْرِكِينَ",
+"gloss": "the polytheists"
+},
+{
+"cardId": 100257,
+"stage": 10,
+"face": "حَسِبَ",
+"gloss": "think"
+},
+{
+"cardId": 100259,
+"stage": 10,
+"face": "نَادَىٰ",
+"gloss": "he called"
+},
+{
+"cardId": 100260,
+"stage": 10,
+"face": "مَلَكَتْ",
+"gloss": "possess"
+},
+{
+"cardId": 100262,
+"stage": 10,
+"face": "نُورًۭا",
+"gloss": "a light"
+},
+{
+"cardId": 100264,
+"stage": 10,
+"face": "نُوحٍۢ",
+"gloss": "(of) Nuh"
+},
+{
+"cardId": 100266,
+"stage": 10,
+"face": "كَلِمَتُ",
+"gloss": "(the) Word"
+},
+{
+"cardId": 100267,
+"stage": 10,
+"face": "جَزَآءُ",
+"gloss": "(is the) reward"
+},
+{
+"cardId": 100268,
+"stage": 10,
+"face": "تَسْتَطِيعَ",
+"gloss": "will be able"
+},
+{
+"cardId": 100269,
+"stage": 10,
+"face": "يُدْخِلُ",
+"gloss": "will admit"
+},
+{
+"cardId": 100270,
+"stage": 10,
+"face": "سَوْفَ",
+"gloss": "Soon"
+},
+{
+"cardId": 100271,
+"stage": 10,
+"face": "سَلَـٰمٌ",
+"gloss": "Peace be"
+},
+{
+"cardId": 100272,
+"stage": 10,
+"face": "فَوْقَ",
+"gloss": "over"
+},
+{
+"cardId": 100273,
+"stage": 10,
+"face": "عَلَّمَ",
+"gloss": "He taught"
+},
+{
+"cardId": 100274,
+"stage": 10,
+"face": "سُبْحَـٰنَ",
+"gloss": "Glory be"
+},
+{
+"cardId": 100276,
+"stage": 10,
+"face": "تَحْمِلُ",
+"gloss": "carries"
+},
+{
+"cardId": 100277,
+"stage": 10,
+"face": "يُعَذِّبُ",
+"gloss": "He punishes"
+},
+{
+"cardId": 100278,
+"stage": 10,
+"face": "تَرَكَ",
+"gloss": "(is) left"
+},
+{
+"cardId": 100279,
+"stage": 10,
+"face": "ٱسْتَكْبَرُوا۟",
+"gloss": "were arrogant"
+},
+{
+"cardId": 100280,
+"stage": 10,
+"face": "ٱهْتَدَىٰ",
+"gloss": "(is) guided"
+},
+{
+"cardId": 100281,
+"stage": 10,
+"face": "نُرِىٓ",
+"gloss": "We show(ed)"
+},
+{
+"cardId": 100282,
+"stage": 10,
+"face": "وَيْلٌۭ",
+"gloss": "Woe"
+},
+{
+"cardId": 100283,
+"stage": 10,
+"face": "بِئْسَ",
+"gloss": "Wretched"
+},
+{
+"cardId": 100284,
+"stage": 10,
+"face": "يَخْشَىٰ",
+"gloss": "fear"
+},
+{
+"cardId": 100285,
+"stage": 10,
+"face": "بَلَغَ",
+"gloss": "he reached"
+},
+{
+"cardId": 100287,
+"stage": 10,
+"face": "كَبِيرًۭا",
+"gloss": "great"
+},
+{
+"cardId": 100288,
+"stage": 10,
+"face": "فَلْيَتَوَكَّلِ",
+"gloss": "let put (their) trust"
+},
+{
+"cardId": 100289,
+"stage": 10,
+"face": "شُرَكَآءَ",
+"gloss": "partners"
+},
+{
+"cardId": 100291,
+"stage": 10,
+"face": "أَلَآ",
+"gloss": "No doubt"
+},
+{
+"cardId": 100292,
+"stage": 10,
+"face": "بِإِذْنِ",
+"gloss": "by (the) permission"
+},
+{
+"cardId": 100293,
+"stage": 10,
+"face": "مُّسْلِمُونَ",
+"gloss": "(are) submissive"
+},
+{
+"cardId": 100294,
+"stage": 10,
+"face": "يَمُوتُ",
+"gloss": "he will die"
+},
+{
+"cardId": 100295,
+"stage": 10,
+"face": "حَرَّمَ",
+"gloss": "He has forbidden"
+},
+{
+"cardId": 100298,
+"stage": 10,
+"face": "بُشِّرَ",
+"gloss": "is given good news"
+},
+{
+"cardId": 100299,
+"stage": 10,
+"face": "ٱلْمَوْتَىٰ",
+"gloss": "the dead"
+},
+{
+"cardId": 100300,
+"stage": 10,
+"face": "ٱلْمُحْسِنِينَ",
+"gloss": "the good-doers"
+},
+{
+"cardId": 100301,
+"stage": 10,
+"face": "يَرْضَىٰ",
+"gloss": "(does) he approve"
+},
+{
+"cardId": 100302,
+"stage": 10,
+"face": "مَّعْرُوفًۭا",
+"gloss": "(of) kindness"
+},
+{
+"cardId": 100330,
+"stage": 10,
+"face": "أُمِّ",
+"gloss": "(the) mother"
+},
+{
+"cardId": 100305,
+"stage": 11,
+"face": "فَـٰسِقُونَ",
+"gloss": "(are) defiantly disobedient"
+},
+{
+"cardId": 100306,
+"stage": 11,
+"face": "تَحْزَنْ",
+"gloss": "grieve"
+},
+{
+"cardId": 100307,
+"stage": 11,
+"face": "نُنَجِّى",
+"gloss": "We will save"
+},
+{
+"cardId": 100308,
+"stage": 11,
+"face": "يَعْصِ",
+"gloss": "disobeys"
+},
+{
+"cardId": 100310,
+"stage": 11,
+"face": "نَحْشُرُ",
+"gloss": "We will gather"
+},
+{
+"cardId": 100311,
+"stage": 11,
+"face": "ذَنۢبٌۭ",
+"gloss": "a crime"
+},
+{
+"cardId": 100312,
+"stage": 11,
+"face": "نَعَمْ",
+"gloss": "Yes"
+},
+{
+"cardId": 100313,
+"stage": 11,
+"face": "بَشَرٌۭ",
+"gloss": "a man"
+},
+{
+"cardId": 100314,
+"stage": 11,
+"face": "يَصُدُّونَ",
+"gloss": "turning away"
+},
+{
+"cardId": 100315,
+"stage": 11,
+"face": "سُلْطَـٰنًۭا",
+"gloss": "an authority"
+},
+{
+"cardId": 100316,
+"stage": 11,
+"face": "يُرَدُّ",
+"gloss": "will be turned back"
+},
+{
+"cardId": 100317,
+"stage": 11,
+"face": "أَحْسَنُ",
+"gloss": "(is) best"
+},
+{
+"cardId": 100318,
+"stage": 11,
+"face": "فَذُوقُوا۟",
+"gloss": "So taste"
+},
+{
+"cardId": 100319,
+"stage": 11,
+"face": "ذَهَبَ",
+"gloss": "took away"
+},
+{
+"cardId": 100320,
+"stage": 11,
+"face": "يَسْتَوِى",
+"gloss": "equal"
+},
+{
+"cardId": 100321,
+"stage": 11,
+"face": "يَسْجُدُ",
+"gloss": "prostrates"
+},
+{
+"cardId": 100322,
+"stage": 11,
+"face": "مَتَـٰعُ",
+"gloss": "(is) provision"
+},
+{
+"cardId": 100323,
+"stage": 11,
+"face": "حِينٍۢ",
+"gloss": "a time"
+},
+{
+"cardId": 100324,
+"stage": 11,
+"face": "نَسُوا۟",
+"gloss": "they forgot"
+},
+{
+"cardId": 100325,
+"stage": 11,
+"face": "يُبَيِّنُ",
+"gloss": "makes clear"
+},
+{
+"cardId": 100326,
+"stage": 11,
+"face": "إِثْمًۭا",
+"gloss": "sin"
+},
+{
+"cardId": 100327,
+"stage": 11,
+"face": "نَصِيرًۭا",
+"gloss": "any helper"
+},
+{
+"cardId": 100328,
+"stage": 11,
+"face": "يَخْتَلِفُونَ",
+"gloss": "differ"
+},
+{
+"cardId": 100329,
+"stage": 11,
+"face": "ٱلْمُرْسَلِينَ",
+"gloss": "the Messengers"
+},
+{
+"cardId": 100331,
+"stage": 11,
+"face": "مَرْيَمَ",
+"gloss": "(of) Maryam"
+},
+{
+"cardId": 100332,
+"stage": 11,
+"face": "فِتْنَةٌۭ",
+"gloss": "oppression"
+},
+{
+"cardId": 100333,
+"stage": 11,
+"face": "ٱبْتَغَىٰ",
+"gloss": "seeks"
+},
+{
+"cardId": 100334,
+"stage": 11,
+"face": "ءَالَآءِ",
+"gloss": "(of the) favors"
+},
+{
+"cardId": 100335,
+"stage": 11,
+"face": "تَقُومُ",
+"gloss": "will (be) established"
+},
+{
+"cardId": 100336,
+"stage": 11,
+"face": "فَرِيقٌۭ",
+"gloss": "a party"
+},
+{
+"cardId": 100337,
+"stage": 11,
+"face": "ٱلْحَرَامِ",
+"gloss": "Al-Haraam"
+},
+{
+"cardId": 100339,
+"stage": 11,
+"face": "كَذِبًا",
+"gloss": "a lie"
+},
+{
+"cardId": 100340,
+"stage": 11,
+"face": "كَلَّا",
+"gloss": "Nay"
+},
+{
+"cardId": 100341,
+"stage": 11,
+"face": "خَـٰسِرِينَ",
+"gloss": "(as) losers"
+},
+{
+"cardId": 100343,
+"stage": 11,
+"face": "ذُرِّيَّةًۭ",
+"gloss": "offspring"
+},
+{
+"cardId": 100344,
+"stage": 11,
+"face": "كَفَىٰ",
+"gloss": "Sufficient"
+},
+{
+"cardId": 100345,
+"stage": 11,
+"face": "كَـٰذِبِينَ",
+"gloss": "liars"
+},
+{
+"cardId": 100346,
+"stage": 11,
+"face": "نُهُوا۟",
+"gloss": "they were forbidden"
+},
+{
+"cardId": 100347,
+"stage": 11,
+"face": "عَـٰقِبَةُ",
+"gloss": "(the) end"
+},
+{
+"cardId": 100348,
+"stage": 11,
+"face": "أَعْرَضَ",
+"gloss": "he turns away"
+},
+{
+"cardId": 100349,
+"stage": 11,
+"face": "حَيْثُ",
+"gloss": "wherever"
+},
+{
+"cardId": 100350,
+"stage": 11,
+"face": "أَشَدُّ",
+"gloss": "(are) stronger"
+},
+{
+"cardId": 100351,
+"stage": 11,
+"face": "كَأَنَّهُمْ",
+"gloss": "as if they (were)"
+},
+{
+"cardId": 100352,
+"stage": 11,
+"face": "يَنفَعُ",
+"gloss": "will benefit"
+},
+{
+"cardId": 100353,
+"stage": 11,
+"face": "إِذًۭا",
+"gloss": "then"
+},
+{
+"cardId": 100354,
+"stage": 11,
+"face": "حَسَنَةًۭ",
+"gloss": "good"
+},
+{
+"cardId": 100355,
+"stage": 11,
+"face": "وَٰحِدَةًۭ",
+"gloss": "one"
+},
+{
+"cardId": 100356,
+"stage": 11,
+"face": "طَيِّبَـٰتِ",
+"gloss": "(the) good things"
+},
+{
+"cardId": 100357,
+"stage": 11,
+"face": "وَٰحِدٍۢ",
+"gloss": "one"
+},
+{
+"cardId": 100358,
+"stage": 11,
+"face": "قُوَّةًۭ",
+"gloss": "(in) strength"
+},
+{
+"cardId": 100359,
+"stage": 11,
+"face": "وَلَّىٰ",
+"gloss": "he turned back"
+},
+{
+"cardId": 100360,
+"stage": 11,
+"face": "عَادٍۢ",
+"gloss": "transgressor"
+},
+{
+"cardId": 100361,
+"stage": 11,
+"face": "عَسَىٰٓ",
+"gloss": "perhaps"
+},
+{
+"cardId": 100363,
+"stage": 11,
+"face": "ٱلْمَلَأُ",
+"gloss": "the chiefs"
+},
+{
+"cardId": 100364,
+"stage": 11,
+"face": "لَبِثَ",
+"gloss": "and not he delayed"
+},
+{
+"cardId": 100365,
+"stage": 11,
+"face": "حُكْمًۭا",
+"gloss": "wisdom"
+},
+{
+"cardId": 100366,
+"stage": 11,
+"face": "سَآءَ",
+"gloss": "evil"
+},
+{
+"cardId": 100367,
+"stage": 11,
+"face": "كَرِيمٌۭ",
+"gloss": "noble"
+},
+{
+"cardId": 100368,
+"stage": 11,
+"face": "يُبْصِرُونَ",
+"gloss": "see"
+},
+{
+"cardId": 100369,
+"stage": 11,
+"face": "عَهْدًۭا",
+"gloss": "a covenant"
+},
+{
+"cardId": 100370,
+"stage": 11,
+"face": "رِيحًۭا",
+"gloss": "a wind"
+},
+{
+"cardId": 100371,
+"stage": 11,
+"face": "جُندٌۭ",
+"gloss": "(are) hosts"
+},
+{
+"cardId": 100372,
+"stage": 11,
+"face": "ٱلْعَرْشِ",
+"gloss": "(of) the Throne"
+},
+{
+"cardId": 100373,
+"stage": 11,
+"face": "رَجُلٌۭ",
+"gloss": "a man"
+},
+{
+"cardId": 100374,
+"stage": 11,
+"face": "أَنۢبَآءِ",
+"gloss": "(the) news"
+},
+{
+"cardId": 100375,
+"stage": 11,
+"face": "أَبَدًۭا",
+"gloss": "ever"
+},
+{
+"cardId": 100376,
+"stage": 11,
+"face": "سِحْرٌۭ",
+"gloss": "a magic"
+},
+{
+"cardId": 100377,
+"stage": 11,
+"face": "مَسَـٰجِدَ",
+"gloss": "(the) masajid"
+},
+{
+"cardId": 100378,
+"stage": 11,
+"face": "ٱلْمَصِيرُ",
+"gloss": "(is) the destination"
+},
+{
+"cardId": 100379,
+"stage": 11,
+"face": "وَأَصْلَحَ",
+"gloss": "and reforms"
+},
+{
+"cardId": 100380,
+"stage": 12,
+"face": "مَّغْفِرَةٌۭ",
+"gloss": "(is) forgiveness"
+},
+{
+"cardId": 100381,
+"stage": 12,
+"face": "يَسْتَجِيبُ",
+"gloss": "respond"
+},
+{
+"cardId": 100382,
+"stage": 12,
+"face": "وَٱلْمُؤْمِنَـٰتِ",
+"gloss": "and the believing women"
+},
+{
+"cardId": 100383,
+"stage": 12,
+"face": "أَنَّىٰ",
+"gloss": "How"
+},
+{
+"cardId": 100384,
+"stage": 12,
+"face": "رِجَالًۭا",
+"gloss": "men"
+},
+{
+"cardId": 100385,
+"stage": 12,
+"face": "رَّحِمَ",
+"gloss": "your Lord has bestowed Mercy"
+},
+{
+"cardId": 100386,
+"stage": 12,
+"face": "يُغْنِى",
+"gloss": "will avail"
+},
+{
+"cardId": 100387,
+"stage": 12,
+"face": "فَأَصْبَحُوا۟",
+"gloss": "then they became"
+},
+{
+"cardId": 100388,
+"stage": 12,
+"face": "حَدِيثًۭا",
+"gloss": "(any) statement"
+},
+{
+"cardId": 100389,
+"stage": 12,
+"face": "سَوَآءٌ",
+"gloss": "(It is) same"
+},
+{
+"cardId": 100390,
+"stage": 12,
+"face": "عَفَا",
+"gloss": "He forgave"
+},
+{
+"cardId": 100391,
+"stage": 12,
+"face": "أَبْوَٰبَ",
+"gloss": "(the) gates"
+},
+{
+"cardId": 100392,
+"stage": 12,
+"face": "غَـٰفِلُونَ",
+"gloss": "(are) unaware"
+},
+{
+"cardId": 100393,
+"stage": 12,
+"face": "قَدَّمَتْ",
+"gloss": "have sent forth"
+},
+{
+"cardId": 100394,
+"stage": 12,
+"face": "يُفْلِحُ",
+"gloss": "will succeed"
+},
+{
+"cardId": 100395,
+"stage": 12,
+"face": "جَـٰهِدِ",
+"gloss": "Strive (against)"
+},
+{
+"cardId": 100396,
+"stage": 12,
+"face": "مَكَانٍۢ",
+"gloss": "place"
+},
+{
+"cardId": 100397,
+"stage": 12,
+"face": "ٱلْمُنَـٰفِقِينَ",
+"gloss": "the hypocrites"
+},
+{
+"cardId": 100399,
+"stage": 12,
+"face": "يُوسُفَ",
+"gloss": "Yusuf"
+},
+{
+"cardId": 100400,
+"stage": 12,
+"face": "لُوطٍۢ",
+"gloss": "(of) Lut"
+},
+{
+"cardId": 100401,
+"stage": 12,
+"face": "مَاذَا",
+"gloss": "what"
+},
+{
+"cardId": 100402,
+"stage": 12,
+"face": "خَوْفٌ",
+"gloss": "fear"
+},
+{
+"cardId": 100403,
+"stage": 12,
+"face": "بِٱلْبَـٰطِلِ",
+"gloss": "with [the] falsehood"
+},
+{
+"cardId": 100404,
+"stage": 12,
+"face": "ءَالَ",
+"gloss": "(the) people"
+},
+{
+"cardId": 100405,
+"stage": 12,
+"face": "ٱلْجَحِيمِ",
+"gloss": "(of) the Hellfire"
+},
+{
+"cardId": 100406,
+"stage": 12,
+"face": "شَهَـٰدَةً",
+"gloss": "a testimony"
+},
+{
+"cardId": 100407,
+"stage": 12,
+"face": "أَجْمَعِينَ",
+"gloss": "all"
+},
+{
+"cardId": 100408,
+"stage": 12,
+"face": "قَرِيبٌۭ",
+"gloss": "(is) near"
+},
+{
+"cardId": 100409,
+"stage": 12,
+"face": "زُيِّنَ",
+"gloss": "Beautified"
+},
+{
+"cardId": 100410,
+"stage": 12,
+"face": "ٱمْرَأَتُ",
+"gloss": "(the) wife"
+},
+{
+"cardId": 100411,
+"stage": 12,
+"face": "كَيْدًۭا",
+"gloss": "a plan"
+},
+{
+"cardId": 100412,
+"stage": 12,
+"face": "ثَمُودُ",
+"gloss": "Thamud"
+},
+{
+"cardId": 100413,
+"stage": 12,
+"face": "يَشْعُرُونَ",
+"gloss": "perceive"
+},
+{
+"cardId": 100414,
+"stage": 12,
+"face": "خَلَتْ",
+"gloss": "passed away"
+},
+{
+"cardId": 100415,
+"stage": 12,
+"face": "مِيثَـٰقَ",
+"gloss": "a Covenant"
+},
+{
+"cardId": 100416,
+"stage": 12,
+"face": "ءَادَمَ",
+"gloss": "(of) Adam"
+},
+{
+"cardId": 100417,
+"stage": 12,
+"face": "عِيسَى",
+"gloss": "Isa"
+},
+{
+"cardId": 100418,
+"stage": 12,
+"face": "جُنَاحَ",
+"gloss": "blame"
+},
+{
+"cardId": 100419,
+"stage": 12,
+"face": "بَعِيدٍۢ",
+"gloss": "far"
+},
+{
+"cardId": 100420,
+"stage": 12,
+"face": "بَأْسٍۢ",
+"gloss": "those of great military might"
+},
+{
+"cardId": 100421,
+"stage": 12,
+"face": "يَقْدِرُ",
+"gloss": "he has power"
+},
+{
+"cardId": 100422,
+"stage": 12,
+"face": "لِسَانَ",
+"gloss": "a truthful mention"
+},
+{
+"cardId": 100423,
+"stage": 12,
+"face": "أَبْغِى",
+"gloss": "I (should) seek"
+},
+{
+"cardId": 100424,
+"stage": 12,
+"face": "يُجَـٰدِلُ",
+"gloss": "disputes"
+},
+{
+"cardId": 100426,
+"stage": 12,
+"face": "يَكَادُ",
+"gloss": "would almost"
+},
+{
+"cardId": 100427,
+"stage": 12,
+"face": "طَعَامُ",
+"gloss": "(of) feeding"
+},
+{
+"cardId": 100428,
+"stage": 12,
+"face": "وَرَآءَ",
+"gloss": "behind"
+},
+{
+"cardId": 100429,
+"stage": 12,
+"face": "حَيًّۭا",
+"gloss": "alive"
+},
+{
+"cardId": 100430,
+"stage": 12,
+"face": "أُنثَىٰ",
+"gloss": "female"
+},
+{
+"cardId": 100431,
+"stage": 12,
+"face": "أَكْبَرُ",
+"gloss": "(is) greater"
+},
+{
+"cardId": 100432,
+"stage": 12,
+"face": "يَتَوَفَّى",
+"gloss": "take away souls"
+},
+{
+"cardId": 100433,
+"stage": 12,
+"face": "غَنِىٌّ",
+"gloss": "(is) free from need"
+},
+{
+"cardId": 100434,
+"stage": 12,
+"face": "طَّآئِفَةٌۭ",
+"gloss": "a group"
+},
+{
+"cardId": 100435,
+"stage": 12,
+"face": "وَكِيلًۭا",
+"gloss": "(as) a Disposer of affairs"
+},
+{
+"cardId": 100436,
+"stage": 12,
+"face": "لِقَآءَ",
+"gloss": "(the) meeting"
+},
+{
+"cardId": 100437,
+"stage": 12,
+"face": "ظُلُمَـٰتِ",
+"gloss": "the darkness[es]"
+},
+{
+"cardId": 100438,
+"stage": 12,
+"face": "سَبْعَ",
+"gloss": "seven"
+},
+{
+"cardId": 100439,
+"stage": 12,
+"face": "إِمَّا",
+"gloss": "whether"
+},
+{
+"cardId": 100440,
+"stage": 12,
+"face": "فَأَنجَيْنَـٰهُ",
+"gloss": "So We saved him"
+},
+{
+"cardId": 100441,
+"stage": 12,
+"face": "سُجَّدًۭا",
+"gloss": "prostrating"
+},
+{
+"cardId": 100442,
+"stage": 12,
+"face": "نُّبَدِّلَ",
+"gloss": "We (will) change"
+},
+{
+"cardId": 100443,
+"stage": 12,
+"face": "يَتِيمًۭا",
+"gloss": "An orphan"
+},
+{
+"cardId": 100444,
+"stage": 12,
+"face": "مَسَـٰكِينَ",
+"gloss": "needy people"
+},
+{
+"cardId": 100445,
+"stage": 12,
+"face": "يَلْعَنِ",
+"gloss": "(is) cursed"
+},
+{
+"cardId": 100446,
+"stage": 12,
+"face": "ٱلْفُلْكِ",
+"gloss": "the ship"
+},
+{
+"cardId": 100447,
+"stage": 12,
+"face": "أَذِنَ",
+"gloss": "permitted"
+},
+{
+"cardId": 100448,
+"stage": 12,
+"face": "فَتَنَّا",
+"gloss": "We tried"
+},
+{
+"cardId": 100449,
+"stage": 12,
+"face": "قَرْنٍ",
+"gloss": "a generation"
+},
+{
+"cardId": 100450,
+"stage": 12,
+"face": "ذِكْرَىٰ",
+"gloss": "a reminder"
+},
+{
+"cardId": 100451,
+"stage": 12,
+"face": "ٱلسَّمْعَ",
+"gloss": "the hearing"
+},
+{
+"cardId": 100452,
+"stage": 12,
+"face": "نَرْفَعُ",
+"gloss": "We raise"
+},
+{
+"cardId": 100453,
+"stage": 12,
+"face": "خَلْفِهِمْ",
+"gloss": "behind them"
+},
+{
+"cardId": 100454,
+"stage": 12,
+"face": "بَلَىٰ",
+"gloss": "Yes"
+},
+{
+"cardId": 100455,
+"stage": 12,
+"face": "أَسْلَمَ",
+"gloss": "submits"
+},
+{
+"cardId": 100456,
+"stage": 12,
+"face": "دُعَآءًۭ",
+"gloss": "calls"
+},
+{
+"cardId": 100458,
+"stage": 12,
+"face": "يَرْجُوا۟",
+"gloss": "hoping"
+},
+{
+"cardId": 100459,
+"stage": 12,
+"face": "هَبْ",
+"gloss": "grant"
+},
+{
+"cardId": 100460,
+"stage": 12,
+"face": "يَجْمَعُ",
+"gloss": "will (be) gathered"
+},
+{
+"cardId": 100461,
+"stage": 12,
+"face": "لَدَيْهِمْ",
+"gloss": "with them"
+},
+{
+"cardId": 100462,
+"stage": 12,
+"face": "مَكَرَ",
+"gloss": "plotted"
+},
+{
+"cardId": 100463,
+"stage": 12,
+"face": "مَأْوَىٰهُمْ",
+"gloss": "their abode"
+},
+{
+"cardId": 100464,
+"stage": 12,
+"face": "ٱلْبَرِّ",
+"gloss": "the land"
+},
+{
+"cardId": 100465,
+"stage": 12,
+"face": "أَذَقْنَا",
+"gloss": "We let [the] mankind taste"
+},
+{
+"cardId": 100466,
+"stage": 12,
+"face": "ٱلْجِنِّ",
+"gloss": "the jinn"
+},
+{
+"cardId": 100467,
+"stage": 12,
+"face": "سَـٰحِرٍ",
+"gloss": "magician"
+},
+{
+"cardId": 100468,
+"stage": 12,
+"face": "سَخَّرَ",
+"gloss": "subjected"
+},
+{
+"cardId": 100469,
+"stage": 12,
+"face": "مُفْسِدِينَ",
+"gloss": "spreading corruption"
+},
+{
+"cardId": 100470,
+"stage": 12,
+"face": "يَسْتَهْزِءُونَ",
+"gloss": "mock"
+},
+{
+"cardId": 100471,
+"stage": 12,
+"face": "نَشْتَرِى",
+"gloss": "we will exchange"
+},
+{
+"cardId": 100472,
+"stage": 12,
+"face": "أَعْمَىٰ",
+"gloss": "blind"
+},
+{
+"cardId": 100473,
+"stage": 12,
+"face": "يَمْشِى",
+"gloss": "walks"
+},
+{
+"cardId": 100474,
+"stage": 12,
+"face": "أَمَاتَ",
+"gloss": "causes death"
+},
+{
+"cardId": 100475,
+"stage": 12,
+"face": "تَكْتُمُونَ",
+"gloss": "you conceal"
+},
+{
+"cardId": 100476,
+"stage": 12,
+"face": "رُوحُ",
+"gloss": "the Holy Spirit"
+},
+{
+"cardId": 100477,
+"stage": 12,
+"face": "أَشْهُرٍۢ",
+"gloss": "months"
+},
+{
+"cardId": 100478,
+"stage": 12,
+"face": "أَحْسَنَ",
+"gloss": "did good"
+},
+{
+"cardId": 100479,
+"stage": 12,
+"face": "نَصِيبٌۭ",
+"gloss": "(is) a share"
+},
+{
+"cardId": 100480,
+"stage": 12,
+"face": "كَمْ",
+"gloss": "how many"
+},
+{
+"cardId": 100481,
+"stage": 12,
+"face": "حَسَنًۭا",
+"gloss": "good"
+},
+{
+"cardId": 100482,
+"stage": 12,
+"face": "مُّسَمًّۭى",
+"gloss": "appointed"
+},
+{
+"cardId": 100483,
+"stage": 12,
+"face": "تَضَعُ",
+"gloss": "gives birth"
+},
+{
+"cardId": 100484,
+"stage": 12,
+"face": "شَاهِدٌۭ",
+"gloss": "a witness"
+},
+{
+"cardId": 100485,
+"stage": 12,
+"face": "لِّلْمُكَذِّبِينَ",
+"gloss": "to the deniers"
+},
+{
+"cardId": 100486,
+"stage": 12,
+"face": "ظَنَّ",
+"gloss": "an assumption"
+},
+{
+"cardId": 100487,
+"stage": 12,
+"face": "أَعَدَّ",
+"gloss": "has prepared"
+},
+{
+"cardId": 100488,
+"stage": 12,
+"face": "أَوْفَىٰ",
+"gloss": "fulfills"
+},
+{
+"cardId": 100489,
+"stage": 12,
+"face": "تَعْرِفُ",
+"gloss": "you will recognize"
+},
+{
+"cardId": 100490,
+"stage": 12,
+"face": "يَسْعَىٰ",
+"gloss": "running"
+},
+{
+"cardId": 100491,
+"stage": 12,
+"face": "تُكَلِّمَ",
+"gloss": "you will speak"
+},
+{
+"cardId": 100492,
+"stage": 12,
+"face": "وَٱلْحِكْمَةَ",
+"gloss": "and the wisdom"
+},
+{
+"cardId": 100493,
+"stage": 12,
+"face": "ٱلصَّـٰبِرِينَ",
+"gloss": "the patient ones"
+},
+{
+"cardId": 100494,
+"stage": 12,
+"face": "تَبْلُوا۟",
+"gloss": "will be put to trial"
+},
+{
+"cardId": 100495,
+"stage": 12,
+"face": "أُحِلَّ",
+"gloss": "Permitted"
+},
+{
+"cardId": 100496,
+"stage": 12,
+"face": "أَمِنَ",
+"gloss": "entrusts"
+},
+{
+"cardId": 100497,
+"stage": 12,
+"face": "ٱلْعِقَابِ",
+"gloss": "(in) the penalty"
+},
+{
+"cardId": 100498,
+"stage": 12,
+"face": "مَرَّةٍۢ",
+"gloss": "time"
+},
+{
+"cardId": 100499,
+"stage": 12,
+"face": "هَـٰرُونَ",
+"gloss": "Harun"
+},
+{
+"cardId": 100501,
+"stage": 12,
+"face": "نَقُصُّ",
+"gloss": "We relate"
+},
+{
+"cardId": 100502,
+"stage": 12,
+"face": "أُقْسِمُ",
+"gloss": "I swear"
+},
+{
+"cardId": 100503,
+"stage": 12,
+"face": "حِزْبَ",
+"gloss": "(the) party"
+},
+{
+"cardId": 100504,
+"stage": 12,
+"face": "أَنشَأَ",
+"gloss": "produced"
+},
+{
+"cardId": 100505,
+"stage": 12,
+"face": "حَمِيمٍۢ",
+"gloss": "boiling water"
+},
+{
+"cardId": 100506,
+"stage": 12,
+"face": "حَقَّ",
+"gloss": "(has) proved true"
+},
+{
+"cardId": 100507,
+"stage": 12,
+"face": "سَبَقَتْ",
+"gloss": "(that) preceded"
+},
+{
+"cardId": 100508,
+"stage": 12,
+"face": "شَجَرَةِ",
+"gloss": "(the) tree"
+},
+{
+"cardId": 100509,
+"stage": 12,
+"face": "مُصَدِّقًۭا",
+"gloss": "confirming"
+},
+{
+"cardId": 100510,
+"stage": 12,
+"face": "مُّعْرِضُونَ",
+"gloss": "(were) averse"
+},
+{
+"cardId": 100511,
+"stage": 12,
+"face": "يَضُرَّ",
+"gloss": "will he harm"
+},
+{
+"cardId": 100512,
+"stage": 12,
+"face": "أَيْنَ",
+"gloss": "Where"
+},
+{
+"cardId": 100513,
+"stage": 12,
+"face": "أَقْرَبُ",
+"gloss": "(is) nearer"
+},
+{
+"cardId": 100514,
+"stage": 12,
+"face": "طَيْرًۢا",
+"gloss": "a bird"
+},
+{
+"cardId": 100515,
+"stage": 12,
+"face": "يُنفَخُ",
+"gloss": "will be blown"
+},
+{
+"cardId": 100516,
+"stage": 12,
+"face": "ٱلْفَوْزُ",
+"gloss": "(is) the success"
+},
+{
+"cardId": 100517,
+"stage": 12,
+"face": "يَفْقَهُونَ",
+"gloss": "understand"
+},
+{
+"cardId": 100518,
+"stage": 12,
+"face": "ضُرٌّۭ",
+"gloss": "adversity"
+},
+{
+"cardId": 100519,
+"stage": 12,
+"face": "يَسْتَعْجِلُ",
+"gloss": "of it would (wish to) hasten"
+},
+{
+"cardId": 100520,
+"stage": 12,
+"face": "زِينَةَ",
+"gloss": "(the) adornment"
+},
+{
+"cardId": 100521,
+"stage": 12,
+"face": "مَكْرًۭا",
+"gloss": "a plan"
+},
+{
+"cardId": 100522,
+"stage": 12,
+"face": "رَيْبَ",
+"gloss": "doubt"
+},
+{
+"cardId": 100523,
+"stage": 12,
+"face": "ءَاذَانٌۭ",
+"gloss": "ears"
+}
+]
+}
