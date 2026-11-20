@@ -8,8 +8,10 @@ import content from "@/db/seed-data/quranic-words.json";
   The iOS app's Quranic Words track, seeded into Neon under the SAME fixed ids
   the app seeds on the device (lessons 1000 and up, cards 100000 + frequency
   rank), so reviews made on a phone sync against rows that already exist.
-  Data: db/seed-data/quranic-words.json, copied from DurusIOS. Glosses are
-  Quran Foundation word-by-word text, verbatim.
+  Data: db/seed-data/quranic-words.json, copied from DurusIOS. It carries NO
+  English: Quran Foundation does not permit storing its word meanings as
+  bundled content (2026-11-20), so english is empty here and the app fetches
+  the meanings through /api/v1/quran/words.
 
   Idempotent: the enum value is added only if missing, lessons and cards
   upsert on id. Explicit ids do not move the serial sequences, which is fine:
