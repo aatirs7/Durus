@@ -19,10 +19,10 @@ import { CONTACT_EMAIL } from "@/lib/contact";
 */
 
 /* Bump when the substance changes, not when the wording is tidied. */
-const UPDATED = "25 August 2026";
+const UPDATED = "21 November 2026";
 
 export const metadata: Metadata = {
-  title: "Privacy — Durus",
+  title: "Privacy, Durus",
   description: "What Durus stores, why, and how to delete it.",
 };
 
@@ -35,6 +35,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
+const P = ({ children }: { children: React.ReactNode }) => (
+  <p className="text-ink-soft text-[16px] leading-relaxed">{children}</p>
+);
+
 export default function PrivacyPage() {
   return (
     <main className="mx-auto flex w-full max-w-[680px] flex-1 flex-col gap-10 px-6 py-16">
@@ -43,96 +47,114 @@ export default function PrivacyPage() {
         <h1 className="text-ink text-[32px] leading-tight font-medium">
           What Durus stores, and why
         </h1>
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          Durus is a revision app for the vocabulary of the Madinah Arabic course. It
-          exists to bring words back just before you forget them, and it collects
-          what that takes and nothing else. Last updated {UPDATED}.
-        </p>
+        <P>
+          Durus is an app for reading, memorizing and understanding the Quran. It
+          works without an account, and it collects what its features need and
+          nothing else. Last updated {UPDATED}.
+        </P>
       </header>
 
-      <Section title="What is collected">
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          If you create an account, your <strong>email address</strong> and the{" "}
-          <strong>name you choose</strong>. The name is only ever used to greet
-          you.
-        </p>
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          Your <strong>revision history</strong>: which word you answered, when,
-          whether it was right, and how long you took. This is what the schedule
-          is computed from, so without it the app cannot do the one thing it is
-          for.
-        </p>
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          Your <strong>settings</strong>: the lesson your class is on, how many
-          new words a day, reminder times, theme. Plus an identifier for each
-          device you sign in on, so two phones can be told apart when they sync.
-        </p>
+      <Section title="Without an account">
+        <P>
+          Everything stays on your phone: what you have marked as memorized, your
+          reading place and bookmarks, your Barakah practices and prayers, your
+          lessons and reviews, your recent searches, the name you give for the
+          greeting, and your settings. Durus does not receive any of it.
+        </P>
+      </Section>
+
+      <Section title="With an account">
+        <P>
+          An account is optional. If you create one, Durus keeps your{" "}
+          <strong>email address</strong> and <strong>name</strong>, your{" "}
+          <strong>lesson and review history</strong> (which word you answered,
+          when, whether it was right and how long you took), your{" "}
+          <strong>course settings</strong>, and an identifier for each device, so
+          your progress follows you to a new phone. Memorization marks, Barakah
+          and searches still stay on the phone.
+        </P>
+      </Section>
+
+      <Section title="Search">
+        <P>
+          When you type a question or a topic into Search, the text you type is
+          sent to the Durus server, which asks an AI service to suggest places in
+          the Quran: <strong>Google Gemini</strong>, or <strong>Groq</strong> if
+          Gemini is unavailable. Only the search text is sent, never your name,
+          email or account. Answers are kept on the server for up to a day so the
+          same question is not asked twice. Google may use text sent to its free
+          service to improve its products, so do not type personal details into
+          Search. Searches for a surah, a juz or an ayah number are answered on
+          your phone and are not sent.
+        </P>
+      </Section>
+
+      <Section title="Quran content">
+        <P>
+          Translations, word meanings and recitation are provided by{" "}
+          <strong>Quran Foundation</strong> (Quran.com). Your phone fetches them
+          through the Durus server, sending only which surahs and ayahs are
+          needed. Recitation audio is downloaded from Quran Foundation&apos;s
+          servers directly, which, like any website, see your IP address. Nothing
+          about you is sent with these requests.
+        </P>
       </Section>
 
       <Section title="What is not collected">
-        <p className="text-ink-soft text-[16px] leading-relaxed">
+        <P>
           There is no analytics, no advertising, no tracking of any kind, and no
-          third-party SDK watching what you do. Nothing is sold or shared with
-          anyone for marketing. There are no cookies beyond the one that keeps
-          you signed in, and the one that remembers your theme.
-        </p>
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          Reminders are scheduled by your own phone. Durus has no push server and
-          is not told whether a reminder was delivered, opened or ignored.
-        </p>
+          third-party SDK watching what you do. Nothing is sold or shared for
+          marketing. Reminders are scheduled by your own phone; Durus is not told
+          whether a reminder was delivered, opened or ignored.
+        </P>
       </Section>
 
       <Section title="Who processes it">
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          Three services, each doing one job:{" "}
+        <P>
           <strong>Clerk</strong> handles sign-in and holds your email address and
-          name; <strong>Neon</strong> hosts the database your revision history is
-          stored in; <strong>Vercel</strong> serves the site and the API. Each
-          keeps ordinary server logs, which include IP addresses, for a short
-          period. None of them is given your data for their own purposes.
-        </p>
+          name. <strong>Neon</strong> hosts the database your lesson history is
+          stored in. <strong>Vercel</strong> runs the Durus server.{" "}
+          <strong>Google</strong> and <strong>Groq</strong> answer searches, and{" "}
+          <strong>Quran Foundation</strong> provides Quran content, as described
+          above. Each keeps ordinary server logs, which include IP addresses, for
+          a short period.
+        </P>
       </Section>
 
-      <Section title="How long it is kept">
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          For as long as you have an account. Delete the account and it goes.
-        </p>
-      </Section>
-
-      <Section title="Deleting everything">
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          In the iOS app: <strong>Settings → Account → Delete account</strong>.
-          That removes your account and every answer you have given, from the
-          server and from the phone. It cannot be undone, so export your data
-          first if you want a copy — the option is directly above it, and hands
-          back everything as a JSON file.
-        </p>
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          If you cannot reach the app for any reason, email{" "}
+      <Section title="How long it is kept, and deleting it">
+        <P>
+          Account data is kept for as long as you have an account. In the app,{" "}
+          <strong>Settings, Delete account</strong> removes your account
+          and every answer you have given, from the server and from the phone. It
+          cannot be undone, so export your data first if you want a copy
+          (Settings, Your data). Data kept only on the phone goes when you delete
+          the app.
+        </P>
+        <P>
+          If you cannot reach the app, email{" "}
           <a className="text-lapis underline underline-offset-4" href={`mailto:${CONTACT_EMAIL}`}>
             {CONTACT_EMAIL}
           </a>{" "}
           from the address on the account and it will be done for you.
-        </p>
+        </P>
       </Section>
 
       <Section title="Children">
-        <p className="text-ink-soft text-[16px] leading-relaxed">
-          Durus is a study aid with no social features, no user-to-user contact
-          and no content that is unsuitable at any age. It is not directed at
-          children under 13 and no age is asked for or inferred.
-        </p>
+        <P>
+          Durus has no social features and no user-to-user contact. It is not
+          directed at children under 13 and no age is asked for or inferred.
+        </P>
       </Section>
 
       <Section title="Changes">
-        <p className="text-ink-soft text-[16px] leading-relaxed">
+        <P>
           If what is collected changes, this page changes with it and the date at
           the top moves. Questions go to{" "}
           <a className="text-lapis underline underline-offset-4" href={`mailto:${CONTACT_EMAIL}`}>
             {CONTACT_EMAIL}
           </a>
           .
-        </p>
+        </P>
       </Section>
 
       <footer className="border-rule flex flex-col gap-3 border-t pt-6">

@@ -19,7 +19,7 @@ import { CONTACT_EMAIL } from "@/lib/contact";
 */
 
 export const metadata: Metadata = {
-  title: "Support — Durus",
+  title: "Support, Durus",
   description: "How Durus works, and how to get help with it.",
 };
 
@@ -43,8 +43,8 @@ export default function SupportPage() {
           How Durus works, and how to get help
         </h1>
         <p className="text-ink-soft text-[16px] leading-relaxed">
-          Durus brings back the vocabulary of the Madinah Arabic course just
-          before you would have forgotten it. If something below does not answer
+          Durus is for reading, memorizing and understanding the Quran: Search,
+          Read, Progress, Learn and Barakah. If something below does not answer
           your question, write to{" "}
           <a
             className="text-lapis underline underline-offset-4"
@@ -57,13 +57,33 @@ export default function SupportPage() {
       </header>
 
       <div className="flex flex-col gap-8">
+        <Question q="Do I need an account?">
+          <p>
+            No. Everything works without one, and your progress stays on your
+            phone. An account saves your lessons and reviews so they follow you
+            to a new phone. Sign in any time from <strong>Settings, Account</strong>;
+            what you did before signing in is kept.
+          </p>
+        </Question>
+
+        <Question q="How does Search work?">
+          <p>
+            Type a surah name, an ayah like 2:255, a topic, a story or how you
+            feel. Surahs, juz and ayah numbers are found on your phone. For
+            anything else, an AI suggests places in the Quran with a short note
+            on each; the Arabic and translation you see are always the real
+            text. Search never gives religious rulings: for those, ask a
+            qualified scholar.
+          </p>
+        </Question>
+
         <Question q="Why am I not seeing a word I have been taught?">
           <p>
             Durus never shows a word from beyond the lesson you told it your
             class is on. Move the lesson forward in{" "}
-            <strong>Settings → Study → Current lesson</strong> and the new words
-            start arriving. They arrive over several days rather than all at
-            once, at the rate set by <strong>New cards per day</strong>.
+            <strong>Settings, Arabic course, Current lesson</strong> and the new
+            words start arriving. They arrive over several days rather than all
+            at once, at the rate set by <strong>New words a day</strong>.
           </p>
         </Question>
 
@@ -75,7 +95,7 @@ export default function SupportPage() {
           </p>
           <p>
             Getting one wrong also brings it back inside the same session. That
-            is not a penalty and nothing is scored — a word you have just missed
+            is not a penalty and nothing is scored: a word you have just missed
             is a word worth seeing again.
           </p>
         </Question>
@@ -94,8 +114,8 @@ export default function SupportPage() {
             Reminders are one or two times a day that you choose, and they are
             scheduled by your own phone rather than sent from a server. If they
             have stopped, check that notifications are still allowed for Durus
-            in iOS Settings, then toggle <strong>Daily reminders</strong> off
-            and on again in <strong>Settings → Reminders</strong> to lay them
+            in iOS Settings, then toggle <strong>Study reminder</strong> off
+            and on again in <strong>Settings, Reminders</strong> to lay them
             down afresh.
           </p>
           <p>
@@ -106,24 +126,25 @@ export default function SupportPage() {
 
         <Question q="Does it work without a signal?">
           <p>
-            Entirely. Every drill runs on the device, and a session started in
-            airplane mode is a complete session. Answers given offline are sent
-            the next time you have a connection; nothing is lost in between and
-            there is nothing to press.
+            Reading, your lessons, Progress and Barakah all work offline. Search
+            by topic needs a connection, as do translations and recitation you
+            have not opened before (or turn on{" "}
+            <strong>Settings, Offline recitation</strong>). With an account,
+            answers given offline are sent the next time you have a connection.
           </p>
         </Question>
 
         <Question q="Is my progress the same on my phone and in the browser?">
           <p>
             Yes, as long as you sign in to the same account. It is one account,
-            one schedule and one history across both — answer a card on the bus
+            one schedule and one history across both: answer a card on the bus
             and it is waiting for you at a desk.
           </p>
         </Question>
 
         <Question q="How do I get my data out?">
           <p>
-            <strong>Settings → Data → Export all data as JSON</strong>. That
+            <strong>Settings, Your data, Export all data</strong>. That
             hands back every answer you have ever given as a file, which you can
             save to Files, mail to yourself, or keep anywhere you like.
           </p>
@@ -131,7 +152,7 @@ export default function SupportPage() {
 
         <Question q="How do I delete my account?">
           <p>
-            <strong>Settings → Account → Delete account</strong>. There are two
+            <strong>Settings, Delete account</strong>. There are two
             confirmations, and then your account and every answer you have given
             are removed from the server and from the phone. It cannot be undone,
             so export first if you want a copy.
